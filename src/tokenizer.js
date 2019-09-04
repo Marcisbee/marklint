@@ -1,7 +1,7 @@
 const kMarkupPattern =
-  /<!--([^]*?)(?=-->)-->|<(\/?)(\S*[a-z][-.0-9_a-z]*)([^>]*?)(\/?)>/ig;
+  /<!--([^]*?)(?=-->)-->|<(\/?)([a-z][-.0-9_a-z]*)([^>]*?)(\/?)>/ig;
 const kAttributePattern =
-  /(^|\s*)(\w+)\s*=\s*("([^"]+)"|'([^']+)'|(\S+))/ig;
+  /(^|\s*)([\w-@*.]+)\s*=\s*("([^"]+)"|'([^']+)'|(\S+))/ig;
 
 /**
  * @typedef MarkupInput
@@ -243,10 +243,6 @@ function build(html) {
   let match;
 
   while (match = kMarkupPattern.exec(html)) {
-    // const slice = html.substring(lastTextPos, kMarkupPattern.lastIndex);
-    // console.log({ lastTextPos, slice,
-    // sliceLength: slice.length + lastTextPos,
-    // lastIndex: kMarkupPattern.lastIndex, matchIndex: match.index});
     const parent = stack[stack.length - 1];
 
     // Add strings to children list
@@ -298,8 +294,8 @@ function build(html) {
           end: identifierIndex + match[3].length,
           name: match[3],
           raw: html.substring(
-              identifierIndex,
-              identifierIndex + match[3].length),
+            identifierIndex,
+            identifierIndex + match[3].length),
         }),
         selfClosing: !!match[5],
       });
@@ -313,21 +309,23 @@ function build(html) {
 
         lastAttrPost = kAttributePattern.lastIndex;
 
+        const attrIndex = index + attMatch.index;
+
         // Register whitespace
         if (attMatch[1]) {
           element.openingElement.attributes.push(new HTMLText({
             value: attMatch[1].trim(),
             raw: attMatch[1],
-            start: index + attMatch.index,
-            end: index + attMatch.index + attMatch[1].length,
+            start: attrIndex,
+            end: attrIndex + attMatch[1].length,
           }));
         }
 
         element.openingElement.attributes.push(new HTMLAttribute({
           name: new HTMLAttributeIdentifier({
             name,
-            start: index + attMatch.index,
-            end: index + attMatch.index + name.length,
+            start: attrIndex + attMatch[1].length,
+            end: attrIndex + attMatch[1].length + name.length,
           }),
           value: new Literal({
             value: value.replace(/^["']|["']$/g, '').trim(),
@@ -335,7 +333,7 @@ function build(html) {
             start: index + attMatch[0].indexOf(value),
             end: index + attMatch[0].indexOf(value) + value.length,
           }),
-          start: index + attMatch.index,
+          start: attrIndex + attMatch[1].length,
           end: index + lastAttrPost,
           raw: attMatch[0],
         }));
@@ -361,16 +359,17 @@ function build(html) {
       const identifierIndex =
         match.index + (html.substring(match.index).split(match[3])[0].length);
       if (parent instanceof HTMLElement) {
+        parent.end = kMarkupPattern.lastIndex;
         parent.closingElement = new HTMLClosingElement({
           start: match.index,
-          end: kMarkupPattern.lastIndex,
+          end: parent.end,
           name: new HTMLIdentifier({
             start: identifierIndex,
             end: identifierIndex + match[3].length,
             name: match[3],
             raw: html.substring(
-                identifierIndex,
-                identifierIndex + match[3].length),
+              identifierIndex,
+              identifierIndex + match[3].length),
           }),
         });
       }
@@ -408,30 +407,3 @@ module.exports = {
   HTMLComment,
   HTMLText,
 };
-
-
-// const sample1 = `<!-- Or you can
-// comment out a large
-// number of lines. -->
-// <meta /><a href="123">
-//   <span>inner link</span>
-// </a>
-// dsa
-// <br/>
-// <a>
-//  123
-// </a>
-// asd
-// `;
-
-// const sample2 = `
-//   <a
-//     href="#"
-//     class="first"
-//   >
-//     google.com
-//   </a>
-// `;
-
-// // parse(sample1);
-// parse(sample2);
