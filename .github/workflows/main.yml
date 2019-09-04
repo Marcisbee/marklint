@@ -1,4 +1,4 @@
-name: Install, Test & Lint
+name: Test, Lint & Types
 
 on: [push]
 
@@ -46,5 +46,22 @@ jobs:
       run: |
         npm install
         npm run lint
+      env:
+        CI: true
+
+  types:
+    needs: install
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v1
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v1
+      with:
+        node-version: ${{ matrix.node-version }}
+    - name: types
+      run: |
+        npm install
+        npm run types
       env:
         CI: true
