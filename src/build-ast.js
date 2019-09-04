@@ -1,4 +1,3 @@
-
 const kMarkupPattern =
   /<!--([^]*?)(?=-->)-->|<(\/?)(\S*[a-z][-.0-9_a-z]*)([^>]*?)(\/?)>/ig;
 const kAttributePattern =
