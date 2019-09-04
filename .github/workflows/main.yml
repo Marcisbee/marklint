@@ -5,7 +5,6 @@ on: [push]
 jobs:
   install:
     runs-on: ubuntu-latest
-    container: node:10.16-jessie
 
     steps:
     - uses: actions/checkout@v1
@@ -19,9 +18,15 @@ jobs:
   test:
     needs: install
     runs-on: ubuntu-latest
-    container: node:10.16-jessie
 
     steps:
+    - uses: actions/checkout@v1
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v1
+      with:
+        node-version: ${{ matrix.node-version }}
+    - name: install
+      run: npm install
     - name: test
       run: npm run test:ci
       env:
@@ -29,10 +34,16 @@ jobs:
 
   lint:
     needs: install
-    container: node:10.16-jessie
     runs-on: ubuntu-latest
 
     steps:
+    - uses: actions/checkout@v1
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v1
+      with:
+        node-version: ${{ matrix.node-version }}
+    - name: install
+      run: npm install
     - name: lint
       run: npm run lint
       env:
@@ -40,10 +51,16 @@ jobs:
 
   types:
     needs: install
-    container: node:10.16-jessie
     runs-on: ubuntu-latest
 
     steps:
+    - uses: actions/checkout@v1
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v1
+      with:
+        node-version: ${{ matrix.node-version }}
+    - name: install
+      run: npm install
     - name: types
       run: npm run types
       env:
