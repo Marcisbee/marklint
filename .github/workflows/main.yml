@@ -1,12 +1,10 @@
-name: CI
+name: Install, Test & Lint
 
 on: [push]
 
 jobs:
   install:
     runs-on: ubuntu-latest
-    container:
-      image: node:10.16-jessie
 
     steps:
     - uses: actions/checkout@v1
@@ -16,31 +14,37 @@ jobs:
         node-version: ${{ matrix.node-version }}
     - name: install
       run: npm install
-      env:
-        CI: true
 
   lint:
     needs: install
-
     runs-on: ubuntu-latest
-    container:
-      image: node:10.16-jessie
 
     steps:
-    - name: lint
-      run: npm run lint
+    - uses: actions/checkout@v1
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v1
+      with:
+        node-version: ${{ matrix.node-version }}
+    - name: test
+      run: |
+        npm install
+        npm run test:ci
       env:
         CI: true
 
   test:
     needs: install
-
     runs-on: ubuntu-latest
-    container:
-      image: node:10.16-jessie
 
     steps:
-    - name: test
-      run: npm run test:ci
+    - uses: actions/checkout@v1
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v1
+      with:
+        node-version: ${{ matrix.node-version }}
+    - name: lint
+      run: |
+        npm install
+        npm run lint
       env:
         CI: true
