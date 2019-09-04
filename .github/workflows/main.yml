@@ -4,7 +4,8 @@ on: [push]
 
 jobs:
   install:
-    runs-on: ubuntu-latest
+    container:
+      image: node:10.16-jessie
 
     steps:
     - uses: actions/checkout@v1
@@ -19,7 +20,9 @@ jobs:
 
   lint:
     needs: install
-    runs-on: ubuntu-latest
+
+    container:
+      image: node:10.16-jessie
 
     steps:
     - name: lint
@@ -29,7 +32,9 @@ jobs:
 
   test:
     needs: install
-    runs-on: ubuntu-latest
+
+    container:
+      image: node:10.16-jessie
 
     steps:
     - name: test
