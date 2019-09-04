@@ -4,6 +4,7 @@ on: [push]
 
 jobs:
   install:
+    runs-on: ubuntu-latest
     container:
       image: node:10.16-jessie
 
@@ -21,6 +22,7 @@ jobs:
   lint:
     needs: install
 
+    runs-on: ubuntu-latest
     container:
       image: node:10.16-jessie
 
@@ -33,6 +35,7 @@ jobs:
   test:
     needs: install
 
+    runs-on: ubuntu-latest
     container:
       image: node:10.16-jessie
 
