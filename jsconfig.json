@@ -1,0 +1,28 @@
+{
+  "compilerOptions": {
+    "paths": {
+      "*": [
+        "types/*"
+      ]
+    },
+    "baseUrl": ".",
+    "target": "ES2017",
+    "lib": [
+      "es2017",
+      "dom"
+    ],
+    "checkJs": true,
+    "noImplicitThis": true,
+    "alwaysStrict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true
+  },
+  "exclude": [
+    "coverage",
+    "test",
+    "**/*.spec.js",
+    "node_modules",
+    "./node_modules",
+    "./node_modules/*"
+  ]
+}

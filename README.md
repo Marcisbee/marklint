@@ -1,2 +1,2 @@
-# hyperlint
+# Markup Lint
 🗳 HTML linter

@@ -1,0 +1,31 @@
+{
+  "name": "markup-lint",
+  "version": "1.0.0",
+  "description": "🗳 HTML linter",
+  "main": "src/index.js",
+  "scripts": {
+    "lint": "eslint .",
+    "test": "jest",
+    "test:ci": "npm run test -- --ci",
+    "test:watch": "jest --watch --notify --notifyMode=change --coverage",
+    "types": "tsc --p jsconfig.json"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Marcisbee/markup-lint.git"
+  },
+  "author": "Marcis Bergmanis <marcisbergmanis@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Marcisbee/markup-lint/issues"
+  },
+  "homepage": "https://github.com/Marcisbee/markup-lint#readme",
+  "devDependencies": {
+    "@types/jest": "^24.0.18",
+    "@types/node": "^12.7.4",
+    "eslint": "^6.3.0",
+    "eslint-config-google": "^0.14.0",
+    "jest": "^24.9.0",
+    "typescript": "^3.6.2"
+  }
+}
