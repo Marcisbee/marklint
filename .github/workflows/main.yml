@@ -3,13 +3,8 @@ name: CI
 on: [push]
 
 jobs:
-  test:
-
+  install:
     runs-on: ubuntu-latest
-
-    strategy:
-      matrix:
-        node-version: [8.x, 10.x, 12.x]
 
     steps:
     - uses: actions/checkout@v1
@@ -19,9 +14,25 @@ jobs:
         node-version: ${{ matrix.node-version }}
     - name: install
       run: npm install
-    - name: test
-      run: npm test:ci
+      env:
+        CI: true
+
+  lint:
+    needs: install
+    runs-on: ubuntu-latest
+
+    steps:
     - name: lint
-      run: npm lint
+      run: npm run lint
+      env:
+        CI: true
+
+  test:
+    needs: install
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: test
+      run: npm run test:ci
       env:
         CI: true
