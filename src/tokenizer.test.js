@@ -53,6 +53,18 @@ describe('tokenizer', () => {
       ]);
     });
 
+    test('correct start and end values', () => {
+      const input = '<meta\n  stylesheet\n  name="foo"\n/>';
+      const output = build(input);
+
+      /** @type {*} */
+      const element = output.children[0];
+      const attribute = element.openingElement.attributes[1];
+
+      expect(attribute.name.name).toEqual('stylesheet');
+      expect(attribute.value.value).toEqual(undefined);
+    });
+
     describe('correct start and end values', () => {
       const input =
         `asd <a

@@ -14,7 +14,7 @@ const {
 const kMarkupPattern =
   /<!--([^]*?)(?=-->)-->|<(\/?)([a-z][-.0-9_a-z]*)([^>]*?)(\/?)>/ig;
 const kAttributePattern =
-  /(^|\s*)([\w-@*.]+)\s*=\s*("([^"]+)"|'([^']+)'|(\S+))/ig;
+  /(^|\s*)([\w-@*.]+)((?:\s*=\s*("([^"]+)"|'([^']+)'|(\S+)))*)/ig;
 
 /**
  * @param {string} html
@@ -99,7 +99,7 @@ function build(html) {
       let lastAttrPost = -1;
       for (let attMatch; attMatch = kAttributePattern.exec(match[4]);) {
         const name = attMatch[2];
-        const value = attMatch[3] || attMatch[4] || attMatch[5];
+        const value = attMatch[4] || attMatch[5] || attMatch[6];
 
         lastAttrPost = kAttributePattern.lastIndex;
 
@@ -122,10 +122,14 @@ function build(html) {
             end: attrIndex + attMatch[1].length + name.length,
           }),
           value: new HTMLLiteral({
-            value: value.replace(/^["']|["']$/g, '').trim(),
+            value: typeof value === 'string' ?
+              value.replace(/^["']|["']$/g, '').trim() :
+              value,
             raw: value,
             start: index + attMatch[0].indexOf(value),
-            end: index + attMatch[0].indexOf(value) + value.length,
+            end: index + attMatch[0].indexOf(value) + (
+              value ? value.length : 0
+            ),
           }),
           start: attrIndex + attMatch[1].length,
           end: index + lastAttrPost,
