@@ -1,6 +1,6 @@
 const {
   build,
-  Markup,
+  HTMLMarkup,
   // eslint-disable-next-line no-unused-vars
   HTMLAttribute,
   // eslint-disable-next-line no-unused-vars
@@ -16,11 +16,22 @@ describe('tokenizer', () => {
       expect(typeof build).toBe('function');
     });
 
-    test('should build Markup', () => {
+    test('should set correct type names for tokens', () => {
+      const output = new HTMLMarkup({
+        start: 0,
+        end: 1,
+        children: [],
+        sourceType: 'HTML',
+      });
+
+      expect(output.type).toEqual('HTMLMarkup');
+    });
+
+    test('should build HTMLMarkup', () => {
       const input = ``;
       const output = build(input);
 
-      expect(output).toEqual(new Markup({
+      expect(output).toEqual(new HTMLMarkup({
         children: expect.any(Array),
         end: 0,
         sourceType: 'HTML',

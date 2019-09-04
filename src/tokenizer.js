@@ -3,8 +3,20 @@ const kMarkupPattern =
 const kAttributePattern =
   /(^|\s*)([\w-@*.]+)\s*=\s*("([^"]+)"|'([^']+)'|(\S+))/ig;
 
+// eslint-disable-next-line require-jsdoc
+class HTMLToken {
+  /**
+   * @param {{ start: number, end: number }} data
+   */
+  constructor(data) {
+    this.type = this.constructor.name;
+    this.start = data.start;
+    this.end = data.end;
+  }
+}
+
 /**
- * @typedef MarkupInput
+ * @typedef HTMLMarkupInput
  * @type {object}
  * @property {number} start
  * @property {number} end
@@ -12,14 +24,12 @@ const kAttributePattern =
  * @property {string} sourceType
  */
 // eslint-disable-next-line require-jsdoc
-class Markup {
+class HTMLMarkup extends HTMLToken {
   /**
-   * @param {MarkupInput} data
+   * @param {HTMLMarkupInput} data
    */
   constructor(data) {
-    this.type = this.constructor.name;
-    this.start = data.start;
-    this.end = data.end;
+    super(data);
     this.children = data.children;
     this.sourceType = data.sourceType;
   }
@@ -35,14 +45,12 @@ class Markup {
  * @property {HTMLClosingElement} closingElement
  */
 // eslint-disable-next-line require-jsdoc
-class HTMLElement {
+class HTMLElement extends HTMLToken {
   /**
    * @param {HTMLElementInput} data
    */
   constructor(data) {
-    this.type = this.constructor.name;
-    this.start = data.start;
-    this.end = data.end;
+    super(data);
     this.children = data.children;
     this.openingElement = data.openingElement;
     this.closingElement = data.closingElement;
@@ -59,14 +67,12 @@ class HTMLElement {
  * @property {boolean} selfClosing
  */
 // eslint-disable-next-line require-jsdoc
-class HTMLOpeningElement {
+class HTMLOpeningElement extends HTMLToken {
   /**
    * @param {HTMLOpeningElementInput} data
    */
   constructor(data) {
-    this.type = this.constructor.name;
-    this.start = data.start;
-    this.end = data.end;
+    super(data);
     this.name = data.name;
     this.attributes = data.attributes;
     this.selfClosing = data.selfClosing;
@@ -81,14 +87,12 @@ class HTMLOpeningElement {
  * @property {HTMLIdentifier} name
  */
 // eslint-disable-next-line require-jsdoc
-class HTMLClosingElement {
+class HTMLClosingElement extends HTMLToken {
   /**
    * @param {HTMLClosingElementInput} data
    */
   constructor(data) {
-    this.type = this.constructor.name;
-    this.start = data.start;
-    this.end = data.end;
+    super(data);
     this.name = data.name;
   }
 }
@@ -102,14 +106,12 @@ class HTMLClosingElement {
  * @property {string} raw
  */
 // eslint-disable-next-line require-jsdoc
-class HTMLIdentifier {
+class HTMLIdentifier extends HTMLToken {
   /**
    * @param {HTMLIdentifierInput} data
    */
   constructor(data) {
-    this.type = this.constructor.name;
-    this.start = data.start;
-    this.end = data.end;
+    super(data);
     this.name = data.name;
     this.raw = data.raw;
   }
@@ -121,18 +123,16 @@ class HTMLIdentifier {
  * @property {number} start
  * @property {number} end
  * @property {HTMLAttributeIdentifier} name
- * @property {Literal} value
+ * @property {HTMLLiteral} value
  * @property {string} raw
  */
 // eslint-disable-next-line require-jsdoc
-class HTMLAttribute {
+class HTMLAttribute extends HTMLToken {
   /**
    * @param {HTMLAttributeInput} data
    */
   constructor(data) {
-    this.type = this.constructor.name;
-    this.start = data.start;
-    this.end = data.end;
+    super(data);
     this.name = data.name;
     this.value = data.value;
     this.raw = data.raw;
@@ -147,20 +147,18 @@ class HTMLAttribute {
  * @property {string} name
  */
 // eslint-disable-next-line require-jsdoc
-class HTMLAttributeIdentifier {
+class HTMLAttributeIdentifier extends HTMLToken {
   /**
    * @param {HTMLAttributeIdentifierInput} data
    */
   constructor(data) {
-    this.type = this.constructor.name;
-    this.start = data.start;
-    this.end = data.end;
+    super(data);
     this.name = data.name;
   }
 }
 
 /**
- * @typedef LiteralInput
+ * @typedef HTMLLiteralInput
  * @type {object}
  * @property {number} start
  * @property {number} end
@@ -168,14 +166,12 @@ class HTMLAttributeIdentifier {
  * @property {string} raw
  */
 // eslint-disable-next-line require-jsdoc
-class Literal {
+class HTMLLiteral extends HTMLToken {
   /**
-   * @param {LiteralInput} data
+   * @param {HTMLLiteralInput} data
    */
   constructor(data) {
-    this.type = this.constructor.name;
-    this.start = data.start;
-    this.end = data.end;
+    super(data);
     this.value = data.value;
     this.raw = data.raw;
   }
@@ -190,14 +186,12 @@ class Literal {
  * @property {string} raw
  */
 // eslint-disable-next-line require-jsdoc
-class HTMLComment {
+class HTMLComment extends HTMLToken {
   /**
    * @param {HTMLCommentInput} data
    */
   constructor(data) {
-    this.type = this.constructor.name;
-    this.start = data.start;
-    this.end = data.end;
+    super(data);
     this.value = data.value;
     this.raw = data.raw;
   }
@@ -212,14 +206,12 @@ class HTMLComment {
  * @property {string} raw
  */
 // eslint-disable-next-line require-jsdoc
-class HTMLText {
+class HTMLText extends HTMLToken {
   /**
    * @param {HTMLTextInput} data
    */
   constructor(data) {
-    this.type = this.constructor.name;
-    this.start = data.start;
-    this.end = data.end;
+    super(data);
     this.value = data.value;
     this.raw = data.raw;
   }
@@ -227,17 +219,17 @@ class HTMLText {
 
 /**
  * @param {string} html
- * @return {Markup}
+ * @return {HTMLMarkup}
  */
 function build(html) {
-  const ast = new Markup({
+  const ast = new HTMLMarkup({
     start: 0,
     end: html.length,
     children: [],
     sourceType: 'HTML',
   });
 
-  /** @type {(Markup|HTMLElement)[]} */
+  /** @type {(HTMLMarkup|HTMLElement)[]} */
   const stack = [ast];
   let lastTextPos = -1;
   let match;
@@ -327,7 +319,7 @@ function build(html) {
             start: attrIndex + attMatch[1].length,
             end: attrIndex + attMatch[1].length + name.length,
           }),
-          value: new Literal({
+          value: new HTMLLiteral({
             value: value.replace(/^["']|["']$/g, '').trim(),
             raw: value,
             start: index + attMatch[0].indexOf(value),
@@ -396,14 +388,15 @@ function build(html) {
 module.exports = {
   build,
 
-  Markup,
+  HTMLToken,
+  HTMLMarkup,
   HTMLElement,
   HTMLOpeningElement,
   HTMLClosingElement,
   HTMLIdentifier,
   HTMLAttribute,
   HTMLAttributeIdentifier,
-  Literal,
+  HTMLLiteral,
   HTMLComment,
   HTMLText,
 };
