@@ -1,6 +1,7 @@
 const {
   build,
   Markup,
+  HTMLElement,
   HTMLText,
 } = require('./build-ast');
 
@@ -36,6 +37,41 @@ describe('buildAst', () => {
           value: '',
         }),
       ]);
+    });
+
+    test('should return correct `openingElement` start, end', () => {
+      const input = `asd <a href="#link">This is a link</a> dsa`;
+      const output = build(input);
+
+      const {
+        start,
+        end,
+      } = output.children[1].openingElement;
+      expect(input.substring(start, end)).toEqual('<a href="#link">');
+    });
+
+    test('should return correct `openingElement.name` start, end', () => {
+      const input = `asd <a href="#link">This is a link</a> dsa`;
+      const output = build(input);
+
+      /** @type {HTMLElement} */
+      const element = output.children[1];
+      const {
+        start,
+        end,
+      } = element.openingElement.name;
+      expect(input.substring(start, end)).toEqual('a');
+    });
+
+    test('should return correct `closingElement` start, end values', () => {
+      const input = `asd <a href="#link">This is a link</a> dsa`;
+      const output = build(input);
+
+      const {
+        start,
+        end,
+      } = output.children[1].closingElement;
+      expect(input.substring(start, end)).toEqual('</a>');
     });
   });
 });

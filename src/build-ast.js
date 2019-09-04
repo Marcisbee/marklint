@@ -4,32 +4,230 @@ const kAttributePattern =
   /(^|\s*)(\w+)\s*=\s*("([^"]+)"|'([^']+)'|(\S+))/ig;
 
 /**
- * @param {string} type
+ * @typedef MarkupInput
+ * @type {object}
+ * @property {number} start
+ * @property {number} end
+ * @property {(HTMLElement|HTMLComment|HTMLText)[]} children
+ * @property {string} sourceType
  */
+// eslint-disable-next-line require-jsdoc
 class Markup {
   /**
-   * @param {Record<string, any>} data
+   * @param {MarkupInput} data
    */
   constructor(data) {
-    Object.assign(this, data, {
-      type: this.constructor.name,
-    });
+    this.type = this.constructor.name;
+    this.start = data.start;
+    this.end = data.end;
+    this.children = data.children;
+    this.sourceType = data.sourceType;
   }
 }
 
-class HTMLElement extends Markup { }
-class HTMLOpeningElement extends Markup { }
-class HTMLClosingElement extends Markup { }
-class HTMLIdentifier extends Markup { }
-class HTMLAttribute extends Markup { }
-class HTMLAttributeIdentifier extends HTMLAttribute { }
-class Literal extends Markup { }
-class HTMLComment extends Markup { }
-class HTMLText extends Markup { }
+/**
+ * @typedef HTMLElementInput
+ * @type {object}
+ * @property {number} start
+ * @property {number} end
+ * @property {(HTMLElement|HTMLComment|HTMLText)[]} children
+ * @property {HTMLOpeningElement} openingElement
+ * @property {HTMLClosingElement} closingElement
+ */
+// eslint-disable-next-line require-jsdoc
+class HTMLElement {
+  /**
+   * @param {HTMLElementInput} data
+   */
+  constructor(data) {
+    this.type = this.constructor.name;
+    this.start = data.start;
+    this.end = data.end;
+    this.children = data.children;
+    this.openingElement = data.openingElement;
+    this.closingElement = data.closingElement;
+  }
+}
 
 /**
- * @param {*} html
- * @return {*}
+ * @typedef HTMLOpeningElementInput
+ * @type {object}
+ * @property {number} start
+ * @property {number} end
+ * @property {HTMLIdentifier} name
+ * @property {(HTMLAttribute|HTMLText)[]} attributes
+ * @property {boolean} selfClosing
+ */
+// eslint-disable-next-line require-jsdoc
+class HTMLOpeningElement {
+  /**
+   * @param {HTMLOpeningElementInput} data
+   */
+  constructor(data) {
+    this.type = this.constructor.name;
+    this.start = data.start;
+    this.end = data.end;
+    this.name = data.name;
+    this.attributes = data.attributes;
+    this.selfClosing = data.selfClosing;
+  }
+}
+
+/**
+ * @typedef HTMLClosingElementInput
+ * @type {object}
+ * @property {number} start
+ * @property {number} end
+ * @property {HTMLIdentifier} name
+ */
+// eslint-disable-next-line require-jsdoc
+class HTMLClosingElement {
+  /**
+   * @param {HTMLClosingElementInput} data
+   */
+  constructor(data) {
+    this.type = this.constructor.name;
+    this.start = data.start;
+    this.end = data.end;
+    this.name = data.name;
+  }
+}
+
+/**
+ * @typedef HTMLIdentifierInput
+ * @type {object}
+ * @property {number} start
+ * @property {number} end
+ * @property {string} name
+ * @property {string} raw
+ */
+// eslint-disable-next-line require-jsdoc
+class HTMLIdentifier {
+  /**
+   * @param {HTMLIdentifierInput} data
+   */
+  constructor(data) {
+    this.type = this.constructor.name;
+    this.start = data.start;
+    this.end = data.end;
+    this.name = data.name;
+    this.raw = data.raw;
+  }
+}
+
+/**
+ * @typedef HTMLAttributeInput
+ * @type {object}
+ * @property {number} start
+ * @property {number} end
+ * @property {HTMLAttributeIdentifier} name
+ * @property {Literal} value
+ * @property {string} raw
+ */
+// eslint-disable-next-line require-jsdoc
+class HTMLAttribute {
+  /**
+   * @param {HTMLAttributeInput} data
+   */
+  constructor(data) {
+    this.type = this.constructor.name;
+    this.start = data.start;
+    this.end = data.end;
+    this.name = data.name;
+    this.value = data.value;
+    this.raw = data.raw;
+  }
+}
+
+/**
+ * @typedef HTMLAttributeIdentifierInput
+ * @type {object}
+ * @property {number} start
+ * @property {number} end
+ * @property {string} name
+ */
+// eslint-disable-next-line require-jsdoc
+class HTMLAttributeIdentifier {
+  /**
+   * @param {HTMLAttributeIdentifierInput} data
+   */
+  constructor(data) {
+    this.type = this.constructor.name;
+    this.start = data.start;
+    this.end = data.end;
+    this.name = data.name;
+  }
+}
+
+/**
+ * @typedef LiteralInput
+ * @type {object}
+ * @property {number} start
+ * @property {number} end
+ * @property {string} value
+ * @property {string} raw
+ */
+// eslint-disable-next-line require-jsdoc
+class Literal {
+  /**
+   * @param {LiteralInput} data
+   */
+  constructor(data) {
+    this.type = this.constructor.name;
+    this.start = data.start;
+    this.end = data.end;
+    this.value = data.value;
+    this.raw = data.raw;
+  }
+}
+
+/**
+ * @typedef HTMLCommentInput
+ * @type {object}
+ * @property {number} start
+ * @property {number} end
+ * @property {string} value
+ * @property {string} raw
+ */
+// eslint-disable-next-line require-jsdoc
+class HTMLComment {
+  /**
+   * @param {HTMLCommentInput} data
+   */
+  constructor(data) {
+    this.type = this.constructor.name;
+    this.start = data.start;
+    this.end = data.end;
+    this.value = data.value;
+    this.raw = data.raw;
+  }
+}
+
+/**
+ * @typedef HTMLTextInput
+ * @type {object}
+ * @property {number} start
+ * @property {number} end
+ * @property {string} value
+ * @property {string} raw
+ */
+// eslint-disable-next-line require-jsdoc
+class HTMLText {
+  /**
+   * @param {HTMLTextInput} data
+   */
+  constructor(data) {
+    this.type = this.constructor.name;
+    this.start = data.start;
+    this.end = data.end;
+    this.value = data.value;
+    this.raw = data.raw;
+  }
+}
+
+/**
+ * @param {string} html
+ * @return {Markup}
  */
 function build(html) {
   const ast = new Markup({
@@ -39,6 +237,7 @@ function build(html) {
     sourceType: 'HTML',
   });
 
+  /** @type {(Markup|HTMLElement)[]} */
   const stack = [ast];
   let lastTextPos = -1;
   let match;
@@ -161,18 +360,20 @@ function build(html) {
     if (match[2]) {
       const identifierIndex =
         match.index + (html.substring(match.index).split(match[3])[0].length);
-      parent.closingElement = new HTMLClosingElement({
-        start: match.index,
-        end: kMarkupPattern.lastIndex,
-        name: new HTMLIdentifier({
-          start: identifierIndex,
-          end: identifierIndex + match[3].length,
-          name: match[3],
-          raw: html.substring(
-              identifierIndex,
-              identifierIndex + match[3].length),
-        }),
-      });
+      if (parent instanceof HTMLElement) {
+        parent.closingElement = new HTMLClosingElement({
+          start: match.index,
+          end: kMarkupPattern.lastIndex,
+          name: new HTMLIdentifier({
+            start: identifierIndex,
+            end: identifierIndex + match[3].length,
+            name: match[3],
+            raw: html.substring(
+                identifierIndex,
+                identifierIndex + match[3].length),
+          }),
+        });
+      }
     }
 
     if (match[2] || match[5]) {
