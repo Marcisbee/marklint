@@ -1,5 +1,4 @@
 const {
-  build,
   HTMLMarkup,
   // eslint-disable-next-line no-unused-vars
   HTMLAttribute,
@@ -8,7 +7,8 @@ const {
   // eslint-disable-next-line no-unused-vars
   HTMLComment,
   HTMLText,
-} = require('./tokenizer');
+} = require('./tokens');
+const { build } = require('./tokenizer');
 
 describe('tokenizer', () => {
   describe('#build', () => {

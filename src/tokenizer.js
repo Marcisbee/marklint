@@ -1,221 +1,20 @@
+const {
+  HTMLMarkup,
+  HTMLElement,
+  HTMLText,
+  HTMLComment,
+  HTMLOpeningElement,
+  HTMLIdentifier,
+  HTMLAttribute,
+  HTMLAttributeIdentifier,
+  HTMLLiteral,
+  HTMLClosingElement,
+} = require('./tokens');
+
 const kMarkupPattern =
   /<!--([^]*?)(?=-->)-->|<(\/?)([a-z][-.0-9_a-z]*)([^>]*?)(\/?)>/ig;
 const kAttributePattern =
   /(^|\s*)([\w-@*.]+)\s*=\s*("([^"]+)"|'([^']+)'|(\S+))/ig;
-
-// eslint-disable-next-line require-jsdoc
-class HTMLToken {
-  /**
-   * @param {{ start: number, end: number }} data
-   */
-  constructor(data) {
-    this.type = this.constructor.name;
-    this.start = data.start;
-    this.end = data.end;
-  }
-}
-
-/**
- * @typedef HTMLMarkupInput
- * @type {object}
- * @property {number} start
- * @property {number} end
- * @property {(HTMLElement|HTMLComment|HTMLText)[]} children
- * @property {string} sourceType
- */
-// eslint-disable-next-line require-jsdoc
-class HTMLMarkup extends HTMLToken {
-  /**
-   * @param {HTMLMarkupInput} data
-   */
-  constructor(data) {
-    super(data);
-    this.children = data.children;
-    this.sourceType = data.sourceType;
-  }
-}
-
-/**
- * @typedef HTMLElementInput
- * @type {object}
- * @property {number} start
- * @property {number} end
- * @property {(HTMLElement|HTMLComment|HTMLText)[]} children
- * @property {HTMLOpeningElement} openingElement
- * @property {HTMLClosingElement} closingElement
- */
-// eslint-disable-next-line require-jsdoc
-class HTMLElement extends HTMLToken {
-  /**
-   * @param {HTMLElementInput} data
-   */
-  constructor(data) {
-    super(data);
-    this.children = data.children;
-    this.openingElement = data.openingElement;
-    this.closingElement = data.closingElement;
-  }
-}
-
-/**
- * @typedef HTMLOpeningElementInput
- * @type {object}
- * @property {number} start
- * @property {number} end
- * @property {HTMLIdentifier} name
- * @property {(HTMLAttribute|HTMLText)[]} attributes
- * @property {boolean} selfClosing
- */
-// eslint-disable-next-line require-jsdoc
-class HTMLOpeningElement extends HTMLToken {
-  /**
-   * @param {HTMLOpeningElementInput} data
-   */
-  constructor(data) {
-    super(data);
-    this.name = data.name;
-    this.attributes = data.attributes;
-    this.selfClosing = data.selfClosing;
-  }
-}
-
-/**
- * @typedef HTMLClosingElementInput
- * @type {object}
- * @property {number} start
- * @property {number} end
- * @property {HTMLIdentifier} name
- */
-// eslint-disable-next-line require-jsdoc
-class HTMLClosingElement extends HTMLToken {
-  /**
-   * @param {HTMLClosingElementInput} data
-   */
-  constructor(data) {
-    super(data);
-    this.name = data.name;
-  }
-}
-
-/**
- * @typedef HTMLIdentifierInput
- * @type {object}
- * @property {number} start
- * @property {number} end
- * @property {string} name
- * @property {string} raw
- */
-// eslint-disable-next-line require-jsdoc
-class HTMLIdentifier extends HTMLToken {
-  /**
-   * @param {HTMLIdentifierInput} data
-   */
-  constructor(data) {
-    super(data);
-    this.name = data.name;
-    this.raw = data.raw;
-  }
-}
-
-/**
- * @typedef HTMLAttributeInput
- * @type {object}
- * @property {number} start
- * @property {number} end
- * @property {HTMLAttributeIdentifier} name
- * @property {HTMLLiteral} value
- * @property {string} raw
- */
-// eslint-disable-next-line require-jsdoc
-class HTMLAttribute extends HTMLToken {
-  /**
-   * @param {HTMLAttributeInput} data
-   */
-  constructor(data) {
-    super(data);
-    this.name = data.name;
-    this.value = data.value;
-    this.raw = data.raw;
-  }
-}
-
-/**
- * @typedef HTMLAttributeIdentifierInput
- * @type {object}
- * @property {number} start
- * @property {number} end
- * @property {string} name
- */
-// eslint-disable-next-line require-jsdoc
-class HTMLAttributeIdentifier extends HTMLToken {
-  /**
-   * @param {HTMLAttributeIdentifierInput} data
-   */
-  constructor(data) {
-    super(data);
-    this.name = data.name;
-  }
-}
-
-/**
- * @typedef HTMLLiteralInput
- * @type {object}
- * @property {number} start
- * @property {number} end
- * @property {string} value
- * @property {string} raw
- */
-// eslint-disable-next-line require-jsdoc
-class HTMLLiteral extends HTMLToken {
-  /**
-   * @param {HTMLLiteralInput} data
-   */
-  constructor(data) {
-    super(data);
-    this.value = data.value;
-    this.raw = data.raw;
-  }
-}
-
-/**
- * @typedef HTMLCommentInput
- * @type {object}
- * @property {number} start
- * @property {number} end
- * @property {string} value
- * @property {string} raw
- */
-// eslint-disable-next-line require-jsdoc
-class HTMLComment extends HTMLToken {
-  /**
-   * @param {HTMLCommentInput} data
-   */
-  constructor(data) {
-    super(data);
-    this.value = data.value;
-    this.raw = data.raw;
-  }
-}
-
-/**
- * @typedef HTMLTextInput
- * @type {object}
- * @property {number} start
- * @property {number} end
- * @property {string} value
- * @property {string} raw
- */
-// eslint-disable-next-line require-jsdoc
-class HTMLText extends HTMLToken {
-  /**
-   * @param {HTMLTextInput} data
-   */
-  constructor(data) {
-    super(data);
-    this.value = data.value;
-    this.raw = data.raw;
-  }
-}
 
 /**
  * @param {string} html
@@ -275,19 +74,22 @@ function build(html) {
 
     // Add Element to children list
     if (!match[2]) {
-      const identifierIndex =
-        match.index + (html.substring(match.index).split(match[3])[0].length);
+      const startIndex = html.substring(match.index).split(match[3])[0].length;
+      const identifierIndex = match.index + startIndex;
+      const itemStart = match.index;
+      const itemEnd = kMarkupPattern.lastIndex;
+      const nameStart = identifierIndex;
+      const nameEnd = nameStart + match[3].length;
+
       element.openingElement = new HTMLOpeningElement({
-        start: match.index,
-        end: kMarkupPattern.lastIndex,
+        start: itemStart,
+        end: itemEnd,
         attributes: [],
         name: new HTMLIdentifier({
-          start: identifierIndex,
-          end: identifierIndex + match[3].length,
+          start: nameStart,
+          end: nameEnd,
           name: match[3],
-          raw: html.substring(
-            identifierIndex,
-            identifierIndex + match[3].length),
+          raw: html.substring(nameStart, nameEnd),
         }),
         selfClosing: !!match[5],
       });
@@ -348,8 +150,8 @@ function build(html) {
     }
 
     if (match[2]) {
-      const identifierIndex =
-        match.index + (html.substring(match.index).split(match[3])[0].length);
+      const startIndex = html.substring(match.index).split(match[3])[0].length;
+      const identifierIndex = match.index + startIndex;
       if (parent instanceof HTMLElement) {
         parent.end = kMarkupPattern.lastIndex;
         parent.closingElement = new HTMLClosingElement({
@@ -374,12 +176,15 @@ function build(html) {
 
   if (lastTextPos < html.length) {
     const value = html.substr(lastTextPos);
-    ast.children.push(new HTMLText({
-      start: Math.max(lastTextPos, 0),
-      end: html.length,
-      value: value.trim(),
-      raw: value,
-    }));
+
+    ast.children.push(
+      new HTMLText({
+        start: Math.max(lastTextPos, 0),
+        end: html.length,
+        value: value.trim(),
+        raw: value,
+      })
+    );
   }
 
   return ast;
@@ -387,16 +192,4 @@ function build(html) {
 
 module.exports = {
   build,
-
-  HTMLToken,
-  HTMLMarkup,
-  HTMLElement,
-  HTMLOpeningElement,
-  HTMLClosingElement,
-  HTMLIdentifier,
-  HTMLAttribute,
-  HTMLAttributeIdentifier,
-  HTMLLiteral,
-  HTMLComment,
-  HTMLText,
 };
