@@ -10,191 +10,189 @@ const {
   HTMLDoctype,
   HTMLText,
 } = require('./tokens');
-const { build } = require('./tokenizer');
+const tokenize = require('./tokenize');
 
-describe('tokenizer', () => {
-  describe('#build', () => {
-    test('should export `build` as a function', () => {
-      expect(typeof build).toBe('function');
+describe('tokenize', () => {
+  test('should export `tokenize` as a function', () => {
+    expect(typeof tokenize).toBe('function');
+  });
+
+  test('should set correct type names for tokens', () => {
+    const output = new HTMLMarkup({
+      start: 0,
+      end: 1,
+      children: [],
+      sourceType: 'HTML',
     });
 
-    test('should set correct type names for tokens', () => {
-      const output = new HTMLMarkup({
-        start: 0,
-        end: 1,
-        children: [],
-        sourceType: 'HTML',
-      });
+    expect(output.type).toEqual('HTMLMarkup');
+  });
 
-      expect(output.type).toEqual('HTMLMarkup');
-    });
+  test('should tokenize HTMLMarkup', () => {
+    const input = ``;
+    const output = tokenize(input);
 
-    test('should build HTMLMarkup', () => {
-      const input = ``;
-      const output = build(input);
+    expect(output).toEqual(new HTMLMarkup({
+      children: expect.any(Array),
+      end: 0,
+      sourceType: 'HTML',
+      start: 0,
+    }));
+  });
 
-      expect(output).toEqual(new HTMLMarkup({
-        children: expect.any(Array),
+  test('should tokenize children', () => {
+    const input = ``;
+    const output = tokenize(input);
+
+    expect(output.children).toEqual([
+      new HTMLText({
         end: 0,
-        sourceType: 'HTML',
+        raw: '',
         start: 0,
-      }));
-    });
+        value: '',
+      }),
+    ]);
+  });
 
-    test('should build children', () => {
-      const input = ``;
-      const output = build(input);
+  test('should handle doctype', () => {
+    const input = `<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">`;
+    const output = tokenize(input);
 
-      expect(output.children).toEqual([
-        new HTMLText({
-          end: 0,
-          raw: '',
-          start: 0,
-          value: '',
-        }),
-      ]);
-    });
+    expect(output.children[0]).toEqual(new HTMLDoctype({
+      raw: `<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01//EN\" \"http://www.w3.org/TR/html4/strict.dtd\">`,
+      value: `DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01//EN\" \"http://www.w3.org/TR/html4/strict.dtd\"`,
+      end: 90,
+      start: 0,
+    }));
+  });
 
-    test('should handle doctype', () => {
-      const input = `<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">`;
-      const output = build(input);
+  test('should handle attributes', () => {
+    const input = '<meta\n  stylesheet\n  name="foo"\n/>';
+    const output = tokenize(input);
 
-      expect(output.children[0]).toEqual(new HTMLDoctype({
-        raw: `<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01//EN\" \"http://www.w3.org/TR/html4/strict.dtd\">`,
-        value: `DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01//EN\" \"http://www.w3.org/TR/html4/strict.dtd\"`,
-        end: 90,
-        start: 0,
-      }));
-    });
+    /** @type {*} */
+    const element = output.children[0];
+    const attribute = element.openingElement.attributes[1];
 
-    test('should handle attributes', () => {
-      const input = '<meta\n  stylesheet\n  name="foo"\n/>';
-      const output = build(input);
+    expect(attribute.name.name).toEqual('stylesheet');
+    expect(attribute.value.value).toEqual(undefined);
+  });
 
-      /** @type {*} */
-      const element = output.children[0];
-      const attribute = element.openingElement.attributes[1];
-
-      expect(attribute.name.name).toEqual('stylesheet');
-      expect(attribute.value.value).toEqual(undefined);
-    });
-
-    describe('correct start and end values', () => {
-      const input =
-        `asd <a
+  describe('correct start and end values', () => {
+    const input =
+      `asd <a
     href="#link"
     name =  "foo"
   >This is a link <strong>bold</strong></a>
   <br/>
   <!-- this is a comment -->
-<b>123</b> dsa`;
-      const output = build(input);
+  <b>123</b> dsa`;
+    const output = tokenize(input);
 
-      test('for `HTMLText` prefix', () => {
-        /** @type {Partial<HTMLText>} */
-        const element = output.children[0];
-        const { start, end } = element;
+    test('for `HTMLText` prefix', () => {
+      /** @type {Partial<HTMLText>} */
+      const element = output.children[0];
+      const { start, end } = element;
 
-        expect(input.substring(start, end)).toEqual('asd ');
-      });
+      expect(input.substring(start, end)).toEqual('asd ');
+    });
 
-      test('for `HTMLText` suffix', () => {
-        /** @type {Partial<HTMLText>} */
-        const element = output.children[8];
-        const { start, end } = element;
+    test('for `HTMLText` suffix', () => {
+      /** @type {Partial<HTMLText>} */
+      const element = output.children[8];
+      const { start, end } = element;
 
-        expect(input.substring(start, end)).toEqual(' dsa');
-      });
+      expect(input.substring(start, end)).toEqual(' dsa');
+    });
 
-      test('for `HTMLElement`', () => {
-        /** @type {Partial<HTMLElement>} */
-        const element = output.children[1];
-        const { start, end } = element;
+    test('for `HTMLElement`', () => {
+      /** @type {Partial<HTMLElement>} */
+      const element = output.children[1];
+      const { start, end } = element;
 
-        expect(input.substring(start, end)).toEqual(`<a
+      expect(input.substring(start, end)).toEqual(`<a
     href="#link"
     name =  "foo"
   >This is a link <strong>bold</strong></a>`);
-      });
+    });
 
-      test('for `openingElement`', () => {
-        /** @type {Partial<HTMLElement>} */
-        const element = output.children[1];
-        const { start, end } = element.openingElement;
+    test('for `openingElement`', () => {
+      /** @type {Partial<HTMLElement>} */
+      const element = output.children[1];
+      const { start, end } = element.openingElement;
 
-        expect(input.substring(start, end))
-          .toEqual('<a\n    href="#link"\n    name =  "foo"\n  >');
-      });
+      expect(input.substring(start, end))
+        .toEqual('<a\n    href="#link"\n    name =  "foo"\n  >');
+    });
 
-      test('for `openingElement.name`', () => {
-        /** @type {Partial<HTMLElement>} */
-        const element = output.children[1];
-        const { start, end } = element.openingElement.name;
+    test('for `openingElement.name`', () => {
+      /** @type {Partial<HTMLElement>} */
+      const element = output.children[1];
+      const { start, end } = element.openingElement.name;
 
-        expect(input.substring(start, end)).toEqual('a');
-      });
+      expect(input.substring(start, end)).toEqual('a');
+    });
 
-      test('for `HTMLAttribute`', () => {
-        /** @type {Partial<HTMLElement>} */
-        const element = output.children[1];
-        const attributes = element.openingElement.attributes;
-        const { start: start0, end: end0 } = attributes[0];
-        const { start: start1, end: end1 } = attributes[1];
-        const { start: start2, end: end2 } = attributes[2];
-        const { start: start3, end: end3 } = attributes[3];
-        const { start: start4, end: end4 } = attributes[4];
+    test('for `HTMLAttribute`', () => {
+      /** @type {Partial<HTMLElement>} */
+      const element = output.children[1];
+      const attributes = element.openingElement.attributes;
+      const { start: start0, end: end0 } = attributes[0];
+      const { start: start1, end: end1 } = attributes[1];
+      const { start: start2, end: end2 } = attributes[2];
+      const { start: start3, end: end3 } = attributes[3];
+      const { start: start4, end: end4 } = attributes[4];
 
-        expect(input.substring(start0, end0)).toEqual('\n    ');
-        expect(input.substring(start1, end1)).toEqual('href="#link"');
-        expect(input.substring(start2, end2)).toEqual('\n    ');
-        expect(input.substring(start3, end3)).toEqual('name =  "foo"');
-        expect(input.substring(start4, end4)).toEqual('\n  ');
-      });
+      expect(input.substring(start0, end0)).toEqual('\n    ');
+      expect(input.substring(start1, end1)).toEqual('href="#link"');
+      expect(input.substring(start2, end2)).toEqual('\n    ');
+      expect(input.substring(start3, end3)).toEqual('name =  "foo"');
+      expect(input.substring(start4, end4)).toEqual('\n  ');
+    });
 
-      test('for `HTMLAttribute.name`', () => {
-        /** @type {Partial<HTMLElement>} */
-        const element = output.children[1];
-        /** @type {*} */
-        const attribute = element.openingElement.attributes[1];
-        const { start, end } = attribute.name;
+    test('for `HTMLAttribute.name`', () => {
+      /** @type {Partial<HTMLElement>} */
+      const element = output.children[1];
+      /** @type {*} */
+      const attribute = element.openingElement.attributes[1];
+      const { start, end } = attribute.name;
 
-        expect(input.substring(start, end)).toEqual('href');
-      });
+      expect(input.substring(start, end)).toEqual('href');
+    });
 
-      test('for `HTMLAttribute.value`', () => {
-        /** @type {Partial<HTMLElement>} */
-        const element = output.children[1];
-        /** @type {*} */
-        const attribute = element.openingElement.attributes[1];
-        const { start, end } = attribute.value;
+    test('for `HTMLAttribute.value`', () => {
+      /** @type {Partial<HTMLElement>} */
+      const element = output.children[1];
+      /** @type {*} */
+      const attribute = element.openingElement.attributes[1];
+      const { start, end } = attribute.value;
 
-        expect(input.substring(start, end)).toEqual('"#link"');
-      });
+      expect(input.substring(start, end)).toEqual('"#link"');
+    });
 
-      test('for `closingElement`', () => {
-        /** @type {Partial<HTMLElement>} */
-        const element = output.children[1];
-        const { start, end } = element.closingElement;
+    test('for `closingElement`', () => {
+      /** @type {Partial<HTMLElement>} */
+      const element = output.children[1];
+      const { start, end } = element.closingElement;
 
-        expect(input.substring(start, end)).toEqual('</a>');
-      });
+      expect(input.substring(start, end)).toEqual('</a>');
+    });
 
-      test('for `closingElement.name`', () => {
-        /** @type {Partial<HTMLElement>} */
-        const element = output.children[1];
-        const { start, end } = element.closingElement.name;
+    test('for `closingElement.name`', () => {
+      /** @type {Partial<HTMLElement>} */
+      const element = output.children[1];
+      const { start, end } = element.closingElement.name;
 
-        expect(input.substring(start, end)).toEqual('a');
-      });
+      expect(input.substring(start, end)).toEqual('a');
+    });
 
-      test('for `HTMLComment`', () => {
-        /** @type {Partial<HTMLComment>} */
-        const element = output.children[5];
-        const { start, end } = element;
+    test('for `HTMLComment`', () => {
+      /** @type {Partial<HTMLComment>} */
+      const element = output.children[5];
+      const { start, end } = element;
 
-        expect(input.substring(start, end))
-          .toEqual('<!-- this is a comment -->');
-      });
+      expect(input.substring(start, end))
+        .toEqual('<!-- this is a comment -->');
     });
   });
 });

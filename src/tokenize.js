@@ -22,7 +22,7 @@ const kAttributePattern =
  * @param {string} html
  * @return {HTMLMarkup}
  */
-function build(html) {
+function tokenize(html) {
   const ast = new HTMLMarkup({
     start: 0,
     end: html.length,
@@ -207,6 +207,4 @@ function build(html) {
   return ast;
 }
 
-module.exports = {
-  build,
-};
+module.exports = tokenize;
