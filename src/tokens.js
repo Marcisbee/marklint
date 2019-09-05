@@ -16,7 +16,7 @@ class HTMLToken {
  * @type {object}
  * @property {number} start
  * @property {number} end
- * @property {(HTMLElement|HTMLComment|HTMLText)[]} children
+ * @property {(HTMLElement|HTMLComment|HTMLDoctype|HTMLText)[]} children
  * @property {string} sourceType
  */
 
@@ -36,7 +36,7 @@ class HTMLMarkup extends HTMLToken {
  * @type {object}
  * @property {number} start
  * @property {number} end
- * @property {(HTMLElement|HTMLComment|HTMLText)[]} children
+ * @property {(HTMLElement|HTMLComment|HTMLDoctype|HTMLText)[]} children
  * @property {HTMLOpeningElement} openingElement
  * @property {HTMLClosingElement} closingElement
  */
@@ -174,6 +174,26 @@ class HTMLLiteral extends HTMLToken {
 }
 
 /**
+ * @typedef HTMLDoctypeInput
+ * @type {object}
+ * @property {number} start
+ * @property {number} end
+ * @property {string} value
+ * @property {string} raw
+ */
+
+class HTMLDoctype extends HTMLToken {
+  /**
+   * @param {HTMLDoctypeInput} data
+   */
+  constructor(data) {
+    super(data);
+    this.value = data.value;
+    this.raw = data.raw;
+  }
+}
+
+/**
  * @typedef HTMLCommentInput
  * @type {object}
  * @property {number} start
@@ -224,5 +244,6 @@ module.exports = {
   HTMLAttributeIdentifier,
   HTMLLiteral,
   HTMLComment,
+  HTMLDoctype,
   HTMLText,
 };

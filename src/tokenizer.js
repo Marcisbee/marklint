@@ -3,6 +3,7 @@ const {
   HTMLElement,
   HTMLText,
   HTMLComment,
+  HTMLDoctype,
   HTMLOpeningElement,
   HTMLIdentifier,
   HTMLAttribute,
@@ -12,7 +13,8 @@ const {
 } = require('./tokens');
 
 const kMarkupPattern =
-  /<!--([^]*?)(?=-->)-->|<(\/?)([a-z][-.0-9_a-z]*)([^>]*?)(\/?)>/ig;
+  // eslint-disable-next-line max-len
+  /<!--([^]*?)(?=-->)-->|<!([^]*?)(?=>)>|<(\/?)([a-z][-.0-9_a-z]*)([^>]*?)(\/?)>/ig;
 const kAttributePattern =
   /(^|\s*)([\w-@*.]+)((?:\s*=\s*("([^"]+)"|'([^']+)'|(\S+)))*)/ig;
 
@@ -43,7 +45,7 @@ function build(html) {
         parent.children.push(new HTMLText({
           start: Math.max(lastTextPos, 0),
           end: match.index,
-          value: value.trim(),
+          value: value && value.trim(),
           raw: value,
         }));
       }
@@ -52,11 +54,22 @@ function build(html) {
     lastTextPos = kMarkupPattern.lastIndex;
 
     // Add comment to children list
-    if (match[0][1] == '!') {
+    if (match[0] && match[1] && match[0].substring(1, 3) == '!--') {
       parent.children.push(new HTMLComment({
         start: match.index,
         end: lastTextPos,
-        value: match[1].trim(),
+        value: match[1] && match[1].trim(),
+        raw: match[0],
+      }));
+      continue;
+    }
+
+    // Add doctype to children list
+    if (match[0][1] == '!') {
+      parent.children.push(new HTMLDoctype({
+        start: match.index,
+        end: lastTextPos,
+        value: match[2] && match[2].trim(),
         raw: match[0],
       }));
       continue;
@@ -70,16 +83,16 @@ function build(html) {
       children: [],
     });
 
-    match[3] = match[3].toLowerCase();
+    match[4] = match[4].toLowerCase();
 
     // Add Element to children list
-    if (!match[2]) {
-      const startIndex = html.substring(match.index).split(match[3])[0].length;
+    if (!match[3]) {
+      const startIndex = html.substring(match.index).split(match[4])[0].length;
       const identifierIndex = match.index + startIndex;
       const itemStart = match.index;
       const itemEnd = kMarkupPattern.lastIndex;
       const nameStart = identifierIndex;
-      const nameEnd = nameStart + match[3].length;
+      const nameEnd = nameStart + match[4].length;
 
       element.openingElement = new HTMLOpeningElement({
         start: itemStart,
@@ -88,16 +101,16 @@ function build(html) {
         name: new HTMLIdentifier({
           start: nameStart,
           end: nameEnd,
-          name: match[3],
+          name: match[4],
           raw: html.substring(nameStart, nameEnd),
         }),
-        selfClosing: !!match[5],
+        selfClosing: !!match[6],
       });
 
-      const index = identifierIndex + match[3].length;
+      const index = identifierIndex + match[4].length;
 
       let lastAttrPost = -1;
-      for (let attMatch; attMatch = kAttributePattern.exec(match[4]);) {
+      for (let attMatch; attMatch = kAttributePattern.exec(match[5]);) {
         const name = attMatch[2];
         const value = attMatch[4] || attMatch[5] || attMatch[6];
 
@@ -137,8 +150,8 @@ function build(html) {
         }));
       }
 
-      if (match[4].length > lastAttrPost) {
-        const value = match[4].substring(lastAttrPost);
+      if (match[5].length > lastAttrPost) {
+        const value = match[5].substring(lastAttrPost);
         if (value !== '') {
           element.openingElement.attributes.push(new HTMLText({
             value: value.trim(),
@@ -153,8 +166,8 @@ function build(html) {
       parent.children.push(element);
     }
 
-    if (match[2]) {
-      const startIndex = html.substring(match.index).split(match[3])[0].length;
+    if (match[3]) {
+      const startIndex = html.substring(match.index).split(match[4])[0].length;
       const identifierIndex = match.index + startIndex;
       if (parent instanceof HTMLElement) {
         parent.end = kMarkupPattern.lastIndex;
@@ -163,17 +176,17 @@ function build(html) {
           end: parent.end,
           name: new HTMLIdentifier({
             start: identifierIndex,
-            end: identifierIndex + match[3].length,
-            name: match[3],
+            end: identifierIndex + match[4].length,
+            name: match[4],
             raw: html.substring(
               identifierIndex,
-              identifierIndex + match[3].length),
+              identifierIndex + match[4].length),
           }),
         });
       }
     }
 
-    if (match[2] || match[5]) {
+    if (match[3] || match[6]) {
       stack.pop();
     }
   }

@@ -6,6 +6,8 @@ const {
   HTMLElement,
   // eslint-disable-next-line no-unused-vars
   HTMLComment,
+  // eslint-disable-next-line no-unused-vars
+  HTMLDoctype,
   HTMLText,
 } = require('./tokens');
 const { build } = require('./tokenizer');
@@ -53,7 +55,19 @@ describe('tokenizer', () => {
       ]);
     });
 
-    test('correct start and end values', () => {
+    test('should handle doctype', () => {
+      const input = `<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">`;
+      const output = build(input);
+
+      expect(output.children[0]).toEqual(new HTMLDoctype({
+        raw: `<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01//EN\" \"http://www.w3.org/TR/html4/strict.dtd\">`,
+        value: `DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01//EN\" \"http://www.w3.org/TR/html4/strict.dtd\"`,
+        end: 90,
+        start: 0,
+      }));
+    });
+
+    test('should handle attributes', () => {
       const input = '<meta\n  stylesheet\n  name="foo"\n/>';
       const output = build(input);
 
