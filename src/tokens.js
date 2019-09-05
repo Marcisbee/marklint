@@ -12,6 +12,11 @@ class HTMLToken {
 }
 
 /**
+ * @typedef HTMLAnyToken
+ * @type {HTMLMarkup | HTMLElement}
+ */
+
+/**
  * @typedef HTMLMarkupInput
  * @type {object}
  * @property {number} start
@@ -26,8 +31,8 @@ class HTMLMarkup extends HTMLToken {
    */
   constructor(data) {
     super(data);
-    this.children = data.children;
     this.sourceType = data.sourceType;
+    this.children = data.children;
   }
 }
 
@@ -47,8 +52,8 @@ class HTMLElement extends HTMLToken {
    */
   constructor(data) {
     super(data);
-    this.children = data.children;
     this.openingElement = data.openingElement;
+    this.children = data.children;
     this.closingElement = data.closingElement;
   }
 }
