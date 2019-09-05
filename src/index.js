@@ -1,4 +1,4 @@
-const tokenize = require('./tokenizer');
+const tokenize = require('./tokenize');
 
 /**
  * @param {any} fileName
