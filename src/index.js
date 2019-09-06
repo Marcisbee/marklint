@@ -26,7 +26,7 @@ class ErrorHandler {
 
 const errorHandling = {
   'no-unclosed-tag': new ErrorHandler(['error', 'always'],
-    (path, [type, _setting]) => {
+    (ast, path, [type, _setting]) => {
       if (path.type === 'HTMLElement') {
         if (path.openingElement.name.name !== path.closingElement.name.name) {
           // ✔ - success symbol
@@ -116,7 +116,8 @@ const colors = {
 function lint(fileName, content, rules) {
   const ast = tokenize(content);
 
-  console.log(`${colors.underscore}${colors.bold}%s${colors.reset}`, fileName, '\n');
+  console.log(
+    `${colors.underscore}${colors.bold}%s${colors.reset}`, fileName, '\n');
 
   traverse(ast, {
     enter: (path) => {
@@ -128,7 +129,7 @@ function lint(fileName, content, rules) {
 
         const { config, handler } = ruleHandler;
 
-        handler(path, ...config(rules[rule]));
+        handler(ast, path, ...config(rules[rule]));
       });
     },
   });
