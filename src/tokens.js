@@ -23,6 +23,7 @@ class HTMLToken {
  * @property {number} end
  * @property {(HTMLElement|HTMLComment|HTMLDoctype|HTMLText)[]} children
  * @property {string} sourceType
+ * @property {string} raw
  */
 
 class HTMLMarkup extends HTMLToken {
@@ -33,6 +34,7 @@ class HTMLMarkup extends HTMLToken {
     super(data);
     this.sourceType = data.sourceType;
     this.children = data.children;
+    this.raw = data.raw;
   }
 }
 

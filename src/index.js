@@ -1,5 +1,6 @@
 const tokenize = require('./tokenize');
 const traverse = require('./traverse');
+const snippet = require('./snippet');
 
 // eslint-disable-next-line require-jsdoc
 class ErrorHandler {
@@ -41,6 +42,9 @@ const errorHandling = {
             ' (no-unclosed-tag)'
           );
 
+          console.log();
+          console.log(snippet(ast.raw, path.openingElement.name.start, path.openingElement.name.end));
+
           console.log(`${colors.bold}%s${colors.reset}`, '\n   1 ⎸',
             '<html>');
           console.log(`${colors.bold}%s${colors.reset}`, '   2 ⎸',
@@ -58,6 +62,10 @@ const errorHandling = {
             'But found a closing tag of ',
             `${path.closingElement.name.name}.`
           );
+
+          console.log();
+          console.log(snippet(ast.raw, path.closingElement.name.start, path.closingElement.name.end));
+
           console.log(`${colors.bold}%s${colors.reset}`, '\n   3 ⎸',
             '    <section>');
           console.log(`${colors.bold}%s${colors.reset}`, '   4 ⎸',

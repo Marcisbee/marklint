@@ -28,6 +28,7 @@ function tokenize(html) {
     end: html.length,
     children: [],
     sourceType: 'HTML',
+    raw: html,
   });
 
   /** @type {(HTMLMarkup|HTMLElement)[]} */

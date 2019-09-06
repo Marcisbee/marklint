@@ -3,10 +3,10 @@ const SPLIT = '⎸';
 /**
  * @param {*} currentIndex
  * @param {*} maxIndex
- * @param {*} faulty
+ * @param {*=} faulty
  * @return {string}
  */
-function getLineNumber(currentIndex, maxIndex, faulty) {
+function getLineNumber(currentIndex, maxIndex, faulty = false) {
   const length = String(maxIndex).length;
   return `         ${faulty ? '>' : ' '} ${currentIndex} `.substr(-length - 3);
 }
@@ -54,7 +54,7 @@ function snippet(raw, start, end) {
         currentNumber <= faultyEndLine + 1) {
         const space = getLineNumber(' ', linesInTotal + targetStartLine);
 
-        const line = new Array(line.length).fill(' ').map((char, i) => {
+        const errorLine = new Array(line.length).fill(' ').map((char, i) => {
           // Handles lines in between faulty start and end lines
           if (currentNumber > faultyStartLine + 1 &&
             currentNumber < faultyEndLine + 1) {
@@ -82,7 +82,7 @@ function snippet(raw, start, end) {
         }).join('');
 
         return newAcc
-          .concat(` ${space} ${SPLIT} ${line}`);
+          .concat(` ${space} ${SPLIT} ${errorLine}`);
       }
 
       return newAcc;
