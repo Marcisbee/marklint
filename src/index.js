@@ -20,9 +20,9 @@ class ErrorHandler {
  * @param {any} type
  * @param {any} message
  */
-function report(type, message) {
+// function report(type, message) {
 
-}
+// }
 
 const errorHandling = {
   'no-unclosed-tag': new ErrorHandler(['error', 'always'],
@@ -40,34 +40,34 @@ const errorHandling = {
             `${path.openingElement.name.name}.`,
             ' (no-unclosed-tag)'
           );
-          
-          console.log(`${colors.bold}%s${colors.reset}`, '\n   1 |',
+
+          console.log(`${colors.bold}%s${colors.reset}`, '\n   1 ⎸',
             '<html>');
-          console.log(`${colors.bold}%s${colors.reset}`, '   2 |',
+          console.log(`${colors.bold}%s${colors.reset}`, '   2 ⎸',
             '  <body>');
-          console.log(`${colors.fg.red}${colors.bold}%s${colors.reset}${colors.bold}%s${colors.reset}`, ' >', ' 3 |',
+          console.log(`${colors.fg.red}${colors.bold}%s${colors.reset}${colors.bold}%s${colors.reset}`, ' >', ' 3 ⎸',
             '    <section>');
-          console.log(`${colors.bold}%s${colors.fg.red}%s${colors.reset}`, '     |', '      ^^^^^^^');
-          console.log(`${colors.bold}%s${colors.reset}`, '   4 |',
+          console.log(`${colors.bold}%s${colors.fg.red}%s${colors.reset}`, '     ⎸', '      ^^^^^^^');
+          console.log(`${colors.bold}%s${colors.reset}`, '   4 ⎸',
             '      <br/>');
-          console.log(`${colors.bold}%s${colors.reset}`, '   5 |',
-            '    </wrongname>\n');
+          console.log(`${colors.bold}%s${colors.reset}`, '   5 ⎸',
+            '    </WrongName>\n');
           console[type](
             `${colors.fg.blue}${colors.bold}%s${colors.reset}${colors.fg.blue}%s${colors.bold}%s${colors.reset}`,
             'ℹ ',
             'But found a closing tag of ',
             `${path.closingElement.name.name}.`
           );
-          console.log(`${colors.bold}%s${colors.reset}`, '\n   3 |',
+          console.log(`${colors.bold}%s${colors.reset}`, '\n   3 ⎸',
             '    <section>');
-          console.log(`${colors.bold}%s${colors.reset}`, '   4 |',
+          console.log(`${colors.bold}%s${colors.reset}`, '   4 ⎸',
             '      <br/>');
-          console.log(`${colors.fg.red}${colors.bold}%s${colors.reset}${colors.bold}%s${colors.reset}`, ' >', ' 5 |',
-            '    </wrongname>');
-          console.log(`${colors.bold}%s${colors.fg.red}%s${colors.reset}`, '     |', '       ^^^^^^^^^');
-          console.log(`${colors.bold}%s${colors.reset}`, '   6 |',
+          console.log(`${colors.fg.red}${colors.bold}%s${colors.reset}${colors.bold}%s${colors.reset}`, ' >', ' 5 ⎸',
+            '    </WrongName>');
+          console.log(`${colors.bold}%s${colors.fg.red}%s${colors.reset}`, '     ⎸', '       ^^^^^^^^^');
+          console.log(`${colors.bold}%s${colors.reset}`, '   6 ⎸',
             '  </body>');
-          console.log(`${colors.bold}%s${colors.reset}`, '   7 |',
+          console.log(`${colors.bold}%s${colors.reset}`, '   7 ⎸',
             '</html>\n');
           // console[type]('3:1 - No unclosed tags. (no-unclosed-tag)');
         }

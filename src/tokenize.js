@@ -83,8 +83,6 @@ function tokenize(html) {
       children: [],
     });
 
-    match[4] = match[4].toLowerCase();
-
     // Add Element to children list
     if (!match[3]) {
       const startIndex = html.substring(match.index).split(match[4])[0].length;
