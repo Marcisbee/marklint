@@ -1,9 +1,9 @@
 const SPLIT = '⎸';
 
 /**
- * @param {*} currentIndex
- * @param {*} maxIndex
- * @param {*=} faulty
+ * @param {number|string} currentIndex
+ * @param {number} maxIndex
+ * @param {boolean=} faulty
  * @return {string}
  */
 function getLineNumber(currentIndex, maxIndex, faulty = false) {
@@ -12,12 +12,12 @@ function getLineNumber(currentIndex, maxIndex, faulty = false) {
 }
 
 /**
- * @param {*} raw
- * @param {*} start
- * @param {*} end
+ * @param {string} raw
+ * @param {number} start
+ * @param {number=} end
  * @return {string}
  */
-function snippet(raw, start, end) {
+function snippet(raw, start, end = start + 1) {
   const beforeStartText = raw.substring(0, start);
   const beforeStart = beforeStartText.match(/\n/g);
   const beforeStartColumns = beforeStartText.split(/\n/g);
