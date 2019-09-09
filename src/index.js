@@ -1,6 +1,8 @@
 const tokenize = require('./tokenize');
 const traverse = require('./traverse');
 const snippet = require('./snippet');
+const style = require('./style');
+const THEME = require('../theme');
 
 // eslint-disable-next-line require-jsdoc
 class ErrorHandler {
@@ -17,7 +19,7 @@ class ErrorHandler {
 }
 
 /**
- * @TODO : Make report function based on Sembec rome error reporter
+ * @TODO : Make report function that handles errors, warns and suggestions
  * @param {any} type
  * @param {any} message
  */
@@ -30,90 +32,43 @@ const errorHandling = {
     (ast, path, [type, _setting]) => {
       if (path.type === 'HTMLElement') {
         if (path.openingElement.name.name !== path.closingElement.name.name) {
+          const openTagName = path.openingElement.name;
+          const closeTagName = path.closingElement.name;
+
           // ✔ - success symbol
           // ✖ - error symbol
           // ⚠ - warning symbol
           // ℹ - info symbol
-          console[type](
-            `${colors.fg.red}${colors.bold}%s${colors.reset}${colors.fg.red}%s${colors.bold}%s${colors.reset}`,
-            '✖ ',
-            'Expected a corresponding HTML closing tag for ',
-            `${path.openingElement.name.name}.`,
-            ' (no-unclosed-tag)'
-          );
+          style('\n✖ ', THEME.errorPrefix)();
+          style('Expected a corresponding HTML closing tag for ',
+            THEME.errorText)();
+          style(`${openTagName.name}`, THEME.errorVariable)();
+          style('.', THEME.errorText)();
+          style(' (no-unclosed-tag)\n\n')();
 
-          console.log();
-          console.log(snippet(ast.raw, path.openingElement.name.start, path.openingElement.name.end));
+          snippet(ast.raw, openTagName.start, openTagName.end)
+            .forEach((fn) => fn());
 
-          console.log(`${colors.bold}%s${colors.reset}`, '\n   1 ⎸',
-            '<html>');
-          console.log(`${colors.bold}%s${colors.reset}`, '   2 ⎸',
-            '  <body>');
-          console.log(`${colors.fg.red}${colors.bold}%s${colors.reset}${colors.bold}%s${colors.reset}`, ' >', ' 3 ⎸',
-            '    <section>');
-          console.log(`${colors.bold}%s${colors.fg.red}%s${colors.reset}`, '     ⎸', '      ^^^^^^^');
-          console.log(`${colors.bold}%s${colors.reset}`, '   4 ⎸',
-            '      <br/>');
-          console.log(`${colors.bold}%s${colors.reset}`, '   5 ⎸',
-            '    </WrongName>\n');
-          console[type](
-            `${colors.fg.blue}${colors.bold}%s${colors.reset}${colors.fg.blue}%s${colors.bold}%s${colors.reset}`,
-            'ℹ ',
-            'But found a closing tag of ',
-            `${path.closingElement.name.name}.`
-          );
+          style('\nℹ ', THEME.infoPrefix)();
+          style('But found a closing tag of ', THEME.infoText)();
+          style(`${closeTagName.name}`, THEME.infoVariable)();
+          style('.\n\n', THEME.infoText)();
 
-          console.log();
-          console.log(snippet(ast.raw, path.closingElement.name.start, path.closingElement.name.end));
+          snippet(ast.raw, closeTagName.start, closeTagName.end)
+            .forEach((fn) => fn());
+          style('\n')();
 
-          console.log(`${colors.bold}%s${colors.reset}`, '\n   3 ⎸',
-            '    <section>');
-          console.log(`${colors.bold}%s${colors.reset}`, '   4 ⎸',
-            '      <br/>');
-          console.log(`${colors.fg.red}${colors.bold}%s${colors.reset}${colors.bold}%s${colors.reset}`, ' >', ' 5 ⎸',
-            '    </WrongName>');
-          console.log(`${colors.bold}%s${colors.fg.red}%s${colors.reset}`, '     ⎸', '       ^^^^^^^^^');
-          console.log(`${colors.bold}%s${colors.reset}`, '   6 ⎸',
-            '  </body>');
-          console.log(`${colors.bold}%s${colors.reset}`, '   7 ⎸',
-            '</html>\n');
-          // console[type]('3:1 - No unclosed tags. (no-unclosed-tag)');
+          // @TODO: Pass it to summary function
+          // @TODO: Create summary of linting
+          //        - files parsed
+          //        - errors found (max something)
+          //        - warnings found (max something)
+          //        - time taken
+          // @example `✖ 2 problems (2 errors, 0 warnings)`
         }
       }
     }
   ),
-};
-
-const colors = {
-  reset: '\x1b[0m',
-  bold: '\x1b[1m',
-  dim: '\x1b[2m',
-  underscore: '\x1b[4m',
-  blink: '\x1b[5m',
-  reverse: '\x1b[7m',
-  hidden: '\x1b[8m',
-  fg: {
-    black: '\x1b[30m',
-    red: '\x1b[31m',
-    green: '\x1b[32m',
-    yellow: '\x1b[33m',
-    blue: '\x1b[34m',
-    magenta: '\x1b[35m',
-    cyan: '\x1b[36m',
-    white: '\x1b[37m',
-    crimson: '\x1b[38m',
-  },
-  bg: {
-    black: '\x1b[40m',
-    red: '\x1b[41m',
-    green: '\x1b[42m',
-    yellow: '\x1b[43m',
-    blue: '\x1b[44m',
-    magenta: '\x1b[45m',
-    cyan: '\x1b[46m',
-    white: '\x1b[47m',
-    crimson: '\x1b[48m',
-  },
 };
 
 /**
@@ -124,8 +79,7 @@ const colors = {
 function lint(fileName, content, rules) {
   const ast = tokenize(content);
 
-  console.log(
-    `${colors.underscore}${colors.bold}%s${colors.reset}`, fileName, '\n');
+  style(`${fileName}\n`, THEME.fileName)();
 
   traverse(ast, {
     enter: (path) => {

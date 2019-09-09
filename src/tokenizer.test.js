@@ -23,6 +23,7 @@ describe('tokenize', () => {
       end: 1,
       children: [],
       sourceType: 'HTML',
+      raw: '',
     });
 
     expect(output.type).toEqual('HTMLMarkup');
@@ -37,6 +38,7 @@ describe('tokenize', () => {
       end: 0,
       sourceType: 'HTML',
       start: 0,
+      raw: '',
     }));
   });
 

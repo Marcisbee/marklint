@@ -1,21 +1,22 @@
+const THEME = require('../theme');
+const style = require('./style');
 const SPLIT = '⎸';
 
 /**
  * @param {number|string} currentIndex
  * @param {number} maxIndex
- * @param {boolean=} faulty
  * @return {string}
  */
-function getLineNumber(currentIndex, maxIndex, faulty = false) {
+function getLineNumber(currentIndex, maxIndex) {
   const length = String(maxIndex).length;
-  return `         ${faulty ? '>' : ' '} ${currentIndex} `.substr(-length - 3);
+  return `         ${currentIndex} `.substr(-length - 2);
 }
 
 /**
  * @param {string} raw
  * @param {number} start
  * @param {number=} end
- * @return {string}
+ * @return {function[]}
  */
 function snippet(raw, start, end = start + 1) {
   const beforeStartText = raw.substring(0, start);
@@ -44,11 +45,17 @@ function snippet(raw, start, end = start + 1) {
       const currentNumber = number + targetStartLine;
       const lineNumber = getLineNumber(
         number + targetStartLine,
-        linesInTotal + targetStartLine,
-        currentNumber >= faultyStartLine + 1 &&
-          currentNumber <= faultyEndLine + 1
+        linesInTotal + targetStartLine
       );
-      const newAcc = acc.concat(` ${lineNumber} ${SPLIT} ${line}`);
+      const faulty = currentNumber >= faultyStartLine + 1 &&
+        currentNumber <= faultyEndLine + 1;
+
+      const newAcc = acc.concat([
+        style(faulty ? ' >' : '  ', THEME.snippetErrorLeftArrow),
+        style(`${lineNumber}${SPLIT} `, THEME.snippetLineNumber),
+        style(line),
+        style('\n'),
+      ]);
 
       if (currentNumber >= faultyStartLine + 1 &&
         currentNumber <= faultyEndLine + 1) {
@@ -81,8 +88,11 @@ function snippet(raw, start, end = start + 1) {
           return char;
         }).join('');
 
-        return newAcc
-          .concat(` ${space} ${SPLIT} ${errorLine}`);
+        return newAcc.concat([
+          style(`  ${space}${SPLIT} `, THEME.snippetLineNumber),
+          style(errorLine, THEME.snippetErrorUnderArrows),
+          style('\n'),
+        ]);
       }
 
       return newAcc;
@@ -90,7 +100,7 @@ function snippet(raw, start, end = start + 1) {
     []
   );
 
-  return linesWithNumbers.join('\n');
+  return linesWithNumbers;
 }
 
 module.exports = snippet;
