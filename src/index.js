@@ -42,12 +42,12 @@ const errorHandling = {
   'no-unclosed-tag': new ErrorHandler(['error', 'always'],
     (ast, path, [type, _setting]) => {
       if (path.type === 'HTMLElement') {
-        if (path.openingElement.name.name !== path.closingElement.name.name) {
-          const openTagName = path.openingElement.name;
-          const closeTagName = path.closingElement.name;
-
-          // highlight(ast)
-          //   .forEach((fn) => fn());
+        const openTag = path.openingElement;
+        const closeTag = path.closingElement;
+        if (!openTag.selfClosing &&
+          openTag.name.name !== (closeTag && closeTag.name.name)) {
+          const openTagName = openTag.name;
+          const closeTagName = closeTag && closeTag.name;
 
           // ✔ - success symbol
           // ✖ - error symbol
@@ -62,6 +62,14 @@ const errorHandling = {
 
           snippet(ast, openTagName.start, openTagName.end)
             .forEach((fn) => fn());
+
+          // @TODO: Run list of self closing tags and give suggestion to fix
+          // style('\nℹ ', THEME.infoPrefix)();
+          // style('Should this tag be self closing?\n\n', THEME.infoText)();
+
+          if (!closeTagName) {
+            return;
+          }
 
           style('\nℹ ', THEME.infoPrefix)();
           style('But found a closing tag of ', THEME.infoText)();

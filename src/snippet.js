@@ -6,7 +6,7 @@ const {
   HTMLMarkup,
 } = require('./tokens');
 
-const SPLIT = '⎸';
+const SPLIT = '|';
 
 /**
  * @param {number|string} currentIndex
