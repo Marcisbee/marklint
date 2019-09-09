@@ -20,11 +20,22 @@ class ErrorHandler {
 
 /**
  * @TODO : Make report function that handles errors, warns and suggestions
- * @param {any} type
- * @param {any} message
+ * @param {Record<string, any>} config
  */
-// function report(type, message) {
+// function report(config) {
+//   const {
+//     errors,
+//     warnings,
+//     suggestions,
+//   } = config;
 
+//   if (errors instanceof Array) {
+//     errors.forEach(({ text }) => {
+//       error
+//     });
+//   }
+
+//   console.log(config);
 // }
 
 const errorHandling = {
@@ -35,6 +46,9 @@ const errorHandling = {
           const openTagName = path.openingElement.name;
           const closeTagName = path.closingElement.name;
 
+          // highlight(ast)
+          //   .forEach((fn) => fn());
+
           // ✔ - success symbol
           // ✖ - error symbol
           // ⚠ - warning symbol
@@ -43,10 +57,10 @@ const errorHandling = {
           style('Expected a corresponding HTML closing tag for ',
             THEME.errorText)();
           style(`${openTagName.name}`, THEME.errorVariable)();
-          style('.', THEME.errorText)();
-          style(' (no-unclosed-tag)\n\n')();
+          style('.\n\n', THEME.errorText)();
+          // style(' (no-unclosed-tag)\n\n')();
 
-          snippet(ast.raw, openTagName.start, openTagName.end)
+          snippet(ast, openTagName.start, openTagName.end)
             .forEach((fn) => fn());
 
           style('\nℹ ', THEME.infoPrefix)();
@@ -54,7 +68,7 @@ const errorHandling = {
           style(`${closeTagName.name}`, THEME.infoVariable)();
           style('.\n\n', THEME.infoText)();
 
-          snippet(ast.raw, closeTagName.start, closeTagName.end)
+          snippet(ast, closeTagName.start, closeTagName.end)
             .forEach((fn) => fn());
           style('\n')();
 
@@ -114,7 +128,7 @@ const rules = {
 const fileIndex =
 `<html>
   <body>
-    <section>
+    <section param="name">
       text
     </WrongName>
   </body>

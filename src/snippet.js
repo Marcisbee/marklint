@@ -1,5 +1,11 @@
 const THEME = require('../theme');
 const style = require('./style');
+const highlight = require('./highlight');
+const {
+  // eslint-disable-next-line no-unused-vars
+  HTMLMarkup,
+} = require('./tokens');
+
 const SPLIT = '⎸';
 
 /**
@@ -13,12 +19,13 @@ function getLineNumber(currentIndex, maxIndex) {
 }
 
 /**
- * @param {string} raw
+ * @param {HTMLMarkup} ast
  * @param {number} start
  * @param {number=} end
  * @return {function[]}
  */
-function snippet(raw, start, end = start + 1) {
+function snippet(ast, start, end = start + 1) {
+  const { raw } = ast;
   const beforeStartText = raw.substring(0, start);
   const beforeStart = beforeStartText.match(/\n/g);
   const beforeStartColumns = beforeStartText.split(/\n/g);
@@ -39,6 +46,10 @@ function snippet(raw, start, end = start + 1) {
   const lines = allLines.slice(targetStartLine, targetEndLine + 5);
   const linesInTotal = lines.length;
 
+  const coloredAllLines = highlight(ast);
+  const coloredLines =
+    coloredAllLines.slice(targetStartLine, targetEndLine + 5);
+
   const linesWithNumbers = lines.reduce(
     (acc, line, index) => {
       const number = index + 1;
@@ -53,7 +64,7 @@ function snippet(raw, start, end = start + 1) {
       const newAcc = acc.concat([
         style(faulty ? ' >' : '  ', THEME.snippetErrorLeftArrow),
         style(`${lineNumber}${SPLIT} `, THEME.snippetLineNumber),
-        style(line),
+        ...coloredLines[index],
         style('\n'),
       ]);
 

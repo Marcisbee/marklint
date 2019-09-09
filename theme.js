@@ -38,6 +38,11 @@ module.exports = {
 
   fileName: [colors.bold, colors.underscore],
 
+  htmlSyntaxText: [colors.dim],
+  htmlSyntaxTagIdentifier: [colors.fg.cyan],
+  htmlSyntaxAttributeIdentifier: [colors.fg.yellow],
+  htmlSyntaxAttributeLiteral: [colors.fg.green],
+
   errorPrefix: [colors.bold, colors.fg.red],
   errorText: [colors.fg.red],
   errorVariable: [colors.bold, colors.fg.red],
