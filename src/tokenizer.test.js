@@ -68,16 +68,53 @@ describe('tokenize', () => {
     }));
   });
 
-  test('should handle attributes', () => {
+  test('should handle attribute name and value', () => {
     const input = '<meta\n  stylesheet\n  name="foo"\n/>';
+    const output = tokenize(input);
+
+    /** @type {*} */
+    const element = output.children[0];
+    const attribute1 = element.openingElement.attributes[1];
+    const attribute2 = element.openingElement.attributes[3];
+
+    expect(attribute1.name.name).toEqual('stylesheet');
+    expect(attribute1.value.value).toEqual(undefined);
+
+    expect(attribute2.name.name).toEqual('name');
+    expect(attribute2.value.value).toEqual('foo');
+  });
+
+  test('should handle attribute name and value with position', () => {
+    const input = '<meta\n  stylesheet\n  name="foo"\n/>';
+    const output = tokenize(input);
+
+    /** @type {*} */
+    const element = output.children[0];
+    const attribute1 = element.openingElement.attributes[1];
+    const name1 = attribute1.name;
+    const value1 = attribute1.value;
+
+    const attribute2 = element.openingElement.attributes[3];
+    const name2 = attribute2.name;
+    const value2 = attribute2.value;
+
+    expect(input.substring(name1.start, name1.end)).toEqual('stylesheet');
+    expect(input.substring(value1.start, value1.end)).toEqual('');
+
+    expect(input.substring(name2.start, name2.end)).toEqual('name');
+    expect(input.substring(value2.start, value2.end)).toEqual('"foo"');
+  });
+
+  test('should handle attribute with multi line value', () => {
+    const input = '<meta\n  foo=" bar\nbaz "\n/>';
     const output = tokenize(input);
 
     /** @type {*} */
     const element = output.children[0];
     const attribute = element.openingElement.attributes[1];
 
-    expect(attribute.name.name).toEqual('stylesheet');
-    expect(attribute.value.value).toEqual(undefined);
+    expect(attribute.name.name).toEqual('foo');
+    expect(attribute.value.value).toEqual(' bar\nbaz ');
   });
 
   describe('correct start and end values', () => {

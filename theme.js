@@ -47,6 +47,10 @@ module.exports = {
   errorText: [colors.fg.red],
   errorVariable: [colors.bold, colors.fg.red],
 
+  warningPrefix: [colors.bold, colors.fg.yellow],
+  warningText: [colors.fg.yellow],
+  warningVariable: [colors.bold, colors.fg.yellow],
+
   infoPrefix: [colors.bold, colors.fg.blue],
   infoText: [colors.fg.blue],
   infoVariable: [colors.bold, colors.fg.blue],

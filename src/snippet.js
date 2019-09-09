@@ -87,7 +87,7 @@ function snippet(ast, start, end = start + 1) {
           }
 
           // Handles end line
-          if (currentNumber === faultyEndLine + 1 && i <= columnEndIndex) {
+          if (currentNumber === faultyEndLine + 1 && i < columnEndIndex) {
             return '^';
           }
 
@@ -98,6 +98,8 @@ function snippet(ast, start, end = start + 1) {
 
           return char;
         }).join('');
+
+        if (errorLine.trim() === '') return newAcc;
 
         return newAcc.concat([
           style(`  ${space}${SPLIT} `, THEME.snippetLineNumber),

@@ -14,7 +14,9 @@ const cachedHighlights = {};
  */
 function highlight(ast) {
   const cached = cachedHighlights[ast.raw];
-  if (cached !== undefined) return cached;
+  if (cached !== undefined) {
+    return cached;
+  }
 
   const instructions = [];
 
@@ -42,31 +44,29 @@ function highlight(ast) {
 
   let lastIndex = 0;
   return cachedHighlights[ast.raw] =
-    ast.raw.split('\n').reduce((acc, data) => {
+    ast.raw.split('\n').reduce((acc, line) => {
       const output = [];
       const startIndex = lastIndex;
 
-      lastIndex += data.length + 1;
+      lastIndex += line.length + 1;
 
       let index = 0;
       instructions.forEach(([start, end, color]) => {
-        if (startIndex <= start && lastIndex >= end) {
-          const cutStart = start - startIndex;
-          const cutEnd = end - startIndex;
+        const cutStart = start - startIndex;
+        const cutEnd = end - startIndex;
 
-          if (index < cutStart) {
-            output.push(
-              style(data.substring(index, cutStart), THEME.htmlSyntaxText)
-            );
-          }
-
-          output.push(style(data.substring(cutStart, cutEnd), color));
-          index = cutEnd;
+        if (index < cutStart) {
+          output.push(
+            style(line.substring(index, cutStart), THEME.htmlSyntaxText)
+          );
         }
+
+        output.push(style(line.substring(cutStart, cutEnd), color));
+        index = cutEnd;
       });
 
-      if (index < lastIndex) {
-        output.push(style(data.substring(index), THEME.htmlSyntaxText));
+      if (index < lastIndex - startIndex) {
+        output.push(style(line.substring(index), THEME.htmlSyntaxText));
       }
 
       if (acc.length === 0) return [output];

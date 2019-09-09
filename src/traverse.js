@@ -3,7 +3,7 @@ const { HTMLToken } = require('./tokens');
 
 /**
  * @param {*} value
- * @param {{ enter: function }} options
+ * @param {{ enter: function(*): * }} options
  * @return {*}
  */
 function traverseToken(value, options) {
@@ -22,7 +22,7 @@ function traverseToken(value, options) {
 
 /**
  * @param {*} ast
- * @param {{ enter: function }} options
+ * @param {{ enter: function(HTMLToken): * }} options
  * @return {HTMLToken} ast
  */
 function traverse(ast, options) {

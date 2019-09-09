@@ -111,7 +111,8 @@ function tokenize(html) {
       let lastAttrPost = -1;
       for (let attMatch; attMatch = kAttributePattern.exec(match[5]);) {
         const name = attMatch[2];
-        const value = attMatch[4] || attMatch[5] || attMatch[6];
+        const rawValue = attMatch[4] || attMatch[5] || attMatch[6];
+        const value = attMatch[6] || attMatch[5] || attMatch[4];
 
         lastAttrPost = kAttributePattern.lastIndex;
 
@@ -134,13 +135,11 @@ function tokenize(html) {
             end: attrIndex + attMatch[1].length + name.length,
           }),
           value: new HTMLLiteral({
-            value: typeof value === 'string' ?
-              value.replace(/^["']|["']$/g, '').trim() :
-              value,
-            raw: value,
-            start: index + attMatch[0].indexOf(value),
-            end: index + attMatch[0].indexOf(value) + (
-              value ? value.length : 0
+            value,
+            raw: rawValue,
+            start: attrIndex + attMatch[0].indexOf(rawValue),
+            end: attrIndex + attMatch[0].indexOf(rawValue) + (
+              rawValue ? rawValue.length : 0
             ),
           }),
           start: attrIndex + attMatch[1].length,
