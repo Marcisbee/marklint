@@ -51,6 +51,8 @@ describe('tokenize', () => {
         start: 0,
         end: 0,
         parent: expect.any(Function),
+        next: expect.any(Function),
+        previous: expect.any(Function),
         raw: '',
         value: '',
       }),
@@ -117,6 +119,17 @@ describe('tokenize', () => {
 
     expect(attribute.name.name).toEqual('foo');
     expect(attribute.value.value).toEqual(' bar\nbaz ');
+  });
+
+  test('should handle root as plain text', () => {
+    const input = 'Hello world!';
+    const output = tokenize(input);
+
+    /** @type {*} */
+    const element = output.children[0];
+
+    expect(input.substring(element.start, element.end)).toEqual('Hello world!');
+    expect(element.raw).toEqual('Hello world!');
   });
 
   describe('correct start and end values', () => {

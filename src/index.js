@@ -109,9 +109,3 @@ const fileIndex =
 console.time('Parsing');
 lint('index.html', fileIndex, rules);
 console.timeEnd('Parsing');
-
-// require('./utils/report')({
-//   type: 'log',
-//   severity: 'error',
-//   message: `<underline>Hello</underline> <strong>world</strong>!\n`,
-// });

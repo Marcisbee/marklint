@@ -1,5 +1,7 @@
 /* eslint-disable require-jsdoc */
 
+// @TODO: Move types to ts file
+
 /**
  * @typedef HTMLTokenInput
  * @type {object}

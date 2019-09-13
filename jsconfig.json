@@ -6,6 +6,7 @@
       ]
     },
     "baseUrl": ".",
+    "module": "commonjs",
     "target": "ES2017",
     "lib": [
       "es2017",
@@ -21,8 +22,6 @@
     "coverage",
     "test",
     "**/*.spec.js",
-    "node_modules",
-    "./node_modules",
-    "./node_modules/*"
+    "node_modules"
   ]
 }

@@ -40,10 +40,13 @@ function tokenize(html) {
     if (lastTextPos < match.index) {
       const value = html.substring(lastTextPos, match.index);
       if (value !== '') {
+        const lastElIndex = parent.children.length;
         parent.children.push(new HTMLText({
           start: Math.max(lastTextPos, 0),
           end: match.index,
           parent: () => parent,
+          previous: () => parent.children[lastElIndex - 1],
+          next: () => parent.children[lastElIndex + 1],
           value: value && value.trim(),
           raw: value,
         }));
@@ -216,13 +219,16 @@ function tokenize(html) {
   }
 
   if (lastTextPos < html.length) {
-    const value = html.substr(lastTextPos);
+    const value = html.substring(Math.max(lastTextPos, 0));
 
+    const lastElIndex = ast.children.length;
     ast.children.push(
       new HTMLText({
         start: Math.max(lastTextPos, 0),
         end: html.length,
         parent: () => ast,
+        previous: () => ast.children[lastElIndex - 1],
+        next: () => ast.children[lastElIndex + 1],
         value: value.trim(),
         raw: value,
       })
