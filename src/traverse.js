@@ -22,7 +22,7 @@ function traverseToken(value, options) {
 
 /**
  * @param {*} ast
- * @param {{ enter: function(HTMLToken): * }} options
+ * @param {{ enter: function(*): * }} options
  * @return {HTMLToken} ast
  */
 function traverse(ast, options) {

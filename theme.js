@@ -38,24 +38,27 @@ module.exports = {
 
   fileName: [colors.bold, colors.underscore],
 
-  htmlSyntaxText: [colors.dim],
-  htmlSyntaxTagIdentifier: [colors.fg.cyan],
-  htmlSyntaxAttributeIdentifier: [colors.fg.yellow],
-  htmlSyntaxAttributeLiteral: [colors.fg.green],
-
-  errorPrefix: [colors.bold, colors.fg.red],
-  errorText: [colors.fg.red],
-  errorVariable: [colors.bold, colors.fg.red],
-
-  warningPrefix: [colors.bold, colors.fg.yellow],
-  warningText: [colors.fg.yellow],
-  warningVariable: [colors.bold, colors.fg.yellow],
-
-  infoPrefix: [colors.bold, colors.fg.blue],
-  infoText: [colors.fg.blue],
-  infoVariable: [colors.bold, colors.fg.blue],
+  htmlSyntax: {
+    text: [colors.dim],
+    tagIdentifier: [colors.fg.cyan],
+    attributeIdentifier: [colors.fg.yellow],
+    attributeLiteral: [colors.fg.green],
+  },
 
   snippetLineNumber: [colors.bold],
   snippetErrorLeftArrow: [colors.bold, colors.fg.red],
   snippetErrorUnderArrows: [colors.bold, colors.fg.red],
+
+  severity: {
+    success: [colors.fg.green],
+    error: [colors.fg.red],
+    warning: [colors.fg.yellow],
+    info: [colors.fg.blue],
+  },
+
+  inlineStyles: {
+    'strong': [colors.bold],
+    'underline': [colors.underscore],
+    'fg-red': [colors.fg.red],
+  },
 };

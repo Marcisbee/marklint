@@ -1,7 +1,5 @@
+const report = require('../utils/report');
 const ruleHandler = require('../utils/rule-handler');
-const snippet = require('../snippet');
-const style = require('../style');
-const THEME = require('../../theme');
 
 /** @type {RuleConfig} */
 const defaults = {
@@ -19,30 +17,20 @@ const handler = (ast, path, { severity }) => {
       const openTagName = openTag.name;
       const closeTagName = closeTag && closeTag.name;
 
-      // ✔ - success symbol
-      // ✖ - error symbol
-      // ! - warning symbol
-      // ℹ - info symbol
-      if (severity === 'error') {
-        style('\n✖ ', THEME.errorPrefix)();
-        style('Expected a corresponding HTML closing tag for ',
-          THEME.errorText)();
-        style(`${openTagName.name}`, THEME.errorVariable)();
-        style('.\n\n', THEME.errorText)();
-        // style(' (no-unclosed-tag)\n\n')();
-      }
+      report({
+        type: 'log',
+        severity,
+        message: `Expected a corresponding HTML closing tag for <strong>${openTagName.name}</strong>.`,
+      });
 
-      if (severity === 'warning') {
-        style('\n! ', THEME.warningPrefix)();
-        style('Expected a corresponding HTML closing tag for ',
-          THEME.warningText)();
-        style(`${openTagName.name}`, THEME.warningVariable)();
-        style('.\n\n', THEME.warningText)();
-        // style(' (no-unclosed-tag)\n\n')();
-      }
-
-      snippet(ast, openTagName.start, openTagName.end)
-        .forEach((fn) => fn());
+      report({
+        type: 'snippet',
+        snippet: {
+          ast,
+          start: openTagName.start,
+          end: openTagName.end,
+        },
+      });
 
       // @TODO: Run list of self closing tags and give suggestion to fix
       // style('\nℹ ', THEME.infoPrefix)();
@@ -52,14 +40,20 @@ const handler = (ast, path, { severity }) => {
         return;
       }
 
-      style('\nℹ ', THEME.infoPrefix)();
-      style('But found a closing tag of ', THEME.infoText)();
-      style(`${closeTagName.name}`, THEME.infoVariable)();
-      style('.\n\n', THEME.infoText)();
+      report({
+        type: 'log',
+        severity: 'info',
+        message: `But found a closing tag of <strong>${closeTagName.name}</strong>.`,
+      });
 
-      snippet(ast, closeTagName.start, closeTagName.end)
-        .forEach((fn) => fn());
-      style('\n')();
+      report({
+        type: 'snippet',
+        snippet: {
+          ast,
+          start: closeTagName.start,
+          end: closeTagName.end,
+        },
+      });
 
       // @TODO: Pass it to summary function
       // @TODO: Create summary of linting

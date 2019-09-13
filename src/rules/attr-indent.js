@@ -1,7 +1,5 @@
+const report = require('../utils/report');
 const ruleHandler = require('../utils/rule-handler');
-const snippet = require('../snippet');
-const style = require('../style');
-const THEME = require('../../theme');
 
 /** @type {RuleConfig} */
 const defaults = {
@@ -38,26 +36,20 @@ const handler = (ast, path, { severity, options: [indentSize] }) => {
       }
 
       if (attribute.raw !== `\n${correctIndent}`) {
-        if (severity === 'error') {
-          // @TODO: this
-          // actions.push({
-          //   severity,
-          //   type: 'log',
-          //   message: `Expected an indent of <b>${normalizedIndent}</b> spaces but instead got <b>${attribute.raw.length - correctionStart}</b>.`,
-          // });
-          style('\n✖ ', THEME.errorPrefix)();
-          style('Expected an indent of ', THEME.errorText)();
-          style(`${normalizedIndent}`, THEME.errorVariable)();
-          style(' spaces but instead got ', THEME.errorText)();
-          style(`${attribute.raw.length - correctionStart}`,
-            THEME.errorVariable)();
-          style('.\n\n', THEME.errorText)();
-          // style(' (no-unclosed-tag)\n\n')();
-        }
+        report({
+          type: 'log',
+          severity,
+          message: `Expected an indent of <strong>${normalizedIndent}</strong> spaces but instead got <strong>${attribute.raw.length - correctionStart}</strong>.`,
+        });
 
-        snippet(ast, attribute.start + correctionStart, attribute.end)
-          .forEach((fn) => fn());
-        style('\n')();
+        report({
+          type: 'snippet',
+          snippet: {
+            ast,
+            start: attribute.start + correctionStart,
+            end: attribute.end,
+          },
+        });
       }
     });
   }

@@ -24,19 +24,19 @@ function highlight(ast) {
     enter(path) {
       if (path.type === 'HTMLIdentifier') {
         instructions.push(
-          [path.start, path.end, THEME.htmlSyntaxTagIdentifier]
+          [path.start, path.end, THEME.htmlSyntax.tagIdentifier]
         );
       }
 
       if (path.type === 'HTMLAttributeIdentifier') {
         instructions.push(
-          [path.start, path.end, THEME.htmlSyntaxAttributeIdentifier]
+          [path.start, path.end, THEME.htmlSyntax.attributeIdentifier]
         );
       }
 
       if (path.type === 'HTMLLiteral') {
         instructions.push(
-          [path.start, path.end, THEME.htmlSyntaxAttributeLiteral]
+          [path.start, path.end, THEME.htmlSyntax.attributeLiteral]
         );
       }
     },
@@ -57,7 +57,7 @@ function highlight(ast) {
 
         if (index < cutStart) {
           output.push(
-            style(line.substring(index, cutStart), THEME.htmlSyntaxText)
+            style(line.substring(index, cutStart), THEME.htmlSyntax.text)
           );
         }
 
@@ -66,7 +66,7 @@ function highlight(ast) {
       });
 
       if (index < lastIndex - startIndex) {
-        output.push(style(line.substring(index), THEME.htmlSyntaxText));
+        output.push(style(line.substring(index), THEME.htmlSyntax.text));
       }
 
       if (acc.length === 0) return [output];
