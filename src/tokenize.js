@@ -12,11 +12,8 @@ const {
   HTMLClosingElement,
 } = require('./tokens');
 
-const kMarkupPattern =
-  // eslint-disable-next-line max-len
-  /<!--([^]*?)(?=-->)-->|<!([^]*?)(?=>)>|<(\/?)([a-z][-.0-9_a-z]*)([^>]*?)(\/?)>/ig;
-const kAttributePattern =
-  /(^|\s*)([\w-@*.]+)((?:\s*=\s*("([^"]+)"|'([^']+)'|(\S+)))*)/ig;
+const kMarkupPattern = /<!--([^]*?)(?=-->)-->|<!([^]*?)(?=>)>|<(\/?)([a-z][-.0-9_a-z]*)([^>]*?)(\/?)>/ig;
+const kAttributePattern = /(^|\s*)([\w-@*.]+)((?:\s*=\s*("([^"]+)"|'([^']+)'|(\S+)))*)/ig;
 
 /**
  * @param {string} html
@@ -46,6 +43,7 @@ function tokenize(html) {
         parent.children.push(new HTMLText({
           start: Math.max(lastTextPos, 0),
           end: match.index,
+          parent: () => parent,
           value: value && value.trim(),
           raw: value,
         }));
@@ -59,6 +57,7 @@ function tokenize(html) {
       parent.children.push(new HTMLComment({
         start: match.index,
         end: lastTextPos,
+        parent: () => parent,
         value: match[1] && match[1].trim(),
         raw: match[0],
       }));
@@ -70,15 +69,20 @@ function tokenize(html) {
       parent.children.push(new HTMLDoctype({
         start: match.index,
         end: lastTextPos,
+        parent: () => parent,
         value: match[2] && match[2].trim(),
         raw: match[0],
       }));
       continue;
     }
 
+    const lastElIndex = parent.children.length;
     const element = new HTMLElement({
       start: match.index,
       end: kMarkupPattern.lastIndex,
+      parent: () => parent,
+      previous: () => parent.children[lastElIndex - 1],
+      next: () => parent.children[lastElIndex + 1],
       openingElement: null,
       closingElement: null,
       children: [],
@@ -96,10 +100,12 @@ function tokenize(html) {
       element.openingElement = new HTMLOpeningElement({
         start: itemStart,
         end: itemEnd,
+        parent: () => element,
         attributes: [],
         name: new HTMLIdentifier({
           start: nameStart,
           end: nameEnd,
+          parent: () => element.openingElement,
           name: match[4],
           raw: html.substring(nameStart, nameEnd),
         }),
@@ -120,19 +126,31 @@ function tokenize(html) {
 
         // Register whitespace
         if (attMatch[1]) {
+          const lastAttrIndex = element.openingElement.attributes.length;
           element.openingElement.attributes.push(new HTMLText({
-            value: attMatch[1].trim(),
-            raw: attMatch[1],
             start: attrIndex,
             end: attrIndex + attMatch[1].length,
+            parent: () => element.openingElement,
+            previous:
+              () => element.openingElement.attributes[lastAttrIndex - 1],
+            next: () => element.openingElement.attributes[lastAttrIndex + 1],
+            value: attMatch[1].trim(),
+            raw: attMatch[1],
           }));
         }
 
-        element.openingElement.attributes.push(new HTMLAttribute({
+        const lastAttrIndex = element.openingElement.attributes.length;
+        const attribute = new HTMLAttribute({
+          start: attrIndex + attMatch[1].length,
+          end: index + lastAttrPost,
+          parent: () => element.openingElement,
+          previous: () => element.openingElement.attributes[lastAttrIndex - 1],
+          next: () => element.openingElement.attributes[lastAttrIndex + 1],
           name: new HTMLAttributeIdentifier({
             name,
             start: attrIndex + attMatch[1].length,
             end: attrIndex + attMatch[1].length + name.length,
+            parent: () => attribute,
           }),
           value: new HTMLLiteral({
             value,
@@ -141,21 +159,27 @@ function tokenize(html) {
             end: attrIndex + attMatch[0].indexOf(rawValue) + (
               rawValue ? rawValue.length : 0
             ),
+            parent: () => attribute,
           }),
-          start: attrIndex + attMatch[1].length,
-          end: index + lastAttrPost,
           raw: attMatch[0],
-        }));
+        });
+
+        element.openingElement.attributes.push(attribute);
       }
 
       if (match[5].length > lastAttrPost) {
         const value = match[5].substring(lastAttrPost);
         if (value !== '') {
+          const lastAttrIndex = element.openingElement.attributes.length;
           element.openingElement.attributes.push(new HTMLText({
-            value: value.trim(),
-            raw: value,
             start: index + lastAttrPost,
             end: index + lastAttrPost + value.length,
+            parent: () => element.openingElement,
+            previous:
+              () => element.openingElement.attributes[lastAttrIndex - 1],
+            next: () => element.openingElement.attributes[lastAttrIndex + 1],
+            value: value.trim(),
+            raw: value,
           }));
         }
       }
@@ -172,9 +196,11 @@ function tokenize(html) {
         parent.closingElement = new HTMLClosingElement({
           start: match.index,
           end: parent.end,
+          parent: () => parent,
           name: new HTMLIdentifier({
             start: identifierIndex,
             end: identifierIndex + match[4].length,
+            parent: () => parent.closingElement,
             name: match[4],
             raw: html.substring(
               identifierIndex,
@@ -196,6 +222,7 @@ function tokenize(html) {
       new HTMLText({
         start: Math.max(lastTextPos, 0),
         end: html.length,
+        parent: () => ast,
         value: value.trim(),
         raw: value,
       })

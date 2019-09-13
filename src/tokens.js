@@ -1,13 +1,26 @@
 /* eslint-disable require-jsdoc */
 
+/**
+ * @typedef HTMLTokenInput
+ * @type {object}
+ * @property {number} start
+ * @property {number} end
+ * @property {function=} parent
+ * @property {function=} previous
+ * @property {function=} next
+ */
+
 class HTMLToken {
   /**
-   * @param {{ start: number, end: number }} data
+   * @param {HTMLTokenInput} data
    */
   constructor(data) {
     this.type = this.constructor.name;
     this.start = data.start;
     this.end = data.end;
+    this.parent = data.parent;
+    this.previous = data.previous;
+    this.next = data.next;
   }
 }
 
@@ -43,6 +56,9 @@ class HTMLMarkup extends HTMLToken {
  * @type {object}
  * @property {number} start
  * @property {number} end
+ * @property {function=} parent
+ * @property {function=} previous
+ * @property {function=} next
  * @property {(HTMLElement|HTMLComment|HTMLDoctype|HTMLText)[]} children
  * @property {HTMLOpeningElement} openingElement
  * @property {HTMLClosingElement} closingElement
@@ -65,6 +81,9 @@ class HTMLElement extends HTMLToken {
  * @type {object}
  * @property {number} start
  * @property {number} end
+ * @property {function=} parent
+ * @property {function=} previous
+ * @property {function=} next
  * @property {HTMLIdentifier} name
  * @property {(HTMLAttribute|HTMLText)[]} attributes
  * @property {boolean} selfClosing
@@ -87,6 +106,9 @@ class HTMLOpeningElement extends HTMLToken {
  * @type {object}
  * @property {number} start
  * @property {number} end
+ * @property {function=} parent
+ * @property {function=} previous
+ * @property {function=} next
  * @property {HTMLIdentifier} name
  */
 
@@ -105,6 +127,9 @@ class HTMLClosingElement extends HTMLToken {
  * @type {object}
  * @property {number} start
  * @property {number} end
+ * @property {function=} parent
+ * @property {function=} previous
+ * @property {function=} next
  * @property {string} name
  * @property {string} raw
  */
@@ -125,6 +150,9 @@ class HTMLIdentifier extends HTMLToken {
  * @type {object}
  * @property {number} start
  * @property {number} end
+ * @property {function=} parent
+ * @property {function=} previous
+ * @property {function=} next
  * @property {HTMLAttributeIdentifier} name
  * @property {HTMLLiteral} value
  * @property {string} raw
@@ -147,6 +175,9 @@ class HTMLAttribute extends HTMLToken {
  * @type {object}
  * @property {number} start
  * @property {number} end
+ * @property {function=} parent
+ * @property {function=} previous
+ * @property {function=} next
  * @property {string} name
  */
 
@@ -165,6 +196,9 @@ class HTMLAttributeIdentifier extends HTMLToken {
  * @type {object}
  * @property {number} start
  * @property {number} end
+ * @property {function=} parent
+ * @property {function=} previous
+ * @property {function=} next
  * @property {string} value
  * @property {string} raw
  */
@@ -185,6 +219,9 @@ class HTMLLiteral extends HTMLToken {
  * @type {object}
  * @property {number} start
  * @property {number} end
+ * @property {function=} parent
+ * @property {function=} previous
+ * @property {function=} next
  * @property {string} value
  * @property {string} raw
  */
@@ -205,6 +242,9 @@ class HTMLDoctype extends HTMLToken {
  * @type {object}
  * @property {number} start
  * @property {number} end
+ * @property {function=} parent
+ * @property {function=} previous
+ * @property {function=} next
  * @property {string} value
  * @property {string} raw
  */
@@ -225,6 +265,9 @@ class HTMLComment extends HTMLToken {
  * @type {object}
  * @property {number} start
  * @property {number} end
+ * @property {function=} parent
+ * @property {function=} previous
+ * @property {function=} next
  * @property {string} value
  * @property {string} raw
  */

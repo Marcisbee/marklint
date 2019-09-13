@@ -34,10 +34,10 @@ describe('tokenize', () => {
     const output = tokenize(input);
 
     expect(output).toEqual(new HTMLMarkup({
-      children: expect.any(Array),
-      end: 0,
-      sourceType: 'HTML',
       start: 0,
+      end: 0,
+      children: expect.any(Array),
+      sourceType: 'HTML',
       raw: '',
     }));
   });
@@ -48,9 +48,10 @@ describe('tokenize', () => {
 
     expect(output.children).toEqual([
       new HTMLText({
-        end: 0,
-        raw: '',
         start: 0,
+        end: 0,
+        parent: expect.any(Function),
+        raw: '',
         value: '',
       }),
     ]);
@@ -61,10 +62,11 @@ describe('tokenize', () => {
     const output = tokenize(input);
 
     expect(output.children[0]).toEqual(new HTMLDoctype({
+      start: 0,
+      end: 90,
+      parent: expect.any(Function),
       raw: `<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01//EN\" \"http://www.w3.org/TR/html4/strict.dtd\">`,
       value: `DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01//EN\" \"http://www.w3.org/TR/html4/strict.dtd\"`,
-      end: 90,
-      start: 0,
     }));
   });
 
