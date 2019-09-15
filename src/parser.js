@@ -13,7 +13,7 @@ const {
 } = require('./tokens');
 
 const kMarkupPattern = /<!--([^]*?)(?=-->)-->|<!([^]*?)(?=>)>|<(\/?)([a-z][-.0-9_a-z]*)([^>]*?)(\/?)>/ig;
-const kAttributePattern = /(^|\s*)([\w-@*.]+)((?:\s*=\s*("([^"]+)"|'([^']+)'|(\S+)))*)/ig;
+const kAttributePattern = /(^|\s*)([\w-@:*.\[\]\(\)\#%]+)((?:\s*=\s*("([^"]+)"|'([^']+)'|(\S+)))*)/ig;
 
 /**
  * @param {string} html

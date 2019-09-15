@@ -10,7 +10,7 @@ const {
   HTMLDoctype,
   HTMLText,
 } = require('./tokens');
-const parse = require('./parse');
+const parse = require('./parser');
 
 describe('parse', () => {
   test('should export `parse` as a function', () => {
@@ -140,7 +140,7 @@ describe('parse', () => {
   >This is a link <strong>bold</strong></a>
   <br/>
   <!-- this is a comment -->
-  <b>123</b> dsa`;
+  <b>123</b> dsa<meta />`;
     const output = parse(input);
 
     test('for `HTMLText` prefix', () => {
@@ -247,6 +247,15 @@ describe('parse', () => {
 
       expect(input.substring(start, end))
         .toEqual('<!-- this is a comment -->');
+    });
+
+    test('for "<meta />"', () => {
+      /** @type {Partial<HTMLComment>} */
+      const element = output.children[9];
+      const { start, end } = element;
+
+      expect(input.substring(start, end))
+        .toEqual('<meta />');
     });
   });
 });

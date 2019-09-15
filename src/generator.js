@@ -10,7 +10,7 @@ function generator(ast, options = {}) {
 
   traverse(ast, {
     enter(path) {
-      if (path.type === 'HTMLText' || path.type === 'HTMLAttribute') {
+      if (path.type === 'HTMLText') {
         if (path.type === 'HTMLText') {
           code = code.concat(path.raw);
         }
@@ -21,6 +21,10 @@ function generator(ast, options = {}) {
           const next = path.next();
 
           if (!next) {
+            if (parent.selfClosing) {
+              code = code.concat(`/`);
+            }
+
             code = code.concat(`>`);
           }
         }
@@ -43,7 +47,23 @@ function generator(ast, options = {}) {
       }
 
       if (path.type === 'HTMLAttributeIdentifier') {
-        code = code.concat(`${path.name}=`);
+        code = code.concat(`${path.name}`);
+
+        const attribute = path.parent();
+        const parent = attribute.parent();
+
+        if (parent.type === 'HTMLOpeningElement') {
+          const next = attribute.next();
+          const value = attribute.value;
+
+          if (!next && value.raw === undefined) {
+            if (parent.selfClosing) {
+              code = code.concat(`/`);
+            }
+
+            code = code.concat(`>`);
+          }
+        }
 
         return;
       }
@@ -54,7 +74,28 @@ function generator(ast, options = {}) {
         return;
       }
 
-      if (['HTMLLiteral', 'HTMLDoctype', 'HTMLComment'].indexOf(path.type) !== -1) {
+      if (path.type === 'HTMLLiteral' && path.raw) {
+        code = code.concat(`=${path.raw}`);
+
+        const attribute = path.parent();
+        const parent = attribute.parent();
+
+        if (parent.type === 'HTMLOpeningElement') {
+          const next = attribute.next();
+
+          if (!next) {
+            if (parent.selfClosing) {
+              code = code.concat(`/`);
+            }
+
+            code = code.concat(`>`);
+          }
+        }
+
+        return;
+      }
+
+      if (['HTMLDoctype', 'HTMLComment'].indexOf(path.type) !== -1 && path.raw) {
         code = code.concat(path.raw);
 
         return;

@@ -1,7 +1,7 @@
 const THEME = require('../../theme');
 const snippet = require('../snippet');
 const style = require('../style');
-const parse = require('../parse');
+const parse = require('../parser');
 const traverse = require('../traverse');
 
 const errorMessage = require('./error-message');

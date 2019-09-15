@@ -1,5 +1,5 @@
 const errorMessage = require('./utils/error-message');
-const parse = require('./parse');
+const parse = require('./parser');
 const traverse = require('./traverse');
 const style = require('./style');
 const THEME = require('../theme');
