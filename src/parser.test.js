@@ -152,7 +152,7 @@ describe('parse', () => {
     const output = parse(input);
 
     test('for `HTMLText` prefix', () => {
-      /** @type {Partial<HTMLText>} */
+      /** @type {Partial<HTMLTextType>} */
       const element = output.children[0];
       const { start, end } = element;
 
@@ -160,7 +160,7 @@ describe('parse', () => {
     });
 
     test('for `HTMLText` suffix', () => {
-      /** @type {Partial<HTMLText>} */
+      /** @type {Partial<HTMLTextType>} */
       const element = output.children[8];
       const { start, end } = element;
 
@@ -168,7 +168,7 @@ describe('parse', () => {
     });
 
     test('for `HTMLElement`', () => {
-      /** @type {Partial<HTMLElementType>} */
+      /** @type {*} */
       const element = output.children[1];
       const { start, end } = element;
 
@@ -179,7 +179,7 @@ describe('parse', () => {
     });
 
     test('for `openingElement`', () => {
-      /** @type {Partial<HTMLElementType>} */
+      /** @type {*} */
       const element = output.children[1];
       const { start, end } = element.openingElement;
 
@@ -188,7 +188,7 @@ describe('parse', () => {
     });
 
     test('for `openingElement.name`', () => {
-      /** @type {Partial<HTMLElementType>} */
+      /** @type {*} */
       const element = output.children[1];
       const { start, end } = element.openingElement.name;
 
@@ -196,7 +196,7 @@ describe('parse', () => {
     });
 
     test('for `HTMLAttribute`', () => {
-      /** @type {Partial<HTMLElementType>} */
+      /** @type {*} */
       const element = output.children[1];
       const attributes = element.openingElement.attributes;
       const { start: start0, end: end0 } = attributes[0];
@@ -213,7 +213,7 @@ describe('parse', () => {
     });
 
     test('for `HTMLAttribute.name`', () => {
-      /** @type {Partial<HTMLElementType>} */
+      /** @type {*} */
       const element = output.children[1];
       /** @type {*} */
       const attribute = element.openingElement.attributes[1];
@@ -223,7 +223,7 @@ describe('parse', () => {
     });
 
     test('for `HTMLAttribute.value`', () => {
-      /** @type {Partial<HTMLElementType>} */
+      /** @type {*} */
       const element = output.children[1];
       /** @type {*} */
       const attribute = element.openingElement.attributes[1];
@@ -233,7 +233,7 @@ describe('parse', () => {
     });
 
     test('for `closingElement`', () => {
-      /** @type {Partial<HTMLElementType>} */
+      /** @type {*} */
       const element = output.children[1];
       const { start, end } = element.closingElement;
 
@@ -241,7 +241,7 @@ describe('parse', () => {
     });
 
     test('for `closingElement.name`', () => {
-      /** @type {Partial<HTMLElementType>} */
+      /** @type {*} */
       const element = output.children[1];
       const { start, end } = element.closingElement.name;
 
@@ -249,7 +249,7 @@ describe('parse', () => {
     });
 
     test('for `HTMLComment`', () => {
-      /** @type {Partial<HTMLCommentType>} */
+      /** @type {*} */
       const element = output.children[5];
       const { start, end } = element;
 
@@ -258,7 +258,7 @@ describe('parse', () => {
     });
 
     test('for "<meta />"', () => {
-      /** @type {Partial<HTMLCommentType>} */
+      /** @type {*} */
       const element = output.children[9];
       const { start, end } = element;
 

@@ -175,7 +175,7 @@ interface HTMLCommentType extends HTMLCommentInput {
 interface HTMLTextInput {
   start: number;
   end: number;
-  parent: () => HTMLMarkupType | HTMLElementType | HTMLDoctypeType | HTMLTextType | HTMLCommentType | HTMLAttributeType;
+  parent: () => HTMLMarkupType | HTMLElementType | HTMLDoctypeType | HTMLTextType | HTMLCommentType | HTMLOpeningElementType;
   previous: () => HTMLElementType | HTMLDoctypeType | HTMLTextType | HTMLCommentType | HTMLAttributeType;
   next: () => HTMLElementType | HTMLDoctypeType | HTMLTextType | HTMLCommentType | HTMLAttributeType;
   value: string;
