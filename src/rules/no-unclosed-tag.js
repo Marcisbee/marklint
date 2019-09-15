@@ -1,3 +1,6 @@
+const {
+  HTMLElement,
+} = require('../tokens');
 const report = require('../utils/report');
 const ruleHandler = require('../utils/rule-handler');
 
@@ -9,7 +12,7 @@ const defaults = {
 
 /** @type {RuleHandler} */
 const handler = (ast, path, { severity }) => {
-  if (path.type === 'HTMLElement') {
+  if (path instanceof HTMLElement) {
     const openTag = path.openingElement;
     const closeTag = path.closingElement;
     if (!openTag.selfClosing &&

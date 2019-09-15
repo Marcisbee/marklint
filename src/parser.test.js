@@ -1,12 +1,6 @@
 const {
+  HTMLToken,
   HTMLMarkup,
-  // eslint-disable-next-line no-unused-vars
-  HTMLAttribute,
-  // eslint-disable-next-line no-unused-vars
-  HTMLElement,
-  // eslint-disable-next-line no-unused-vars
-  HTMLComment,
-  // eslint-disable-next-line no-unused-vars
   HTMLDoctype,
   HTMLText,
 } = require('./tokens');
@@ -15,6 +9,18 @@ const parse = require('./parser');
 describe('parse', () => {
   test('should export `parse` as a function', () => {
     expect(typeof parse).toBe('function');
+  });
+
+  test('should be instance of HTMLToken', () => {
+    const output = new HTMLMarkup({
+      start: 0,
+      end: 1,
+      children: [],
+      sourceType: 'HTML',
+      raw: '',
+    });
+
+    expect(output instanceof HTMLToken).toBeTruthy();
   });
 
   test('should set correct type names for tokens', () => {
@@ -67,6 +73,8 @@ describe('parse', () => {
       start: 0,
       end: 90,
       parent: expect.any(Function),
+      next: expect.any(Function),
+      previous: expect.any(Function),
       raw: `<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01//EN\" \"http://www.w3.org/TR/html4/strict.dtd\">`,
       value: `DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01//EN\" \"http://www.w3.org/TR/html4/strict.dtd\"`,
     }));
@@ -160,7 +168,7 @@ describe('parse', () => {
     });
 
     test('for `HTMLElement`', () => {
-      /** @type {Partial<HTMLElement>} */
+      /** @type {Partial<HTMLElementType>} */
       const element = output.children[1];
       const { start, end } = element;
 
@@ -171,7 +179,7 @@ describe('parse', () => {
     });
 
     test('for `openingElement`', () => {
-      /** @type {Partial<HTMLElement>} */
+      /** @type {Partial<HTMLElementType>} */
       const element = output.children[1];
       const { start, end } = element.openingElement;
 
@@ -180,7 +188,7 @@ describe('parse', () => {
     });
 
     test('for `openingElement.name`', () => {
-      /** @type {Partial<HTMLElement>} */
+      /** @type {Partial<HTMLElementType>} */
       const element = output.children[1];
       const { start, end } = element.openingElement.name;
 
@@ -188,7 +196,7 @@ describe('parse', () => {
     });
 
     test('for `HTMLAttribute`', () => {
-      /** @type {Partial<HTMLElement>} */
+      /** @type {Partial<HTMLElementType>} */
       const element = output.children[1];
       const attributes = element.openingElement.attributes;
       const { start: start0, end: end0 } = attributes[0];
@@ -205,7 +213,7 @@ describe('parse', () => {
     });
 
     test('for `HTMLAttribute.name`', () => {
-      /** @type {Partial<HTMLElement>} */
+      /** @type {Partial<HTMLElementType>} */
       const element = output.children[1];
       /** @type {*} */
       const attribute = element.openingElement.attributes[1];
@@ -215,7 +223,7 @@ describe('parse', () => {
     });
 
     test('for `HTMLAttribute.value`', () => {
-      /** @type {Partial<HTMLElement>} */
+      /** @type {Partial<HTMLElementType>} */
       const element = output.children[1];
       /** @type {*} */
       const attribute = element.openingElement.attributes[1];
@@ -225,7 +233,7 @@ describe('parse', () => {
     });
 
     test('for `closingElement`', () => {
-      /** @type {Partial<HTMLElement>} */
+      /** @type {Partial<HTMLElementType>} */
       const element = output.children[1];
       const { start, end } = element.closingElement;
 
@@ -233,7 +241,7 @@ describe('parse', () => {
     });
 
     test('for `closingElement.name`', () => {
-      /** @type {Partial<HTMLElement>} */
+      /** @type {Partial<HTMLElementType>} */
       const element = output.children[1];
       const { start, end } = element.closingElement.name;
 
@@ -241,7 +249,7 @@ describe('parse', () => {
     });
 
     test('for `HTMLComment`', () => {
-      /** @type {Partial<HTMLComment>} */
+      /** @type {Partial<HTMLCommentType>} */
       const element = output.children[5];
       const { start, end } = element;
 
@@ -250,7 +258,7 @@ describe('parse', () => {
     });
 
     test('for "<meta />"', () => {
-      /** @type {Partial<HTMLComment>} */
+      /** @type {Partial<HTMLCommentType>} */
       const element = output.children[9];
       const { start, end } = element;
 

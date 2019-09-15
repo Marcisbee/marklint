@@ -17,7 +17,7 @@ const kAttributePattern = /(^|\s*)([\w-@:*.\[\]\(\)\#%]+)((?:\s*=\s*("([^"]+)"|'
 
 /**
  * @param {string} html
- * @return {HTMLMarkup}
+ * @return {HTMLMarkupType}
  */
 function parse(html) {
   const ast = new HTMLMarkup({
@@ -28,7 +28,7 @@ function parse(html) {
     raw: html,
   });
 
-  /** @type {(HTMLMarkup|HTMLElement)[]} */
+  /** @type {(HTMLMarkupType | HTMLElementType)[]} */
   const stack = [ast];
   let lastTextPos = -1;
   let match;
@@ -57,10 +57,13 @@ function parse(html) {
 
     // Add comment to children list
     if (match[0] && match[1] && match[0].substring(1, 3) == '!--') {
+      const lastElIndex = parent.children.length;
       parent.children.push(new HTMLComment({
         start: match.index,
         end: lastTextPos,
         parent: () => parent,
+        previous: () => parent.children[lastElIndex - 1],
+        next: () => parent.children[lastElIndex + 1],
         value: match[1] && match[1].trim(),
         raw: match[0],
       }));
@@ -69,10 +72,13 @@ function parse(html) {
 
     // Add doctype to children list
     if (match[0][1] == '!') {
+      const lastElIndex = parent.children.length;
       parent.children.push(new HTMLDoctype({
         start: match.index,
         end: lastTextPos,
         parent: () => parent,
+        previous: () => parent.children[lastElIndex - 1],
+        next: () => parent.children[lastElIndex + 1],
         value: match[2] && match[2].trim(),
         raw: match[0],
       }));

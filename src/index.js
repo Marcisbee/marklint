@@ -10,8 +10,8 @@ const ruleHandling = {
 };
 
 /**
- * @param {any} fileName
- * @param {any} content
+ * @param {string} fileName
+ * @param {string} content
  * @param {Record<string, any>} rules
  */
 function lint(fileName, content, rules) {
@@ -36,6 +36,9 @@ function lint(fileName, content, rules) {
             handler(ast, path, ruleConfig);
           }
         });
+
+      // @TODO: Return changed ast
+      return path;
     },
   });
 }

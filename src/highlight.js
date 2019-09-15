@@ -1,15 +1,11 @@
 const THEME = require('../theme');
 const style = require('./style');
 const traverse = require('./traverse');
-const {
-  // eslint-disable-next-line no-unused-vars
-  HTMLMarkup,
-} = require('./tokens');
 
 const cachedHighlights = {};
 
 /**
- * @param {HTMLMarkup} ast
+ * @param {HTMLMarkupType} ast
  * @return {({ text: string, styled: function }[])[]}
  */
 function highlight(ast) {
@@ -39,6 +35,8 @@ function highlight(ast) {
           [path.start, path.end, 'attributeLiteral']
         );
       }
+
+      return path;
     },
   });
 

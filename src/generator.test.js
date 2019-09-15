@@ -1,5 +1,6 @@
 const {
   HTMLMarkup,
+  HTMLText,
 } = require('./tokens');
 const parse = require('./parser');
 const generator = require('./generator');
@@ -16,6 +17,34 @@ describe('generator', () => {
       end: 0,
       children: [],
       raw: '',
+      sourceType: 'HTML',
+    });
+
+    const output = generator(input);
+
+    expect(output.code).toEqual(expectation);
+  });
+
+  test('should generate "FooBar" string', () => {
+    const expectation = `FooBar`;
+    const input = new HTMLMarkup({
+      start: 0,
+      end: 6,
+      children: [
+        new HTMLText({
+          start: 0,
+          end: 6,
+          value: 'FooBar',
+          raw: 'FooBar',
+          /** @type {*} */
+          parent: () => ({}),
+          /** @type {*} */
+          next: () => ({}),
+          /** @type {*} */
+          previous: () => ({}),
+        }),
+      ],
+      raw: 'FooBar',
       sourceType: 'HTML',
     });
 

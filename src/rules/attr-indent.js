@@ -1,3 +1,7 @@
+const {
+  HTMLOpeningElement,
+  HTMLText,
+} = require('../tokens');
 const report = require('../utils/report');
 const ruleHandler = require('../utils/rule-handler');
 
@@ -11,14 +15,14 @@ const defaults = {
 const handler = (ast, path, { severity, options: [indentSize] }) => {
   let lastIndent = 0;
 
-  if (path.type === 'HTMLOpeningElement') {
+  if (path instanceof HTMLOpeningElement) {
     const attributes = path.attributes;
 
     if (attributes.length === 0) return;
 
     const textBeforeTag = path.parent().previous();
 
-    if (textBeforeTag && textBeforeTag.type === 'HTMLText') {
+    if (textBeforeTag instanceof HTMLText) {
       const textLines = textBeforeTag.raw.split(/\n/g);
       lastIndent = textLines[textLines.length - 1].length;
     }

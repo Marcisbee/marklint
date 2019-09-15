@@ -1,285 +1,188 @@
-/* eslint-disable require-jsdoc */
+// eslint-disable-next-line require-jsdoc
+class HTMLToken {}
 
-// @TODO: Move types to ts file
-
-/**
- * @typedef HTMLTokenInput
- * @type {object}
- * @property {number} start
- * @property {number} end
- * @property {function=} parent
- * @property {function=} previous
- * @property {function=} next
- */
-
-class HTMLToken {
-  /**
-   * @param {HTMLTokenInput} data
-   */
+/** @type {HTMLMarkupType} */
+class HTMLMarkup extends HTMLToken {
+  /** @param {HTMLMarkupInput} data */
   constructor(data) {
+    super();
+
     this.type = this.constructor.name;
     this.start = data.start;
     this.end = data.end;
-    this.parent = data.parent;
-    this.previous = data.previous;
-    this.next = data.next;
-  }
-}
 
-/**
- * @typedef HTMLAnyToken
- * @type {HTMLMarkup | HTMLElement}
- */
-
-/**
- * @typedef HTMLMarkupInput
- * @type {object}
- * @property {number} start
- * @property {number} end
- * @property {(HTMLElement|HTMLComment|HTMLDoctype|HTMLText)[]} children
- * @property {string} sourceType
- * @property {string} raw
- */
-
-class HTMLMarkup extends HTMLToken {
-  /**
-   * @param {HTMLMarkupInput} data
-   */
-  constructor(data) {
-    super(data);
     this.sourceType = data.sourceType;
     this.children = data.children;
     this.raw = data.raw;
   }
 }
 
-/**
- * @typedef HTMLElementInput
- * @type {object}
- * @property {number} start
- * @property {number} end
- * @property {function=} parent
- * @property {function=} previous
- * @property {function=} next
- * @property {(HTMLElement|HTMLComment|HTMLDoctype|HTMLText)[]} children
- * @property {HTMLOpeningElement} openingElement
- * @property {HTMLClosingElement} closingElement
- */
-
+/** @type {HTMLElementType} */
 class HTMLElement extends HTMLToken {
-  /**
-   * @param {HTMLElementInput} data
-   */
+  /** @param {HTMLElementInput} data */
   constructor(data) {
-    super(data);
+    super();
+
+    this.type = this.constructor.name;
+    this.start = data.start;
+    this.end = data.end;
+    this.parent = data.parent;
+    this.previous = data.previous;
+    this.next = data.next;
+
     this.openingElement = data.openingElement;
     this.children = data.children;
     this.closingElement = data.closingElement;
   }
 }
 
-/**
- * @typedef HTMLOpeningElementInput
- * @type {object}
- * @property {number} start
- * @property {number} end
- * @property {function=} parent
- * @property {function=} previous
- * @property {function=} next
- * @property {HTMLIdentifier} name
- * @property {(HTMLAttribute|HTMLText)[]} attributes
- * @property {boolean} selfClosing
- */
-
+/** @type {HTMLOpeningElementType} */
 class HTMLOpeningElement extends HTMLToken {
-  /**
-   * @param {HTMLOpeningElementInput} data
-   */
+  /** @param {HTMLOpeningElementInput} data */
   constructor(data) {
-    super(data);
+    super();
+
+    this.type = this.constructor.name;
+    this.start = data.start;
+    this.end = data.end;
+    this.parent = data.parent;
+
     this.name = data.name;
     this.attributes = data.attributes;
     this.selfClosing = data.selfClosing;
   }
 }
 
-/**
- * @typedef HTMLClosingElementInput
- * @type {object}
- * @property {number} start
- * @property {number} end
- * @property {function=} parent
- * @property {function=} previous
- * @property {function=} next
- * @property {HTMLIdentifier} name
- */
-
+/** @type {HTMLClosingElementType} */
 class HTMLClosingElement extends HTMLToken {
-  /**
-   * @param {HTMLClosingElementInput} data
-   */
+  /** @param {HTMLClosingElementInput} data */
   constructor(data) {
-    super(data);
+    super();
+
+    this.type = this.constructor.name;
+    this.start = data.start;
+    this.end = data.end;
+    this.parent = data.parent;
+
     this.name = data.name;
   }
 }
 
-/**
- * @typedef HTMLIdentifierInput
- * @type {object}
- * @property {number} start
- * @property {number} end
- * @property {function=} parent
- * @property {function=} previous
- * @property {function=} next
- * @property {string} name
- * @property {string} raw
- */
-
+/** @type {HTMLIdentifierType} */
 class HTMLIdentifier extends HTMLToken {
-  /**
-   * @param {HTMLIdentifierInput} data
-   */
+  /** @param {HTMLIdentifierInput} data */
   constructor(data) {
-    super(data);
+    super();
+
+    this.type = this.constructor.name;
+    this.start = data.start;
+    this.end = data.end;
+    this.parent = data.parent;
+
     this.name = data.name;
     this.raw = data.raw;
   }
 }
 
-/**
- * @typedef HTMLAttributeInput
- * @type {object}
- * @property {number} start
- * @property {number} end
- * @property {function=} parent
- * @property {function=} previous
- * @property {function=} next
- * @property {HTMLAttributeIdentifier} name
- * @property {HTMLLiteral} value
- * @property {string} raw
- */
-
+/** @type {HTMLAttributeType} */
 class HTMLAttribute extends HTMLToken {
-  /**
-   * @param {HTMLAttributeInput} data
-   */
+  /** @param {HTMLAttributeInput} data */
   constructor(data) {
-    super(data);
+    super();
+
+    this.type = this.constructor.name;
+    this.start = data.start;
+    this.end = data.end;
+    this.parent = data.parent;
+    this.previous = data.previous;
+    this.next = data.next;
+
     this.name = data.name;
     this.value = data.value;
     this.raw = data.raw;
   }
 }
 
-/**
- * @typedef HTMLAttributeIdentifierInput
- * @type {object}
- * @property {number} start
- * @property {number} end
- * @property {function=} parent
- * @property {function=} previous
- * @property {function=} next
- * @property {string} name
- */
-
+/** @type {HTMLAttributeIdentifierType} */
 class HTMLAttributeIdentifier extends HTMLToken {
-  /**
-   * @param {HTMLAttributeIdentifierInput} data
-   */
+  /** @param {HTMLAttributeIdentifierInput} data */
   constructor(data) {
-    super(data);
+    super();
+
+    this.type = this.constructor.name;
+    this.start = data.start;
+    this.end = data.end;
+    this.parent = data.parent;
+
     this.name = data.name;
   }
 }
 
-/**
- * @typedef HTMLLiteralInput
- * @type {object}
- * @property {number} start
- * @property {number} end
- * @property {function=} parent
- * @property {function=} previous
- * @property {function=} next
- * @property {string} value
- * @property {string} raw
- */
-
+/** @type {HTMLLiteralType} */
 class HTMLLiteral extends HTMLToken {
-  /**
-   * @param {HTMLLiteralInput} data
-   */
+  /** @param {HTMLLiteralInput} data */
   constructor(data) {
-    super(data);
+    super();
+
+    this.type = this.constructor.name;
+    this.start = data.start;
+    this.end = data.end;
+    this.parent = data.parent;
+
     this.value = data.value;
     this.raw = data.raw;
   }
 }
 
-/**
- * @typedef HTMLDoctypeInput
- * @type {object}
- * @property {number} start
- * @property {number} end
- * @property {function=} parent
- * @property {function=} previous
- * @property {function=} next
- * @property {string} value
- * @property {string} raw
- */
-
+/** @type {HTMLDoctypeType} */
 class HTMLDoctype extends HTMLToken {
-  /**
-   * @param {HTMLDoctypeInput} data
-   */
+  /** @param {HTMLDoctypeInput} data */
   constructor(data) {
-    super(data);
+    super();
+
+    this.type = this.constructor.name;
+    this.start = data.start;
+    this.end = data.end;
+    this.parent = data.parent;
+    this.previous = data.previous;
+    this.next = data.next;
+
     this.value = data.value;
     this.raw = data.raw;
   }
 }
 
-/**
- * @typedef HTMLCommentInput
- * @type {object}
- * @property {number} start
- * @property {number} end
- * @property {function=} parent
- * @property {function=} previous
- * @property {function=} next
- * @property {string} value
- * @property {string} raw
- */
-
+/** @type {HTMLCommentType} */
 class HTMLComment extends HTMLToken {
-  /**
-   * @param {HTMLCommentInput} data
-   */
+  /** @param {HTMLCommentInput} data */
   constructor(data) {
-    super(data);
+    super();
+
+    this.type = this.constructor.name;
+    this.start = data.start;
+    this.end = data.end;
+    this.parent = data.parent;
+    this.previous = data.previous;
+    this.next = data.next;
+
     this.value = data.value;
     this.raw = data.raw;
   }
 }
 
-/**
- * @typedef HTMLTextInput
- * @type {object}
- * @property {number} start
- * @property {number} end
- * @property {function=} parent
- * @property {function=} previous
- * @property {function=} next
- * @property {string} value
- * @property {string} raw
- */
-
+/** @type {HTMLTextType} */
 class HTMLText extends HTMLToken {
-  /**
-   * @param {HTMLTextInput} data
-   */
+  /** @param {HTMLTextInput} data */
   constructor(data) {
-    super(data);
+    super();
+
+    this.type = this.constructor.name;
+    this.start = data.start;
+    this.end = data.end;
+    this.parent = data.parent;
+    this.previous = data.previous;
+    this.next = data.next;
+
     this.value = data.value;
     this.raw = data.raw;
   }

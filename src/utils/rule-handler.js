@@ -3,7 +3,7 @@
  * @param {RuleHandler} handler
  * @return {{
  *   config: function(RuleConfig): RuleConfig,
- *   handler: function
+ *   handler: RuleHandler
  * }}
  */
 function ruleHandler(defaults, handler) {

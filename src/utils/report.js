@@ -1,4 +1,9 @@
 const THEME = require('../../theme');
+const {
+  HTMLOpeningElement,
+  HTMLClosingElement,
+  HTMLText,
+} = require('../tokens');
 const snippet = require('../snippet');
 const style = require('../style');
 const parse = require('../parser');
@@ -28,7 +33,7 @@ function stylizeString(severity, string) {
 
   traverse(ast, {
     enter(path) {
-      if (path.type === 'HTMLOpeningElement') {
+      if (path instanceof HTMLOpeningElement) {
         const name = path.name.name;
         const style = THEME.inlineStyles[name];
 
@@ -36,12 +41,12 @@ function stylizeString(severity, string) {
         return;
       }
 
-      if (path.type === 'HTMLClosingElement') {
+      if (path instanceof HTMLClosingElement) {
         stylingList.pop();
         return;
       }
 
-      if (path.type === 'HTMLText') {
+      if (path instanceof HTMLText) {
         const styles = stylingList
           .filter((s) => s)
           .reduce((acc, s) => acc.concat(s), []);
@@ -50,6 +55,8 @@ function stylizeString(severity, string) {
 
         return;
       }
+
+      return ast;
     },
   });
 }

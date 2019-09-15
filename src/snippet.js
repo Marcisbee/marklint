@@ -1,10 +1,6 @@
 const THEME = require('../theme');
 const style = require('./style');
 const highlight = require('./highlight');
-const {
-  // eslint-disable-next-line no-unused-vars
-  HTMLMarkup,
-} = require('./tokens');
 
 const SPLIT = '|';
 
@@ -19,7 +15,7 @@ function getLineNumber(currentIndex, maxIndex) {
 }
 
 /**
- * @param {HTMLMarkup} ast
+ * @param {HTMLMarkupType} ast
  * @param {number} start
  * @param {number=} end
  * @return {function[]}

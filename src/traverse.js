@@ -1,11 +1,9 @@
 const errorMessage = require('./utils/error-message');
-
-// eslint-disable-next-line no-unused-vars
 const { HTMLToken } = require('./tokens');
 
 /**
- * @param {*} value
- * @param {{ enter: function(*): * }} options
+ * @param {HTMLMarkupType} value
+ * @param {{ enter: function(AnyHTMLType): AnyHTMLType }} options
  * @return {*}
  */
 function traverseToken(value, options) {
@@ -23,9 +21,9 @@ function traverseToken(value, options) {
 }
 
 /**
- * @param {*} ast
- * @param {{ enter: function(*): * }} options
- * @return {HTMLToken} ast
+ * @param {HTMLMarkupType} ast
+ * @param {{ enter: function(AnyHTMLType): AnyHTMLType }} options
+ * @return {HTMLMarkupType} ast
  */
 function traverse(ast, options) {
   if (!ast) {
