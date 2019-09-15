@@ -1,3 +1,5 @@
+const errorMessage = require('./utils/error-message');
+
 // eslint-disable-next-line no-unused-vars
 const { HTMLToken } = require('./tokens');
 
@@ -27,7 +29,7 @@ function traverseToken(value, options) {
  */
 function traverse(ast, options) {
   if (!ast) {
-    throw new Error('[markup-lint]: traverse did not receive ast');
+    throw errorMessage('Traverse method did not receive ast');
   }
 
   options.enter(ast);

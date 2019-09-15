@@ -64,7 +64,7 @@ function snippet(ast, start, end = start + 1) {
       const newAcc = acc.concat([
         style(faulty ? ' >' : '  ', THEME.snippetErrorLeftArrow),
         style(`${lineNumber}${SPLIT} `, THEME.snippetLineNumber),
-        ...coloredLines[index],
+        ...coloredLines[index].map((a) => a.styled),
         style('\n'),
       ]);
 

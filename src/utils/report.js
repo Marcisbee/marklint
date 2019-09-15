@@ -1,8 +1,10 @@
+const THEME = require('../../theme');
 const snippet = require('../snippet');
 const style = require('../style');
 const parse = require('../parse');
 const traverse = require('../traverse');
-const THEME = require('../../theme');
+
+const errorMessage = require('./error-message');
 
 const PREFIX = {
   success: '<strong>✔</strong> ',
@@ -57,7 +59,7 @@ function stylizeString(severity, string) {
  */
 function report(config) {
   if (!config) {
-    throw new Error('Report function did not receive any config');
+    throw errorMessage('Report function did not receive any config');
   }
 
   if (config.type === 'log') {

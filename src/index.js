@@ -1,3 +1,4 @@
+const errorMessage = require('./utils/error-message');
 const parse = require('./parse');
 const traverse = require('./traverse');
 const style = require('./style');
@@ -7,26 +8,6 @@ const ruleHandling = {
   'no-unclosed-tag': require('./rules/no-unclosed-tag'),
   'attr-indent': require('./rules/attr-indent'),
 };
-
-/**
- * @TODO: Create markdown for error messages
- * for example:
- * "Expected a ... closing tag for <emphasis>variable</emphasis>."
- *
- * ```js
- * [
- *   {
- *     "type": "log",
- *     "severity": "info",
- *     "message": "Hello world!"
- *   },
- *   {
- *     "type": "snippet",
- *     "snippet": snippet()
- *   }
- * ]
- * ```
- */
 
 /**
  * @param {any} fileName
@@ -45,7 +26,7 @@ function lint(fileName, content, rules) {
           const ruleHandler = ruleHandling[rule];
 
           if (typeof ruleHandler === 'undefined') {
-            throw new Error(`[markup-lint]: Unknown rule "${rule}"`);
+            throw errorMessage(`Unknown rule "${rule}"`);
           }
 
           const { config, handler } = ruleHandler;
@@ -95,7 +76,7 @@ const fileIndex =
 
  asd  <a class="foo"
           href="https://google.com"
-        home>  <--- @TODO FIX HERE
+        home>
     text
 </MessedUpTagName>`;
 
