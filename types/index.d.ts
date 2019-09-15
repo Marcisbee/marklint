@@ -32,7 +32,7 @@ interface HTMLMarkupInput {
 }
 
 interface HTMLMarkupType extends HTMLMarkupInput {
-  type: string;
+  type: 'HTMLMarkup';
 }
 
 // HTMLElement
@@ -49,7 +49,7 @@ interface HTMLElementInput {
 }
 
 interface HTMLElementType extends HTMLElementInput {
-  type: string;
+  type: 'HTMLElement';
 }
 
 // HTMLOpeningElement
@@ -64,7 +64,7 @@ interface HTMLOpeningElementInput {
 }
 
 interface HTMLOpeningElementType extends HTMLOpeningElementInput {
-  type: string;
+  type: 'HTMLOpeningElement';
 }
 
 // HTMLClosingElement
@@ -77,7 +77,7 @@ interface HTMLClosingElementInput {
 }
 
 interface HTMLClosingElementType extends HTMLClosingElementInput {
-  type: string;
+  type: 'HTMLClosingElement';
 }
 
 // HTMLIdentifier
@@ -91,7 +91,7 @@ interface HTMLIdentifierInput {
 }
 
 interface HTMLIdentifierType extends HTMLIdentifierInput {
-  type: string;
+  type: 'HTMLIdentifier';
 }
 
 // HTMLAttribute
@@ -108,7 +108,7 @@ interface HTMLAttributeInput {
 }
 
 interface HTMLAttributeType extends HTMLAttributeInput {
-  type: string;
+  type: 'HTMLAttribute';
 }
 
 // HTMLAttributeIdentifier
@@ -121,7 +121,7 @@ interface HTMLAttributeIdentifierInput {
 }
 
 interface HTMLAttributeIdentifierType extends HTMLAttributeIdentifierInput {
-  type: string;
+  type: 'HTMLAttributeIdentifier';
 }
 
 // HTMLLiteral
@@ -135,7 +135,7 @@ interface HTMLLiteralInput {
 }
 
 interface HTMLLiteralType extends HTMLLiteralInput {
-  type: string;
+  type: 'HTMLLiteral';
 }
 
 // HTMLDoctype
@@ -151,7 +151,7 @@ interface HTMLDoctypeInput {
 }
 
 interface HTMLDoctypeType extends HTMLDoctypeInput {
-  type: string;
+  type: 'HTMLDoctype';
 }
 
 // HTMLComment
@@ -167,7 +167,7 @@ interface HTMLCommentInput {
 }
 
 interface HTMLCommentType extends HTMLCommentInput {
-  type: string;
+  type: 'HTMLComment';
 }
 
 // HTMLText
@@ -183,5 +183,5 @@ interface HTMLTextInput {
 }
 
 interface HTMLTextType extends HTMLTextInput {
-  type: string;
+  type: 'HTMLText';
 }

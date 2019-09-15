@@ -6,7 +6,7 @@ const {
   HTMLLiteral,
   HTMLDoctype,
   HTMLComment,
-} = require('./tokens');
+} = require('./types');
 const traverse = require('./traverse');
 
 /**

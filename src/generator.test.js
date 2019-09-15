@@ -1,7 +1,7 @@
 const {
   HTMLMarkup,
   HTMLText,
-} = require('./tokens');
+} = require('./types');
 const parse = require('./parser');
 const generator = require('./generator');
 

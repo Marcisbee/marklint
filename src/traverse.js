@@ -1,5 +1,5 @@
 const errorMessage = require('./utils/error-message');
-const { HTMLToken } = require('./tokens');
+const { HTMLToken } = require('./types');
 
 /**
  * @param {HTMLMarkupType} value

@@ -10,7 +10,7 @@ const {
   HTMLAttributeIdentifier,
   HTMLLiteral,
   HTMLClosingElement,
-} = require('./tokens');
+} = require('./types');
 
 const kMarkupPattern = /<!--([^]*?)(?=-->)-->|<!([^]*?)(?=>)>|<(\/?)([a-z][-.0-9_a-z]*)([^>]*?)(\/?)>/ig;
 const kAttributePattern = /(^|\s*)([\w-@:*.\[\]\(\)\#%]+)((?:\s*=\s*("([^"]+)"|'([^']+)'|(\S+)))*)/ig;

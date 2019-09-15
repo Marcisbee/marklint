@@ -7,7 +7,7 @@ class HTMLMarkup extends HTMLToken {
   constructor(data) {
     super();
 
-    this.type = this.constructor.name;
+    this.type = 'HTMLMarkup';
     this.start = data.start;
     this.end = data.end;
 
@@ -23,7 +23,7 @@ class HTMLElement extends HTMLToken {
   constructor(data) {
     super();
 
-    this.type = this.constructor.name;
+    this.type = 'HTMLElement';
     this.start = data.start;
     this.end = data.end;
     this.parent = data.parent;
@@ -42,7 +42,7 @@ class HTMLOpeningElement extends HTMLToken {
   constructor(data) {
     super();
 
-    this.type = this.constructor.name;
+    this.type = 'HTMLOpeningElement';
     this.start = data.start;
     this.end = data.end;
     this.parent = data.parent;
@@ -59,7 +59,7 @@ class HTMLClosingElement extends HTMLToken {
   constructor(data) {
     super();
 
-    this.type = this.constructor.name;
+    this.type = 'HTMLClosingElement';
     this.start = data.start;
     this.end = data.end;
     this.parent = data.parent;
@@ -74,7 +74,7 @@ class HTMLIdentifier extends HTMLToken {
   constructor(data) {
     super();
 
-    this.type = this.constructor.name;
+    this.type = 'HTMLIdentifier';
     this.start = data.start;
     this.end = data.end;
     this.parent = data.parent;
@@ -90,7 +90,7 @@ class HTMLAttribute extends HTMLToken {
   constructor(data) {
     super();
 
-    this.type = this.constructor.name;
+    this.type = 'HTMLAttribute';
     this.start = data.start;
     this.end = data.end;
     this.parent = data.parent;
@@ -109,7 +109,7 @@ class HTMLAttributeIdentifier extends HTMLToken {
   constructor(data) {
     super();
 
-    this.type = this.constructor.name;
+    this.type = 'HTMLAttributeIdentifier';
     this.start = data.start;
     this.end = data.end;
     this.parent = data.parent;
@@ -124,7 +124,7 @@ class HTMLLiteral extends HTMLToken {
   constructor(data) {
     super();
 
-    this.type = this.constructor.name;
+    this.type = 'HTMLLiteral';
     this.start = data.start;
     this.end = data.end;
     this.parent = data.parent;
@@ -140,7 +140,7 @@ class HTMLDoctype extends HTMLToken {
   constructor(data) {
     super();
 
-    this.type = this.constructor.name;
+    this.type = 'HTMLDoctype';
     this.start = data.start;
     this.end = data.end;
     this.parent = data.parent;
@@ -158,7 +158,7 @@ class HTMLComment extends HTMLToken {
   constructor(data) {
     super();
 
-    this.type = this.constructor.name;
+    this.type = 'HTMLComment';
     this.start = data.start;
     this.end = data.end;
     this.parent = data.parent;
@@ -176,7 +176,7 @@ class HTMLText extends HTMLToken {
   constructor(data) {
     super();
 
-    this.type = this.constructor.name;
+    this.type = 'HTMLText';
     this.start = data.start;
     this.end = data.end;
     this.parent = data.parent;

@@ -3,7 +3,7 @@ const {
   HTMLMarkup,
   HTMLDoctype,
   HTMLText,
-} = require('./tokens');
+} = require('./types');
 const parse = require('./parser');
 
 describe('parse', () => {
@@ -152,7 +152,7 @@ describe('parse', () => {
     const output = parse(input);
 
     test('for `HTMLText` prefix', () => {
-      /** @type {Partial<HTMLTextType>} */
+      /** @type {*} */
       const element = output.children[0];
       const { start, end } = element;
 
@@ -160,7 +160,7 @@ describe('parse', () => {
     });
 
     test('for `HTMLText` suffix', () => {
-      /** @type {Partial<HTMLTextType>} */
+      /** @type {*} */
       const element = output.children[8];
       const { start, end } = element;
 
