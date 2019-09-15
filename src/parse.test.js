@@ -10,11 +10,11 @@ const {
   HTMLDoctype,
   HTMLText,
 } = require('./tokens');
-const tokenize = require('./tokenize');
+const parse = require('./parse');
 
-describe('tokenize', () => {
-  test('should export `tokenize` as a function', () => {
-    expect(typeof tokenize).toBe('function');
+describe('parse', () => {
+  test('should export `parse` as a function', () => {
+    expect(typeof parse).toBe('function');
   });
 
   test('should set correct type names for tokens', () => {
@@ -29,9 +29,9 @@ describe('tokenize', () => {
     expect(output.type).toEqual('HTMLMarkup');
   });
 
-  test('should tokenize HTMLMarkup', () => {
+  test('should parse HTMLMarkup', () => {
     const input = ``;
-    const output = tokenize(input);
+    const output = parse(input);
 
     expect(output).toEqual(new HTMLMarkup({
       start: 0,
@@ -42,9 +42,9 @@ describe('tokenize', () => {
     }));
   });
 
-  test('should tokenize children', () => {
+  test('should parse children', () => {
     const input = ``;
-    const output = tokenize(input);
+    const output = parse(input);
 
     expect(output.children).toEqual([
       new HTMLText({
@@ -61,7 +61,7 @@ describe('tokenize', () => {
 
   test('should handle doctype', () => {
     const input = `<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">`;
-    const output = tokenize(input);
+    const output = parse(input);
 
     expect(output.children[0]).toEqual(new HTMLDoctype({
       start: 0,
@@ -74,7 +74,7 @@ describe('tokenize', () => {
 
   test('should handle attribute name and value', () => {
     const input = '<meta\n  stylesheet\n  name="foo"\n/>';
-    const output = tokenize(input);
+    const output = parse(input);
 
     /** @type {*} */
     const element = output.children[0];
@@ -90,7 +90,7 @@ describe('tokenize', () => {
 
   test('should handle attribute name and value with position', () => {
     const input = '<meta\n  stylesheet\n  name="foo"\n/>';
-    const output = tokenize(input);
+    const output = parse(input);
 
     /** @type {*} */
     const element = output.children[0];
@@ -111,7 +111,7 @@ describe('tokenize', () => {
 
   test('should handle attribute with multi line value', () => {
     const input = '<meta\n  foo=" bar\nbaz "\n/>';
-    const output = tokenize(input);
+    const output = parse(input);
 
     /** @type {*} */
     const element = output.children[0];
@@ -123,7 +123,7 @@ describe('tokenize', () => {
 
   test('should handle root as plain text', () => {
     const input = 'Hello world!';
-    const output = tokenize(input);
+    const output = parse(input);
 
     /** @type {*} */
     const element = output.children[0];
@@ -141,7 +141,7 @@ describe('tokenize', () => {
   <br/>
   <!-- this is a comment -->
   <b>123</b> dsa`;
-    const output = tokenize(input);
+    const output = parse(input);
 
     test('for `HTMLText` prefix', () => {
       /** @type {Partial<HTMLText>} */

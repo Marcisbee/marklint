@@ -1,4 +1,4 @@
-const tokenize = require('./tokenize');
+const parse = require('./parse');
 const traverse = require('./traverse');
 const style = require('./style');
 const THEME = require('../theme');
@@ -34,7 +34,7 @@ const ruleHandling = {
  * @param {Record<string, any>} rules
  */
 function lint(fileName, content, rules) {
-  const ast = tokenize(content);
+  const ast = parse(content);
 
   style(`${fileName}\n`, THEME.fileName)();
 

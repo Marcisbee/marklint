@@ -1,6 +1,6 @@
 const snippet = require('../snippet');
 const style = require('../style');
-const tokenize = require('../tokenize');
+const parse = require('../parse');
 const traverse = require('../traverse');
 const THEME = require('../../theme');
 
@@ -18,7 +18,7 @@ const PREFIX = {
  */
 function stylizeString(severity, string) {
   const newString = `\n${PREFIX[severity]}${string}\n`;
-  const ast = tokenize(newString);
+  const ast = parse(newString);
 
   const stylingList = [
     THEME.severity[severity],

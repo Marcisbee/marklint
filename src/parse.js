@@ -19,7 +19,7 @@ const kAttributePattern = /(^|\s*)([\w-@*.]+)((?:\s*=\s*("([^"]+)"|'([^']+)'|(\S
  * @param {string} html
  * @return {HTMLMarkup}
  */
-function tokenize(html) {
+function parse(html) {
   const ast = new HTMLMarkup({
     start: 0,
     end: html.length,
@@ -238,4 +238,4 @@ function tokenize(html) {
   return ast;
 }
 
-module.exports = tokenize;
+module.exports = parse;
