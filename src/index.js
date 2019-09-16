@@ -113,7 +113,7 @@ lint(diagnostics, fileIndex, rules);
 report({
   type: 'log',
   severity: 'default',
-  message: `<link>${filePath}</link>`,
+  message: `<a href="${filePath}">${filePath}</a>`,
 });
 
 diagnostics.error.forEach((issue) => {
