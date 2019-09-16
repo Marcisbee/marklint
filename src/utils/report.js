@@ -71,10 +71,10 @@ function report(config) {
   }
 
   if (config.type === 'snippet') {
-    const { snippet: { ast, start, end } } = config;
+    const { snippet: { ast, start, end, filePath } } = config;
 
     process.stdout.write('\n');
-    snippet(ast, start, end).forEach((fn) => fn());
+    snippet(ast, filePath, start, end).forEach((fn) => fn());
     process.stdout.write('\n');
   }
 }

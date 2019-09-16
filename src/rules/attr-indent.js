@@ -46,6 +46,7 @@ const handler = (ast, path, { severity, options: [indentSize] }) => {
           type: 'snippet',
           snippet: {
             ast,
+            filePath: 'index.js',
             start: attribute.start + correctionStart,
             end: attribute.end,
           },

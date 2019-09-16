@@ -27,6 +27,7 @@ const handler = (ast, path, { severity }) => {
         type: 'snippet',
         snippet: {
           ast,
+          filePath: 'index.js',
           start: openTagName.start,
           end: openTagName.end,
         },
@@ -50,6 +51,7 @@ const handler = (ast, path, { severity }) => {
         type: 'snippet',
         snippet: {
           ast,
+          filePath: 'index.js',
           start: closeTagName.start,
           end: closeTagName.end,
         },

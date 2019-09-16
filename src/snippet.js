@@ -16,11 +16,12 @@ function getLineNumber(currentIndex, maxIndex) {
 
 /**
  * @param {HTMLMarkupType} ast
+ * @param {string} filePath
  * @param {number} start
  * @param {number=} end
  * @return {function[]}
  */
-function snippet(ast, start, end = start + 1) {
+function snippet(ast, filePath, start, end = start + 1) {
   const { raw } = ast;
   const beforeStartText = raw.substring(0, start);
   const beforeStart = beforeStartText.match(/\n/g);
@@ -106,7 +107,9 @@ function snippet(ast, start, end = start + 1) {
 
       return newAcc;
     },
-    []
+    [
+      style(`    --> ${filePath}:${faultyStartLine + 1}:${columnStartIndex}\n`),
+    ]
   );
 
   return linesWithNumbers;

@@ -33,7 +33,7 @@ function traverse(ast, options) {
   options.enter(ast);
 
   Object.keys(ast).forEach((key) => {
-    return traverseToken(ast[key], options);
+    traverseToken(ast[key], options);
   });
 
   return ast;
