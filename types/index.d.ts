@@ -3,8 +3,47 @@ interface RuleConfig {
   options: *;
 }
 
-type RuleHandler = (ast: HTMLMarkupType, path: AnyHTMLType, config: RuleConfig) => HTMLMarkupType;
+type RuleHandler = (diagnostics: any, ast: HTMLMarkupType, path: AnyHTMLType, config: RuleConfig) => HTMLMarkupType;
 
+type AnyReportType = ReportLogType | ReportSnippetType | ReportInspectType;
+
+interface ReportLogType {
+  type: 'log';
+  severity: 'error' | 'warning' | 'info' | 'success' | 'default';
+  message: string;
+}
+
+interface ReportSnippetType {
+  type: 'snippet';
+  snippet: {
+    ast: any;
+    start: Loc;
+    end: Loc;
+  };
+}
+
+interface ReportInspectType {
+  type: 'inspect';
+  data: any;
+}
+
+interface Loc {
+  line: number;
+  column: number;
+  index: number;
+}
+
+interface DiagnosticsReport {
+  details: AnyReportType[];
+  advice: AnyReportType[];
+  fixable: boolean;
+}
+
+interface Diagnostics {
+  filePath: string;
+  error: DiagnosticsReport[];
+  warning: DiagnosticsReport[];
+}
 
 
 // Tokens

@@ -16,28 +16,15 @@ function getLineNumber(currentIndex, maxIndex) {
 
 /**
  * @param {HTMLMarkupType} ast
- * @param {string} filePath
- * @param {number} start
- * @param {number=} end
+ * @param {Loc} start
+ * @param {Loc} end
  * @return {function[]}
  */
-function snippet(ast, filePath, start, end = start + 1) {
+function snippet(ast, start, end) {
   const { raw } = ast;
-  const beforeStartText = raw.substring(0, start);
-  const beforeStart = beforeStartText.match(/\n/g);
-  const beforeStartColumns = beforeStartText.split(/\n/g);
-  const columnStartIndex = beforeStartColumns[
-    beforeStartColumns.length - 1
-  ].length;
-  const faultyStartLine = beforeStart ? beforeStart.length : 0;
-  const targetStartLine = Math.max(0, faultyStartLine - 2);
 
-  const beforeEndText = raw.substring(0, end);
-  const beforeEnd = beforeEndText.match(/\n/g);
-  const beforeEndColumns = beforeEndText.split(/\n/g);
-  const columnEndIndex = beforeEndColumns[beforeEndColumns.length - 1].length;
-  const faultyEndLine = beforeEnd ? beforeEnd.length : 0;
-  const targetEndLine = Math.max(0, faultyEndLine - 2);
+  const targetStartLine = Math.max(0, start.line - 3);
+  const targetEndLine = Math.max(0, end.line - 3);
 
   const allLines = raw.split('\n');
   const lines = allLines.slice(targetStartLine, targetEndLine + 5);
@@ -55,8 +42,8 @@ function snippet(ast, filePath, start, end = start + 1) {
         number + targetStartLine,
         linesInTotal + targetStartLine
       );
-      const faulty = currentNumber >= faultyStartLine + 1 &&
-        currentNumber <= faultyEndLine + 1;
+      const faulty = currentNumber >= start.line &&
+        currentNumber <= end.line;
 
       const newAcc = acc.concat([
         style(faulty ? ' >' : '  ', THEME.snippetErrorLeftArrow),
@@ -65,31 +52,31 @@ function snippet(ast, filePath, start, end = start + 1) {
         style('\n'),
       ]);
 
-      if (currentNumber >= faultyStartLine + 1 &&
-        currentNumber <= faultyEndLine + 1) {
+      if (currentNumber >= start.line &&
+        currentNumber <= end.line) {
         const space = getLineNumber(' ', linesInTotal + targetStartLine);
 
         const errorLine = new Array(line.length).fill(' ').map((char, i) => {
           // Handles lines in between faulty start and end lines
-          if (currentNumber > faultyStartLine + 1 &&
-            currentNumber < faultyEndLine + 1) {
+          if (currentNumber > start.line &&
+            currentNumber < end.line) {
             return '^';
           }
 
           // Handles single end & start line
-          if (currentNumber === faultyEndLine + 1 &&
-            currentNumber === faultyStartLine + 1 &&
-            (i >= columnEndIndex || i < columnStartIndex)) {
+          if (currentNumber === end.line &&
+            currentNumber === start.line &&
+            (i >= end.column || i < start.column)) {
             return ' ';
           }
 
           // Handles end line
-          if (currentNumber === faultyEndLine + 1 && i < columnEndIndex) {
+          if (currentNumber === end.line && i < end.column) {
             return '^';
           }
 
           // Handles start line
-          if (currentNumber === faultyStartLine + 1 && i >= columnStartIndex) {
+          if (currentNumber === start.line && i >= start.column) {
             return '^';
           }
 
@@ -107,9 +94,7 @@ function snippet(ast, filePath, start, end = start + 1) {
 
       return newAcc;
     },
-    [
-      style(`    --> ${filePath}:${faultyStartLine + 1}:${columnStartIndex}\n`),
-    ]
+    []
   );
 
   return linesWithNumbers;

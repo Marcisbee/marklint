@@ -1,8 +1,7 @@
 const errorMessage = require('./utils/error-message');
 const parse = require('./parser');
 const traverse = require('./traverse');
-const style = require('./style');
-const THEME = require('../theme');
+const report = require('./utils/report');
 
 const ruleHandling = {
   'no-unclosed-tag': require('./rules/no-unclosed-tag'),
@@ -10,14 +9,12 @@ const ruleHandling = {
 };
 
 /**
- * @param {string} fileName
+ * @param {Diagnostics} diagnostics
  * @param {string} content
  * @param {Record<string, any>} rules
  */
-function lint(fileName, content, rules) {
+function lint(diagnostics, content, rules) {
   const ast = parse(content);
-
-  style(`${fileName}\n`, THEME.fileName)();
 
   traverse(ast, {
     enter: (path) => {
@@ -33,14 +30,24 @@ function lint(fileName, content, rules) {
           const ruleConfig = config(rules[rule]);
 
           if (rules[rule]) {
-            handler(ast, path, ruleConfig);
+            const localDiagnostics = {
+              rule,
+              error: [],
+              warning: [],
+            };
+
+            handler(localDiagnostics, ast, path, ruleConfig);
+
+            diagnostics.error.push(...localDiagnostics.error);
+            diagnostics.warning.push(...localDiagnostics.warning);
           }
         });
 
-      // @TODO: Return changed ast
       return path;
     },
   });
+
+  return ast;
 }
 
 
@@ -90,6 +97,47 @@ const fileIndex =
 //   href="<%= htmlWebpackPlugin.options.metadata.baseUrl %>"
 // >`;
 
-console.time('Parsing');
-lint('index.html', fileIndex, rules);
-console.timeEnd('Parsing');
+const filePath = 'index.html';
+
+/** @type {Diagnostics} */
+const diagnostics = {
+  filePath,
+  error: [],
+  warning: [],
+};
+
+// console.time('Parsing');
+lint(diagnostics, fileIndex, rules);
+// console.timeEnd('Parsing');
+
+report({
+  type: 'log',
+  severity: 'default',
+  message: `<link>${filePath}</link>`,
+});
+
+diagnostics.error.forEach((issue) => {
+  issue.details.forEach((detail) => {
+    report(detail);
+  });
+
+  issue.advice.forEach((advice) => {
+    report(advice);
+  });
+});
+
+diagnostics.warning.forEach((issue) => {
+  issue.details.forEach((detail) => {
+    report(detail);
+  });
+
+  issue.advice.forEach((advice) => {
+    report(advice);
+  });
+});
+
+report({
+  type: 'log',
+  severity: 'error',
+  message: `Found ${diagnostics.error.length} problems and ${diagnostics.warning.length} warnings.\n`,
+});

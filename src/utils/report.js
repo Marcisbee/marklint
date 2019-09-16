@@ -19,7 +19,7 @@ const PREFIX = {
  * @param {string} string
  */
 function stylizeString(severity, string) {
-  const newString = `\n${PREFIX[severity]}${string}\n`;
+  const newString = `\n ${PREFIX[severity]}${string}\n`;
   const ast = parse(newString);
 
   const stylingList = [
@@ -57,7 +57,7 @@ function stylizeString(severity, string) {
 }
 
 /**
- * @param {Record<string, *>} config
+ * @param {AnyReportType} config
  */
 function report(config) {
   if (!config) {
@@ -71,10 +71,18 @@ function report(config) {
   }
 
   if (config.type === 'snippet') {
-    const { snippet: { ast, start, end, filePath } } = config;
+    const { snippet: { ast, start, end } } = config;
 
     process.stdout.write('\n');
-    snippet(ast, filePath, start, end).forEach((fn) => fn());
+    snippet(ast, start, end).forEach((fn) => fn());
+    process.stdout.write('\n');
+  }
+
+  if (config.type === 'inspect') {
+    const { data } = config;
+
+    process.stdout.write('\n');
+    process.stdout.write(JSON.stringify(data, null, '  '));
     process.stdout.write('\n');
   }
 }

@@ -1,4 +1,4 @@
-const report = require('../utils/report');
+const getLOC = require('../utils/get-loc');
 const ruleHandler = require('../utils/rule-handler');
 
 /** @type {RuleConfig} */
@@ -8,7 +8,7 @@ const defaults = {
 };
 
 /** @type {RuleHandler} */
-const handler = (ast, path, { severity }) => {
+const handler = (diagnostics, ast, path, { severity }) => {
   if (path.type === 'HTMLElement') {
     const openTag = path.openingElement;
     const closeTag = path.closingElement;
@@ -17,21 +17,31 @@ const handler = (ast, path, { severity }) => {
       const openTagName = openTag.name;
       const closeTagName = closeTag && closeTag.name;
 
-      report({
+      const report = {
+        type: diagnostics.type,
+        details: [],
+        advice: [],
+        fixable: false,
+      };
+
+      report.details.push({
         type: 'log',
         severity,
         message: `Expected a corresponding HTML closing tag for <strong>${openTagName.name}</strong>.`,
       });
 
-      report({
+      const locIssue = getLOC(ast.raw, openTagName.start, openTagName.end);
+
+      report.details.push({
         type: 'snippet',
         snippet: {
           ast,
-          filePath: 'index.js',
-          start: openTagName.start,
-          end: openTagName.end,
+          start: locIssue.start,
+          end: locIssue.end,
         },
       });
+
+      diagnostics[severity].push(report);
 
       // @TODO: Run list of self closing tags and give suggestion to fix
       // style('\nℹ ', THEME.infoPrefix)();
@@ -41,19 +51,20 @@ const handler = (ast, path, { severity }) => {
         return;
       }
 
-      report({
+      report.advice.push({
         type: 'log',
         severity: 'info',
         message: `But found a closing tag of <strong>${closeTagName.name}</strong>.`,
       });
 
-      report({
+      const locInfo = getLOC(ast.raw, closeTagName.start, closeTagName.end);
+
+      report.advice.push({
         type: 'snippet',
         snippet: {
           ast,
-          filePath: 'index.js',
-          start: closeTagName.start,
-          end: closeTagName.end,
+          start: locInfo.start,
+          end: locInfo.end,
         },
       });
 

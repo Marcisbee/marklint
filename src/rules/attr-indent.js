@@ -1,4 +1,4 @@
-const report = require('../utils/report');
+const getLOC = require('../utils/get-loc');
 const ruleHandler = require('../utils/rule-handler');
 
 /** @type {RuleConfig} */
@@ -8,7 +8,10 @@ const defaults = {
 };
 
 /** @type {RuleHandler} */
-const handler = (ast, path, { severity, options: [indentSize] }) => {
+const handler = (diagnostics, ast, path, {
+  severity,
+  options: [indentSize],
+}) => {
   let lastIndent = 0;
 
   if (path.type === 'HTMLOpeningElement') {
@@ -36,21 +39,35 @@ const handler = (ast, path, { severity, options: [indentSize] }) => {
       }
 
       if (attribute.raw !== `\n${correctIndent}`) {
-        report({
+        const report = {
+          type: diagnostics.type,
+          details: [],
+          advice: [],
+          fixable: true,
+        };
+
+        report.details.push({
           type: 'log',
           severity,
           message: `Expected an indent of <strong>${normalizedIndent}</strong> spaces but instead got <strong>${attribute.raw.length - correctionStart}</strong>.`,
         });
 
-        report({
+        const loc = getLOC(
+          ast.raw, attribute.start + correctionStart, attribute.end);
+
+        report.details.push({
           type: 'snippet',
           snippet: {
             ast,
-            filePath: 'index.js',
-            start: attribute.start + correctionStart,
-            end: attribute.end,
+            start: loc.start,
+            end: loc.end,
           },
         });
+
+        diagnostics[severity].push(report);
+
+        // Apply fix
+        attribute.raw = `\n${correctIndent}`;
       }
     });
   }
