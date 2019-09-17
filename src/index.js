@@ -10,41 +10,58 @@ const ruleHandling = {
 
 /**
  * @param {Diagnostics} diagnostics
+ * @param {DiagnosticsTypes} type
+ * @param {Function} action
+ */
+function calculateTime(diagnostics, type, action) {
+  diagnostics.time[type].start = new Date().getTime();
+  action();
+  diagnostics.time[type].end = new Date().getTime();
+}
+
+/**
+ * @param {Diagnostics} diagnostics
  * @param {string} content
  * @param {Record<string, any>} rules
  */
 function lint(diagnostics, content, rules) {
-  const ast = parse(content);
+  let ast = null;
 
-  traverse(ast, {
-    enter: (path) => {
-      Object.keys(rules)
-        .forEach((rule) => {
-          const ruleHandler = ruleHandling[rule];
+  calculateTime(diagnostics, 'parser', () => {
+    ast = parse(content);
+  });
 
-          if (typeof ruleHandler === 'undefined') {
-            throw errorMessage(`Unknown rule "${rule}"`);
-          }
+  calculateTime(diagnostics, 'traverse', () => {
+    traverse(ast, {
+      enter: (path) => {
+        Object.keys(rules)
+          .forEach((rule) => {
+            const ruleHandler = ruleHandling[rule];
 
-          const { config, handler } = ruleHandler;
-          const ruleConfig = config(rules[rule]);
+            if (typeof ruleHandler === 'undefined') {
+              throw errorMessage(`Unknown rule "${rule}"`);
+            }
 
-          if (rules[rule]) {
-            const localDiagnostics = {
-              rule,
-              error: [],
-              warning: [],
-            };
+            const { config, handler } = ruleHandler;
+            const ruleConfig = config(rules[rule]);
 
-            handler(localDiagnostics, ast, path, ruleConfig);
+            if (rules[rule]) {
+              const localDiagnostics = {
+                rule,
+                error: [],
+                warning: [],
+              };
 
-            diagnostics.error.push(...localDiagnostics.error);
-            diagnostics.warning.push(...localDiagnostics.warning);
-          }
-        });
+              handler(localDiagnostics, ast, path, ruleConfig);
 
-      return path;
-    },
+              diagnostics.error.push(...localDiagnostics.error);
+              diagnostics.warning.push(...localDiagnostics.warning);
+            }
+          });
+
+        return path;
+      },
+    });
   });
 
   return ast;
@@ -104,11 +121,25 @@ const diagnostics = {
   filePath,
   error: [],
   warning: [],
+  time: {
+    parser: {
+      start: null,
+      end: null,
+    },
+    traverse: {
+      start: null,
+      end: null,
+    },
+    all: {
+      start: null,
+      end: null,
+    },
+  },
 };
 
-// console.time('Parsing');
-lint(diagnostics, fileIndex, rules);
-// console.timeEnd('Parsing');
+calculateTime(diagnostics, 'all', () => {
+  lint(diagnostics, fileIndex, rules);
+});
 
 report({
   type: 'log',
@@ -134,6 +165,14 @@ diagnostics.warning.forEach((issue) => {
   issue.advice.forEach((advice) => {
     report(advice);
   });
+});
+
+report({
+  type: 'log',
+  severity: 'info',
+  message: `Parser: ${diagnostics.time.parser.end - diagnostics.time.parser.start}ms;
+   Traverse: ${diagnostics.time.traverse.end - diagnostics.time.traverse.start}ms;
+   Overall: ${diagnostics.time.all.end - diagnostics.time.all.start}ms;`,
 });
 
 report({

@@ -33,16 +33,24 @@ interface Loc {
   index: number;
 }
 
+type DiagnosticsTypes = 'all' | 'parser' | 'traverse';
+
 interface DiagnosticsReport {
   details: AnyReportType[];
   advice: AnyReportType[];
   fixable: boolean;
 }
 
+interface DiagnosticsTimes {
+  start: number;
+  end: number;
+}
+
 interface Diagnostics {
   filePath: string;
   error: DiagnosticsReport[];
   warning: DiagnosticsReport[];
+  time: Record<DiagnosticsTypes, DiagnosticsTimes>;
 }
 
 

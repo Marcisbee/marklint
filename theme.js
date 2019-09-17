@@ -60,6 +60,7 @@ module.exports = {
   inlineStyles: {
     'strong': [colors.bold],
     'underline': [colors.underscore],
-    'fg-red': [colors.fg.red],
+    'color-red': [colors.fg.red],
+    'color-cyan': [colors.fg.cyan],
   },
 };
