@@ -12,6 +12,12 @@ const {
   HTMLClosingElement,
 } = require('./types');
 
+/**
+ * @TODO:
+ * - Handle CDATA
+ * - Handle script and style tag values
+ * - Handle omitted tags https://developer.mozilla.org/en-US/docs/Web/HTML/Element/p
+ */
 const kMarkupPattern = /<!--([^]*?)(?=-->)-->|<!([^]*?)(?=>)>|<(\/?)([a-z][-.0-9_a-z]*)([^>]*?)(\/?)>/ig;
 const kAttributePattern = /(^|\s*)([\w-@:*.\[\]\(\)\#%]+)((?:\s*=\s*("([^"]+)"|'([^']+)'|(\S+)))*)/ig;
 
