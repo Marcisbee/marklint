@@ -128,7 +128,6 @@ function report(config) {
 
     process.stdout.write('\n');
     snippet(ast, start, end).forEach((fn) => fn());
-    process.stdout.write('\n');
   }
 
   if (config.type === 'inspect') {

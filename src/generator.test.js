@@ -100,7 +100,7 @@ describe('generator', () => {
     `<div><img src="{{itemImageUrl}}"></div>`,
     `<img [src]="itemImageUrl2">`,
     `<li *ngFor="let customer of customers">{{customer.name}}</li>`,
-    `<input #customerInput>{{customerInput.value}}</input>`,
+    `<template #customerInput>{{customerInput.value}}</template>`,
     `<button (click)="deleteHero()">Delete hero</button>`,
     `<input [attr.disabled]="condition ? 'disabled' : null">`,
     `<input [(ngModel)]="name">`,

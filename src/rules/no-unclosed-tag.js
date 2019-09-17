@@ -12,7 +12,7 @@ const handler = (diagnostics, ast, path, { severity }) => {
   if (path.type === 'HTMLElement') {
     const openTag = path.openingElement;
     const closeTag = path.closingElement;
-    if (!openTag.selfClosing &&
+    if (!openTag.voidElement && !openTag.selfClosing &&
       openTag.name.name !== (closeTag && closeTag.name.name)) {
       const openTagName = openTag.name;
       const closeTagName = closeTag && closeTag.name;

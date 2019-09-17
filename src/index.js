@@ -4,6 +4,7 @@ const traverse = require('./traverse');
 const report = require('./utils/report');
 
 const ruleHandling = {
+  'no-void-tag-close': require('./rules/no-void-tag-close'),
   'no-unclosed-tag': require('./rules/no-unclosed-tag'),
   'attr-indent': require('./rules/attr-indent'),
 };
@@ -34,7 +35,7 @@ function lint(diagnostics, content, rules) {
   calculateTime(diagnostics, 'traverse', () => {
     traverse(ast, {
       enter: (path) => {
-        Object.keys(rules)
+        Object.keys(ruleHandling)
           .forEach((rule) => {
             const ruleHandler = ruleHandling[rule];
 
@@ -45,7 +46,7 @@ function lint(diagnostics, content, rules) {
             const { config, handler } = ruleHandler;
             const ruleConfig = config(rules[rule]);
 
-            if (rules[rule]) {
+            if (rules[rule] && rules[rule].severity !== 'off' || true) {
               const localDiagnostics = {
                 rule,
                 error: [],
@@ -82,6 +83,10 @@ const rules = {
     severity: 'error',
     options: [2],
   },
+  'no-void-tag-close': {
+    severity: 'warning',
+    options: [true],
+  },
 };
 
 // @TODO: Handle these https://www.w3.org/TR/html401/struct/global.html#h-7.5.4
@@ -100,6 +105,9 @@ const rules = {
 const fileIndex =
 `
 
+<head>
+  <meta>
+</head>
 
  asd  <a class="foo"
           href="https://google.com"
@@ -178,5 +186,21 @@ report({
 report({
   type: 'log',
   severity: 'error',
-  message: `Found ${diagnostics.error.length} problems and ${diagnostics.warning.length} warnings.\n`,
+  message: `Found ${diagnostics.error.length} problems and <color-yellow>${diagnostics.warning.length} warnings</color-yellow>.\n`,
 });
+
+// console.log(JSON.stringify(diagnostics, null, '  '));
+
+// eslint-disable-next-line require-jsdoc
+// function tick(i) {
+//   process.stdout.write(`\r\x1b[KData left: ${i}%`);
+
+//   if (i === 100) {
+//     process.stdout.write(`\nDone!\n`);
+//     return;
+//   }
+
+//   setTimeout(() => tick(i + 1), 10);
+// }
+
+// tick(0);

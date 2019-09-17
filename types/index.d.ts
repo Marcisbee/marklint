@@ -1,6 +1,6 @@
 interface RuleConfig {
-  severity: 'error' | 'warning';
-  options: *;
+  severity: 'error' | 'warning' | 'off';
+  options: any;
 }
 
 type RuleHandler = (diagnostics: any, ast: HTMLMarkupType, path: AnyHTMLType, config: RuleConfig) => HTMLMarkupType;
@@ -108,6 +108,7 @@ interface HTMLOpeningElementInput {
   name: HTMLIdentifierType;
   attributes: (HTMLAttributeType | HTMLTextType)[];
   selfClosing: boolean;
+  voidElement: boolean;
 }
 
 interface HTMLOpeningElementType extends HTMLOpeningElementInput {

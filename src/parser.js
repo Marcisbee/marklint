@@ -15,6 +15,25 @@ const {
 const kMarkupPattern = /<!--([^]*?)(?=-->)-->|<!([^]*?)(?=>)>|<(\/?)([a-z][-.0-9_a-z]*)([^>]*?)(\/?)>/ig;
 const kAttributePattern = /(^|\s*)([\w-@:*.\[\]\(\)\#%]+)((?:\s*=\s*("([^"]+)"|'([^']+)'|(\S+)))*)/ig;
 
+const VOID_TAGS = [
+  'br',
+  'hr',
+  'img',
+  'input',
+  'link',
+  'meta',
+  'area',
+  'base',
+  'col',
+  'command',
+  'embed',
+  'keygen',
+  'param',
+  'source',
+  'track',
+  'wbr',
+];
+
 /**
  * @param {string} html
  * @return {HTMLMarkupType}
@@ -119,6 +138,7 @@ function parse(html) {
           raw: html.substring(nameStart, nameEnd),
         }),
         selfClosing: !!match[6],
+        voidElement: VOID_TAGS.indexOf(match[4]) > -1,
       });
 
       const index = identifierIndex + match[4].length;
@@ -193,7 +213,10 @@ function parse(html) {
         }
       }
 
-      stack.push(element);
+      if (VOID_TAGS.indexOf(match[4]) === -1) {
+        stack.push(element);
+      }
+
       parent.children.push(element);
     }
 
@@ -219,7 +242,7 @@ function parse(html) {
       }
     }
 
-    if (match[3] || match[6]) {
+    if ((match[3] || match[6]) && VOID_TAGS.indexOf(match[4]) === -1) {
       stack.pop();
     }
   }

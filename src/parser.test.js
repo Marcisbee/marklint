@@ -140,6 +140,64 @@ describe('parse', () => {
     expect(element.raw).toEqual('Hello world!');
   });
 
+  test('should void "meta" tag', () => {
+    const input = '<meta>';
+    const output = parse(input);
+
+    /** @type {*} */
+    const element = output.children[0];
+
+    expect(element.openingElement.name.name).toBe('meta');
+    expect(element.openingElement.selfClosing).toBe(false);
+    expect(element.closingElement).toBe(null);
+  });
+
+  test('should self close "meta" tag', () => {
+    const input = '<meta/>';
+    const output = parse(input);
+
+    /** @type {*} */
+    const element = output.children[0];
+
+    expect(element.openingElement.name.name).toBe('meta');
+    expect(element.openingElement.selfClosing).toBe(true);
+    expect(element.closingElement).toBe(null);
+  });
+
+  test('should void "meta" tag inside other tag', () => {
+    const input = '<head><meta><a></b></head>';
+    const output = parse(input);
+
+    /** @type {*} */
+    const element = output.children[0];
+    /** @type {*} */
+    const metaElement = element.children[0];
+
+    expect(element.openingElement.name.name).toEqual('head');
+    expect(element.closingElement.name.name).toEqual('head');
+
+    expect(metaElement.openingElement.name.name).toBe('meta');
+    expect(metaElement.openingElement.selfClosing).toBe(false);
+    expect(metaElement.closingElement).toBe(null);
+  });
+
+  test('should self close "meta" tag inside other tag', () => {
+    const input = '<head><meta/><a></b></head>';
+    const output = parse(input);
+
+    /** @type {*} */
+    const element = output.children[0];
+    /** @type {*} */
+    const metaElement = element.children[0];
+
+    expect(element.openingElement.name.name).toEqual('head');
+    expect(element.closingElement.name.name).toEqual('head');
+
+    expect(metaElement.openingElement.name.name).toBe('meta');
+    expect(metaElement.openingElement.selfClosing).toBe(true);
+    expect(metaElement.closingElement).toBe(null);
+  });
+
   describe('correct start and end values', () => {
     const input =
       `asd <a
