@@ -109,6 +109,7 @@ interface HTMLOpeningElementInput {
   attributes: (HTMLAttributeType | HTMLTextType)[];
   selfClosing: boolean;
   voidElement: boolean;
+  blockElement: boolean;
 }
 
 interface HTMLOpeningElementType extends HTMLOpeningElementInput {

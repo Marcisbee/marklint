@@ -16,12 +16,14 @@ const {
  * @TODO:
  * - Handle CDATA
  * - Handle script and style tag values
- * - Handle omitted tags https://developer.mozilla.org/en-US/docs/Web/HTML/Element/p
+ * - Handle omitted tags for flow content ul,li,ol, table,td,th,tr https://developer.mozilla.org/en-US/docs/Web/HTML/Element/td
+ *
+ * https://developer.mozilla.org/en-US/docs/Web/Guide/HTML/Content_categories#Flow_content
  */
 const kMarkupPattern = /<!--([^]*?)(?=-->)-->|<!([^]*?)(?=>)>|<(\/?)([a-z][-.0-9_a-z]*)([^>]*?)(\/?)>/ig;
 const kAttributePattern = /(^|\s*)([\w-@:*.\[\]\(\)\#%]+)((?:\s*=\s*("([^"]+)"|'([^']+)'|(\S+)))*)/ig;
 
-const VOID_TAGS = [
+const VOID_ELEMENTS = [
   'br',
   'hr',
   'img',
@@ -39,6 +41,58 @@ const VOID_TAGS = [
   'track',
   'wbr',
 ];
+
+/**
+ * @param {string} name
+ * @return {boolean}
+ */
+function isVoidElement(name) {
+  return VOID_ELEMENTS.indexOf(name) > -1;
+}
+
+const BLOCK_ELEMENTS = [
+  'address',
+  'article',
+  'aside',
+  'blockquote',
+  'details',
+  'dialog',
+  'dd',
+  'div',
+  'dl',
+  'dt',
+  'fieldset',
+  'figcaption',
+  'figure',
+  'footer',
+  'form',
+  'h1',
+  'h2',
+  'h3',
+  'h4',
+  'h5',
+  'h6',
+  'header',
+  'hgroup',
+  'hr',
+  'li',
+  'main',
+  'nav',
+  'ol',
+  'p',
+  'pre',
+  'section',
+  'table',
+  'ul',
+];
+
+/**
+ * @param {string} name
+ * @return {boolean}
+ */
+function isBlockElement(name) {
+  return BLOCK_ELEMENTS.indexOf(name) > -1;
+}
 
 /**
  * @param {string} html
@@ -144,7 +198,8 @@ function parse(html) {
           raw: html.substring(nameStart, nameEnd),
         }),
         selfClosing: !!match[6],
-        voidElement: VOID_TAGS.indexOf(match[4]) > -1,
+        voidElement: isVoidElement(match[4]),
+        blockElement: isBlockElement(match[4]),
       });
 
       const index = identifierIndex + match[4].length;
@@ -219,7 +274,7 @@ function parse(html) {
         }
       }
 
-      if (VOID_TAGS.indexOf(match[4]) === -1) {
+      if (!isVoidElement(match[4])) {
         stack.push(element);
       }
 
@@ -227,6 +282,10 @@ function parse(html) {
     }
 
     if (match[3]) {
+      if (isBlockElement(match[4]) && parent && parent.type === 'HTMLElement' && parent.openingElement.name.name !== match[4]) {
+        stack.pop();
+      }
+
       const startIndex = html.substring(match.index).split(match[4])[0].length;
       const identifierIndex = match.index + startIndex;
       if (parent instanceof HTMLElement) {
@@ -248,7 +307,7 @@ function parse(html) {
       }
     }
 
-    if ((match[3] || match[6]) && VOID_TAGS.indexOf(match[4]) === -1) {
+    if ((match[3] || match[6]) && VOID_ELEMENTS.indexOf(match[4]) === -1) {
       stack.pop();
     }
   }

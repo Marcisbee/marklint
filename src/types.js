@@ -51,6 +51,7 @@ class HTMLOpeningElement extends HTMLToken {
     this.attributes = data.attributes;
     this.selfClosing = data.selfClosing;
     this.voidElement = data.voidElement;
+    this.blockElement = data.blockElement;
   }
 }
 

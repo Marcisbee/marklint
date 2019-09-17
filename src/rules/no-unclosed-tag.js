@@ -12,8 +12,11 @@ const handler = (diagnostics, ast, path, { severity }) => {
   if (path.type === 'HTMLElement') {
     const openTag = path.openingElement;
     const closeTag = path.closingElement;
-    if (!openTag.voidElement && !openTag.selfClosing &&
+    if (!openTag.voidElement &&
+      !openTag.selfClosing &&
       openTag.name.name !== (closeTag && closeTag.name.name)) {
+      if (openTag.blockElement && !closeTag) return;
+
       const openTagName = openTag.name;
       const closeTagName = closeTag && closeTag.name;
 
@@ -43,10 +46,6 @@ const handler = (diagnostics, ast, path, { severity }) => {
 
       diagnostics[severity].push(report);
 
-      // @TODO: Run list of self closing tags and give suggestion to fix
-      // style('\nℹ ', THEME.infoPrefix)();
-      // style('Should this tag be self closing?\n\n', THEME.infoText)();
-
       if (!closeTagName) {
         return;
       }
@@ -67,14 +66,6 @@ const handler = (diagnostics, ast, path, { severity }) => {
           end: locInfo.end,
         },
       });
-
-      // @TODO: Pass it to summary function
-      // @TODO: Create summary of linting
-      //        - files parsed
-      //        - errors found (max something)
-      //        - warnings found (max something)
-      //        - time taken
-      // @example `✖ 2 problems (2 errors, 0 warnings)`
     }
   }
 };

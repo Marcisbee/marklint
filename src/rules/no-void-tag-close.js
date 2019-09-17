@@ -17,7 +17,7 @@ const handler = (diagnostics, ast, path, { severity, options: [close] }) => {
         type: diagnostics.type,
         details: [],
         advice: [],
-        fixable: false,
+        fixable: true,
       };
 
       report.details.push({
@@ -44,6 +44,11 @@ const handler = (diagnostics, ast, path, { severity, options: [close] }) => {
         severity: 'info',
         message: `This could be fixed by adding "/" at the end of tag <strong>＜${openTagName.name}/＞</strong>.`,
       });
+
+      /**
+       * Apply the fix
+       */
+      path.selfClosing = true;
     }
 
     if (!close && path.voidElement && path.selfClosing) {
@@ -80,6 +85,11 @@ const handler = (diagnostics, ast, path, { severity, options: [close] }) => {
         severity: 'info',
         message: `This could be fixed by removing "/" at the end of tag <strong>＜${openTagName.name}＞</strong>.`,
       });
+
+      /**
+       * Apply the fix
+       */
+      path.selfClosing = false;
     }
   }
 

@@ -66,7 +66,9 @@ const handler = (diagnostics, ast, path, {
 
         diagnostics[severity].push(report);
 
-        // Apply fix
+        /**
+         * Apply the fix
+         */
         attribute.raw = `\n${correctIndent}`;
       }
     });
