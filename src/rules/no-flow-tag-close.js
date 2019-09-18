@@ -1,4 +1,4 @@
-const { HTMLClosingElement, HTMLIdentifier } = require('../types');
+// const { HTMLClosingElement, HTMLIdentifier } = require('../types');
 const getLOC = require('../utils/get-loc');
 const ruleHandler = require('../utils/rule-handler');
 
@@ -11,7 +11,8 @@ const defaults = {
 /** @type {RuleHandler} */
 const handler = (diagnostics, ast, path, { severity, options: [close] }) => {
   if (path.type === 'HTMLOpeningElement') {
-    if (close && path.flowElement && !path.selfClosing) {
+    if (close && path.flowElement &&
+      (!path.selfClosing || !path.parent().closingElement)) {
       const openTagName = path.name;
 
       const report = {
@@ -24,7 +25,7 @@ const handler = (diagnostics, ast, path, { severity, options: [close] }) => {
       report.details.push({
         type: 'log',
         severity,
-        message: `Expected flow element <strong>${openTagName.name}</strong> to be closed.`,
+        message: `Expected element <strong>${openTagName.name}</strong> to be closed.`,
       });
 
       const locIssue = getLOC(ast.raw, openTagName.start, openTagName.end);
@@ -64,21 +65,22 @@ const handler = (diagnostics, ast, path, { severity, options: [close] }) => {
       /**
        * Apply the fix
        */
-      path.parent().closingElement = new HTMLClosingElement({
-        start: 0,
-        end: 0,
-        parent: () => path.parent(),
-        name: new HTMLIdentifier({
-          start: 0,
-          end: 0,
-          parent: () => path.parent().closingElement,
-          name: openTagName.name,
-          raw: openTagName.name,
-        }),
-      });
+      // path.parent().closingElement = new HTMLClosingElement({
+      //   start: 0,
+      //   end: 0,
+      //   parent: () => path.parent(),
+      //   name: new HTMLIdentifier({
+      //     start: 0,
+      //     end: 0,
+      //     parent: () => path.parent().closingElement,
+      //     name: openTagName.name,
+      //     raw: openTagName.name,
+      //   }),
+      // });
     }
 
-    if (!close && path.voidElement && path.selfClosing) {
+    if (!close && path.flowElement &&
+      (path.selfClosing || path.parent().closingElement)) {
       const openTagName = path.name;
 
       const report = {
@@ -91,7 +93,7 @@ const handler = (diagnostics, ast, path, { severity, options: [close] }) => {
       report.details.push({
         type: 'log',
         severity,
-        message: `Expected void element <strong>${openTagName.name}</strong> to not be self closed.`,
+        message: `Expected element <strong>${openTagName.name}</strong> to not be closed.`,
       });
 
       const locIssue = getLOC(ast.raw, openTagName.start, openTagName.end);
@@ -107,16 +109,31 @@ const handler = (diagnostics, ast, path, { severity, options: [close] }) => {
 
       diagnostics[severity].push(report);
 
+      const closingElement = path.parent().closingElement;
+
+      if (!closingElement) return;
+
+      const locInfo = getLOC(ast.raw, closingElement.start, closingElement.end);
+
       report.advice.push({
         type: 'log',
         severity: 'info',
-        message: `This could be fixed by removing "/" at the end of tag <strong>＜${openTagName.name}＞</strong>.`,
+        message: `Closing tag <strong><style></${closingElement.name.name}></style></strong> should be removed`,
+      });
+
+      report.advice.push({
+        type: 'snippet',
+        snippet: {
+          ast,
+          start: locInfo.start,
+          end: locInfo.end,
+        },
       });
 
       /**
        * Apply the fix
        */
-      path.selfClosing = false;
+      // path.parent().closingElement = null;
     }
   }
 

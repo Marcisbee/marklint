@@ -59,7 +59,7 @@ function highlight(ast) {
             start: index,
             end: cutStart,
             text,
-            type: 'text 1',
+            type: 'text',
             styled: style(text, THEME.htmlSyntax.text),
           });
           index = cutStart;

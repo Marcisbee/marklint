@@ -88,6 +88,10 @@ const rules = {
     severity: 'warning',
     options: [true],
   },
+  'no-flow-tag-close': {
+    severity: 'warning',
+    options: [true],
+  },
 };
 
 const fileIndex =
@@ -99,6 +103,7 @@ const fileIndex =
 
 <p> Hello <span>123</span>
 <div> World
+<p>asd</p>
 <p> ! </a>
 
  asd  <a class="foo"
@@ -116,7 +121,8 @@ const fileIndex =
   <tr>
     <th>Last name:
     <td>Boyera <span>Blah</span></tr>
-</table>`;
+</table>
+</div>`;
 
 // @TODO: Fix this case where prop inlines html style text
 // const fileIndex =

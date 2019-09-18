@@ -267,6 +267,42 @@ describe('parse', () => {
     expect(style.children[2].raw).toBe('</b>');
   });
 
+  test('should not break with div and table inside', () => {
+    const input = '<div><table></table></div>';
+    const output = parse(input);
+
+    /** @type {*} */
+    const div = output.children[0];
+    /** @type {*} */
+    const table = div.children[0];
+
+    expect(div.openingElement.name.name).toBe('div');
+    expect(div.closingElement.name.name).toBe('div');
+    expect(table.openingElement.name.name).toBe('table');
+    expect(table.closingElement.name.name).toBe('table');
+  });
+
+  test('should not break paragraph tag', () => {
+    const input = '<p> Hello <span>123</span><div><p>asd</p>';
+    const output = parse(input);
+
+    /** @type {*} */
+    const element1 = output.children[0];
+    /** @type {*} */
+    const element2 = output.children[1];
+    /** @type {*} */
+    const element3 = element2.children[0];
+
+    expect(element1.openingElement.name.name).toBe('p');
+    expect(element1.closingElement).toBe(null);
+
+    expect(element2.openingElement.name.name).toBe('div');
+    expect(element2.closingElement).toBe(null);
+
+    expect(element3.openingElement.name.name).toBe('p');
+    expect(element3.closingElement.name.name).toBe('p');
+  });
+
   describe('correct start and end values', () => {
     const input =
       `asd <a
