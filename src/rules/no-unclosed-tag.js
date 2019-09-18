@@ -13,6 +13,7 @@ const handler = (diagnostics, ast, path, { severity }) => {
     const openTag = path.openingElement;
     const closeTag = path.closingElement;
     if (!openTag.voidElement &&
+      !openTag.flowElement &&
       !openTag.selfClosing &&
       openTag.name.name !== (closeTag && closeTag.name.name)) {
       if (openTag.blockElement && !closeTag) return;

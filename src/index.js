@@ -5,6 +5,7 @@ const report = require('./utils/report');
 
 const ruleHandling = {
   'no-void-tag-close': require('./rules/no-void-tag-close'),
+  'no-flow-tag-close': require('./rules/no-flow-tag-close'),
   'no-unclosed-tag': require('./rules/no-unclosed-tag'),
   'attr-indent': require('./rules/attr-indent'),
 };
@@ -89,19 +90,6 @@ const rules = {
   },
 };
 
-// @TODO: Handle these https://www.w3.org/TR/html401/struct/global.html#h-7.5.4
-// const fileIndex =
-// `<!-- Example of data from the client database: -->
-// <!-- Name: Stephane Boyera, Tel: (212) 555-1212, Email: sb@foo.org -->
-
-// <DIV id="client-boyera" class="client">
-// <P><SPAN class="client-title">Client information:</SPAN>
-// <TABLE class="client-data">
-// <TR><TH>Last name:<TD>Boyera</TR>
-// </TABLE>
-// </DIV>
-// `;
-
 const fileIndex =
 `
 
@@ -109,7 +97,7 @@ const fileIndex =
   <meta>
 </head>
 
-<p> Hello
+<p> Hello <span>123</span>
 <div> World
 <p> ! </a>
 
@@ -117,7 +105,18 @@ const fileIndex =
           href="https://google.com"
         home>
     text
-</MessedUpTagName>`;
+</MessedUpTagName>
+
+<!-- Example of data from the client database: -->
+<!-- Name: Stephane Boyera, Tel: (212) 555-1212, Email: sb@foo.org -->
+
+<div id="client-boyera" class="client">
+<p><span class="client-title">Client information:</span>
+<table class="client-data">
+<tr><th>Last name:<td>Boyera
+</tr>
+</table>
+</div> <-- @TODO: Fix this`;
 
 // @TODO: Fix this case where prop inlines html style text
 // const fileIndex =

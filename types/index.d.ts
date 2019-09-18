@@ -110,6 +110,7 @@ interface HTMLOpeningElementInput {
   selfClosing: boolean;
   voidElement: boolean;
   blockElement: boolean;
+  flowElement: boolean;
 }
 
 interface HTMLOpeningElementType extends HTMLOpeningElementInput {

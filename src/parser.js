@@ -16,9 +16,6 @@ const {
  * @TODO:
  * - Handle CDATA
  * - Handle script and style tag values
- * - Handle omitted tags for flow content ul,li,ol, table,td,th,tr https://developer.mozilla.org/en-US/docs/Web/HTML/Element/td
- *
- * https://developer.mozilla.org/en-US/docs/Web/Guide/HTML/Content_categories#Flow_content
  */
 const kMarkupPattern = /<!--([^]*?)(?=-->)-->|<!([^]*?)(?=>)>|<(\/?)([a-z][-.0-9_a-z]*)([^>]*?)(\/?)>/ig;
 const kAttributePattern = /(^|\s*)([\w-@:*.\[\]\(\)\#%]+)((?:\s*=\s*("([^"]+)"|'([^']+)'|(\S+)))*)/ig;
@@ -47,7 +44,7 @@ const VOID_ELEMENTS = [
  * @return {boolean}
  */
 function isVoidElement(name) {
-  return VOID_ELEMENTS.indexOf(name) > -1;
+  return VOID_ELEMENTS.indexOf(name.toLocaleLowerCase()) > -1;
 }
 
 const BLOCK_ELEMENTS = [
@@ -91,7 +88,41 @@ const BLOCK_ELEMENTS = [
  * @return {boolean}
  */
 function isBlockElement(name) {
-  return BLOCK_ELEMENTS.indexOf(name) > -1;
+  return BLOCK_ELEMENTS.indexOf(name.toLocaleLowerCase()) > -1;
+}
+
+const FLOW_ELEMENTS = {
+  td: ['th', 'td'],
+  th: ['th', 'td'],
+  thead: ['thead', 'tbody', 'tfoot'],
+  tbody: ['thead', 'tbody', 'tfoot'],
+  tfoot: ['thead', 'tbody', 'tfoot'],
+  li: ['li'],
+};
+
+/**
+ * @param {string} name
+ * @return {boolean}
+ */
+function isFlowElement(name) {
+  return !!FLOW_ELEMENTS[name.toLocaleLowerCase()];
+}
+
+/**
+ * @param {string} startName
+ * @param {string} endName
+ * @return {boolean}
+ */
+function canOmitEndTag(startName, endName) {
+  const startNameNormal = startName.toLocaleLowerCase();
+  const endNameNormal = endName.toLocaleLowerCase();
+  const parts = FLOW_ELEMENTS[startNameNormal];
+
+  if (!parts) {
+    return false;
+  }
+
+  return parts.indexOf(endNameNormal) > -1;
 }
 
 /**
@@ -113,7 +144,7 @@ function parse(html) {
   let match;
 
   while (match = kMarkupPattern.exec(html)) {
-    const parent = stack[stack.length - 1];
+    let parent = stack[stack.length - 1];
 
     // Add strings to children list
     if (lastTextPos < match.index) {
@@ -178,6 +209,18 @@ function parse(html) {
 
     // Add Element to children list
     if (!match[3]) {
+      if (
+        parent && parent.type === 'HTMLElement' && (
+          isBlockElement(match[4]) ||
+          canOmitEndTag(parent.openingElement.name.name, match[4])
+        )
+      ) {
+        if (stack.length > 1) {
+          stack.pop();
+          parent = stack[stack.length - 1];
+        }
+      }
+
       const startIndex = html.substring(match.index).split(match[4])[0].length;
       const identifierIndex = match.index + startIndex;
       const itemStart = match.index;
@@ -200,6 +243,7 @@ function parse(html) {
         selfClosing: !!match[6],
         voidElement: isVoidElement(match[4]),
         blockElement: isBlockElement(match[4]),
+        flowElement: isFlowElement(match[4]),
       });
 
       const index = identifierIndex + match[4].length;
@@ -282,33 +326,50 @@ function parse(html) {
     }
 
     if (match[3]) {
-      if (isBlockElement(match[4]) && parent && parent.type === 'HTMLElement' && parent.openingElement.name.name !== match[4]) {
-        stack.pop();
+      if (parent && parent.type === 'HTMLElement' && parent.openingElement.name.name.toLocaleLowerCase() !== match[4].toLocaleLowerCase() && (
+        isBlockElement(parent.openingElement.name.name) ||
+        isFlowElement(parent.openingElement.name.name)
+      )) {
+        if (stack.length > 1) {
+          stack.pop();
+          parent = stack[stack.length - 1];
+        }
       }
 
-      const startIndex = html.substring(match.index).split(match[4])[0].length;
-      const identifierIndex = match.index + startIndex;
-      if (parent instanceof HTMLElement) {
-        parent.end = kMarkupPattern.lastIndex;
-        parent.closingElement = new HTMLClosingElement({
-          start: match.index,
-          end: parent.end,
-          parent: () => parent,
-          name: new HTMLIdentifier({
-            start: identifierIndex,
-            end: identifierIndex + match[4].length,
-            parent: () => parent.closingElement,
-            name: match[4],
-            raw: html.substring(
-              identifierIndex,
-              identifierIndex + match[4].length),
-          }),
-        });
+      // @TODO: Handle cases where closing tag goes outside HTMLMarkup class
+      // "<foo></foo></bar>"
+      if (parent.type === 'HTMLElement') {
+        const startIndex = html
+          .substring(match.index)
+          .split(match[4])[0]
+          .length;
+        const identifierIndex = match.index + startIndex;
+        if (parent.type === 'HTMLElement') {
+          const localParent = parent;
+
+          parent.end = kMarkupPattern.lastIndex;
+          parent.closingElement = new HTMLClosingElement({
+            start: match.index,
+            end: parent.end,
+            parent: () => localParent,
+            name: new HTMLIdentifier({
+              start: identifierIndex,
+              end: identifierIndex + match[4].length,
+              parent: () => localParent.closingElement,
+              name: match[4],
+              raw: html.substring(
+                identifierIndex,
+                identifierIndex + match[4].length),
+            }),
+          });
+        }
       }
     }
 
     if ((match[3] || match[6]) && VOID_ELEMENTS.indexOf(match[4]) === -1) {
-      stack.pop();
+      if (stack.length > 1) {
+        stack.pop();
+      }
     }
   }
 

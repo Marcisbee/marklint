@@ -21,7 +21,7 @@ const handler = (diagnostics, ast, path, {
 
     const textBeforeTag = path.parent().previous();
 
-    if (textBeforeTag.type === 'HTMLText') {
+    if (textBeforeTag && textBeforeTag.type === 'HTMLText') {
       const textLines = textBeforeTag.raw.split(/\n/g);
       lastIndent = textLines[textLines.length - 1].length;
     }

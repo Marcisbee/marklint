@@ -198,6 +198,60 @@ describe('parse', () => {
     expect(metaElement.closingElement).toBe(null);
   });
 
+  test('should correctly handle unclosed block tags', () => {
+    const input = '<p>a<p>b</p>';
+    const output = parse(input);
+
+    /** @type {*} */
+    const element1 = output.children[0];
+    /** @type {*} */
+    const element2 = output.children[1];
+
+    expect(element1.openingElement.name.name).toBe('p');
+    expect(element1.closingElement).toBe(null);
+    expect(element1.children.length).toBe(1);
+
+    expect(element2.openingElement.name.name).toBe('p');
+    expect(element2.closingElement.name.name).toBe('p');
+    expect(element2.children.length).toBe(1);
+  });
+
+  test('should correctly handle unclosed content flow tags', () => {
+    const input = '<tr><th>Hello<td>World<td>!</td><td>Foo</tr>';
+    const output = parse(input);
+
+    /** @type {*} */
+    const tr = output.children[0];
+    /** @type {*} */
+    const th = tr.children[0];
+    /** @type {*} */
+    const td1 = tr.children[1];
+    /** @type {*} */
+    const td2 = tr.children[2];
+    /** @type {*} */
+    const td3 = tr.children[3];
+
+    expect(tr.openingElement.name.name).toBe('tr');
+    expect(tr.closingElement.name.name).toBe('tr');
+    expect(tr.children.length).toBe(4);
+
+    expect(th.openingElement.name.name).toBe('th');
+    expect(th.closingElement).toBe(null);
+    expect(th.children.length).toBe(1);
+
+    expect(td1.openingElement.name.name).toBe('td');
+    expect(td1.closingElement).toBe(null);
+    expect(td1.children.length).toBe(1);
+
+    expect(td2.openingElement.name.name).toBe('td');
+    expect(td2.closingElement.name.name).toBe('td');
+    expect(td2.children.length).toBe(1);
+
+    expect(td3.openingElement.name.name).toBe('td');
+    expect(td3.closingElement).toBe(null);
+    expect(td3.children.length).toBe(1);
+  });
+
   describe('correct start and end values', () => {
     const input =
       `asd <a
