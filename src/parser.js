@@ -15,7 +15,6 @@ const {
 /**
  * @TODO:
  * - Handle CDATA
- * - Handle script and style tag values
  */
 const kMarkupPattern = /<!--([^]*?)(?=-->)-->|<!([^]*?)(?=>)>|<(\/?)([a-z][-.0-9_a-z]*)([^>]*?)(\/?)>/ig;
 const kAttributePattern = /(^|\s*)([\w-@:*.\[\]\(\)\#%]+)((?:\s*=\s*("([^"]+)"|'([^']+)'|(\S+)))*)/ig;
@@ -125,6 +124,19 @@ function canOmitEndTag(startName, endName) {
   return parts.indexOf(endNameNormal) > -1;
 }
 
+const NO_PARSE_ELEMENTS = [
+  'style',
+  'script',
+];
+
+/**
+ * @param {string} name
+ * @return {boolean}
+ */
+function isNonParseElement(name) {
+  return NO_PARSE_ELEMENTS.indexOf(name.toLocaleLowerCase()) > -1;
+}
+
 /**
  * @param {string} html
  * @return {HTMLMarkupType}
@@ -164,6 +176,23 @@ function parse(html) {
     }
 
     lastTextPos = kMarkupPattern.lastIndex;
+
+    if ((!match[3] || !isNonParseElement(match[4])) && parent.type === 'HTMLElement' && isNonParseElement(parent.openingElement.name.name)) {
+      const value = html.substring(lastTextPos, match.index);
+      if (value !== '') {
+        const lastElIndex = parent.children.length;
+        parent.children.push(new HTMLText({
+          start: Math.max(lastTextPos, 0),
+          end: match.index,
+          parent: () => parent,
+          previous: () => parent.children[lastElIndex - 1],
+          next: () => parent.children[lastElIndex + 1],
+          value: value && value.trim(),
+          raw: value,
+        }));
+      }
+      continue;
+    }
 
     // Add comment to children list
     if (match[0] && match[1] && match[0].substring(1, 3) == '!--') {

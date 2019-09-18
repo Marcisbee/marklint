@@ -113,10 +113,10 @@ const fileIndex =
 <div id="client-boyera" class="client">
 <p><span class="client-title">Client information:</span>
 <table class="client-data">
-<tr><th>Last name:<td>Boyera
-</tr>
-</table>
-</div> <-- @TODO: Fix this`;
+  <tr>
+    <th>Last name:
+    <td>Boyera <span>Blah</span></tr>
+</table>`;
 
 // @TODO: Fix this case where prop inlines html style text
 // const fileIndex =

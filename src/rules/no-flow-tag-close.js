@@ -49,7 +49,7 @@ const handler = (diagnostics, ast, path, { severity, options: [close] }) => {
       report.advice.push({
         type: 'log',
         severity: 'info',
-        message: `Closing tag <strong>＜/${openTagName.name}＞</strong> should be placed here`,
+        message: `Closing tag <strong><style></${openTagName.name}></style></strong> should be placed here`,
       });
 
       report.advice.push({

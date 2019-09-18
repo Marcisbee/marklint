@@ -42,7 +42,7 @@ const handler = (diagnostics, ast, path, { severity, options: [close] }) => {
       report.advice.push({
         type: 'log',
         severity: 'info',
-        message: `This could be fixed by adding "/" at the end of tag <strong>＜${openTagName.name}/＞</strong>.`,
+        message: `This could be fixed by adding "/" at the end of tag <strong><style><${openTagName.name}/></style></strong>.`,
       });
 
       /**

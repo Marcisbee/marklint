@@ -252,6 +252,21 @@ describe('parse', () => {
     expect(td3.children.length).toBe(1);
   });
 
+  test('should set everything inside style tag as text', () => {
+    const input = '<style><b>text</b></style>';
+    const output = parse(input);
+
+    /** @type {*} */
+    const style = output.children[0];
+
+    expect(style.openingElement.name.name).toBe('style');
+    expect(style.closingElement.name.name).toBe('style');
+    expect(style.children[0].type).toBe('HTMLText');
+    expect(style.children[0].raw).toBe('<b>');
+    expect(style.children[1].raw).toBe('text');
+    expect(style.children[2].raw).toBe('</b>');
+  });
+
   describe('correct start and end values', () => {
     const input =
       `asd <a
