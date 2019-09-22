@@ -2,6 +2,7 @@ const {
   HTMLToken,
   HTMLMarkup,
   HTMLDoctype,
+  HTMLCData,
   HTMLText,
 } = require('./types');
 const parse = require('./parser');
@@ -77,6 +78,21 @@ describe('parse', () => {
       previous: expect.any(Function),
       raw: `<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01//EN\" \"http://www.w3.org/TR/html4/strict.dtd\">`,
       value: `DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01//EN\" \"http://www.w3.org/TR/html4/strict.dtd\"`,
+    }));
+  });
+
+  test('should handle CDATA', () => {
+    const input = `<![CDATA[Hello World]]>`;
+    const output = parse(input);
+
+    expect(output.children[0]).toEqual(new HTMLCData({
+      start: 0,
+      end: 23,
+      parent: expect.any(Function),
+      next: expect.any(Function),
+      previous: expect.any(Function),
+      raw: `<![CDATA[Hello World]]>`,
+      value: `Hello World`,
     }));
   });
 

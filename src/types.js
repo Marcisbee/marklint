@@ -155,6 +155,24 @@ class HTMLDoctype extends HTMLToken {
   }
 }
 
+/** @type {HTMLCDataType} */
+class HTMLCData extends HTMLToken {
+  /** @param {HTMLCDataInput} data */
+  constructor(data) {
+    super();
+
+    this.type = 'HTMLCData';
+    this.start = data.start;
+    this.end = data.end;
+    this.parent = data.parent;
+    this.previous = data.previous;
+    this.next = data.next;
+
+    this.value = data.value;
+    this.raw = data.raw;
+  }
+}
+
 /** @type {HTMLCommentType} */
 class HTMLComment extends HTMLToken {
   /** @param {HTMLCommentInput} data */
@@ -203,5 +221,6 @@ module.exports = {
   HTMLLiteral,
   HTMLComment,
   HTMLDoctype,
+  HTMLCData,
   HTMLText,
 };

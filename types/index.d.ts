@@ -65,6 +65,7 @@ type AnyHTMLType = HTMLMarkupType
   | HTMLAttributeIdentifierType
   | HTMLLiteralType
   | HTMLDoctypeType
+  | HTMLCDataType
   | HTMLCommentType
   | HTMLTextType;
 
@@ -73,7 +74,7 @@ type AnyHTMLType = HTMLMarkupType
 interface HTMLMarkupInput {
   start: number;
   end: number;
-  children: (HTMLElementType | HTMLDoctypeType | HTMLTextType | HTMLCommentType)[];
+  children: (HTMLElementType | HTMLDoctypeType | HTMLCDataType | HTMLTextType | HTMLCommentType)[];
   sourceType: 'HTML' | 'VUE' | 'ANGULAR';
   raw: string;
 }
@@ -87,10 +88,10 @@ interface HTMLMarkupType extends HTMLMarkupInput {
 interface HTMLElementInput {
   start: number;
   end: number;
-  parent: () => HTMLMarkupType | HTMLElementType | HTMLDoctypeType | HTMLTextType | HTMLCommentType;
-  previous: () => HTMLElementType | HTMLDoctypeType | HTMLTextType | HTMLCommentType;
-  next: () => HTMLElementType | HTMLDoctypeType | HTMLTextType | HTMLCommentType;
-  children: (HTMLElementType | HTMLDoctypeType | HTMLTextType | HTMLCommentType)[];
+  parent: () => HTMLMarkupType | HTMLElementType | HTMLDoctypeType | HTMLCDataType | HTMLTextType | HTMLCommentType;
+  previous: () => HTMLElementType | HTMLDoctypeType | HTMLCDataType | HTMLTextType | HTMLCommentType;
+  next: () => HTMLElementType | HTMLDoctypeType | HTMLCDataType | HTMLTextType | HTMLCommentType;
+  children: (HTMLElementType | HTMLDoctypeType | HTMLCDataType | HTMLTextType | HTMLCommentType)[];
   openingElement: HTMLOpeningElementType;
   closingElement: HTMLClosingElementType;
 }
@@ -193,9 +194,9 @@ interface HTMLLiteralType extends HTMLLiteralInput {
 interface HTMLDoctypeInput {
   start: number;
   end: number;
-  parent: () => HTMLMarkupType | HTMLElementType | HTMLDoctypeType | HTMLTextType | HTMLCommentType;
-  previous: () => HTMLElementType | HTMLDoctypeType | HTMLTextType | HTMLCommentType;
-  next: () => HTMLElementType | HTMLDoctypeType | HTMLTextType | HTMLCommentType;
+  parent: () => HTMLMarkupType | HTMLElementType | HTMLDoctypeType | HTMLCDataType | HTMLTextType | HTMLCommentType;
+  previous: () => HTMLElementType | HTMLDoctypeType | HTMLCDataType | HTMLTextType | HTMLCommentType;
+  next: () => HTMLElementType | HTMLDoctypeType | HTMLCDataType | HTMLTextType | HTMLCommentType;
   value: string;
   raw: string;
 }
@@ -204,14 +205,30 @@ interface HTMLDoctypeType extends HTMLDoctypeInput {
   type: 'HTMLDoctype';
 }
 
+// HTMLCData
+
+interface HTMLCDataInput {
+  start: number;
+  end: number;
+  parent: () => HTMLMarkupType | HTMLElementType | HTMLDoctypeType | HTMLCDataType | HTMLTextType | HTMLCommentType;
+  previous: () => HTMLElementType | HTMLDoctypeType | HTMLCDataType | HTMLTextType | HTMLCommentType;
+  next: () => HTMLElementType | HTMLDoctypeType | HTMLCDataType | HTMLTextType | HTMLCommentType;
+  value: string;
+  raw: string;
+}
+
+interface HTMLCDataType extends HTMLCDataInput {
+  type: 'HTMLCData';
+}
+
 // HTMLComment
 
 interface HTMLCommentInput {
   start: number;
   end: number;
-  parent: () => HTMLMarkupType | HTMLElementType | HTMLDoctypeType | HTMLTextType | HTMLCommentType;
-  previous: () => HTMLElementType | HTMLDoctypeType | HTMLTextType | HTMLCommentType;
-  next: () => HTMLElementType | HTMLDoctypeType | HTMLTextType | HTMLCommentType;
+  parent: () => HTMLMarkupType | HTMLElementType | HTMLDoctypeType | HTMLCDataType | HTMLTextType | HTMLCommentType;
+  previous: () => HTMLElementType | HTMLDoctypeType | HTMLCDataType | HTMLTextType | HTMLCommentType;
+  next: () => HTMLElementType | HTMLDoctypeType | HTMLCDataType | HTMLTextType | HTMLCommentType;
   value: string;
   raw: string;
 }
@@ -225,9 +242,9 @@ interface HTMLCommentType extends HTMLCommentInput {
 interface HTMLTextInput {
   start: number;
   end: number;
-  parent: () => HTMLMarkupType | HTMLElementType | HTMLDoctypeType | HTMLTextType | HTMLCommentType | HTMLOpeningElementType;
-  previous: () => HTMLElementType | HTMLDoctypeType | HTMLTextType | HTMLCommentType | HTMLAttributeType;
-  next: () => HTMLElementType | HTMLDoctypeType | HTMLTextType | HTMLCommentType | HTMLAttributeType;
+  parent: () => HTMLMarkupType | HTMLElementType | HTMLDoctypeType | HTMLCDataType | HTMLTextType | HTMLCommentType | HTMLOpeningElementType;
+  previous: () => HTMLElementType | HTMLDoctypeType | HTMLCDataType | HTMLTextType | HTMLCommentType | HTMLAttributeType;
+  next: () => HTMLElementType | HTMLDoctypeType | HTMLCDataType | HTMLTextType | HTMLCommentType | HTMLAttributeType;
   value: string;
   raw: string;
 }

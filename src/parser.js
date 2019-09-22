@@ -4,6 +4,7 @@ const {
   HTMLText,
   HTMLComment,
   HTMLDoctype,
+  HTMLCData,
   HTMLOpeningElement,
   HTMLIdentifier,
   HTMLAttribute,
@@ -12,10 +13,6 @@ const {
   HTMLClosingElement,
 } = require('./types');
 
-/**
- * @TODO:
- * - Handle CDATA
- */
 const kMarkupPattern = /<!--([^]*?)(?=-->)-->|<!([^]*?)(?=>)>|<(\/?)([a-z][-.0-9_a-z]*)([^>]*?)(\/?)>/ig;
 const kAttributePattern = /(^|\s*)([\w-@:*.\[\]\(\)\#%]+)((?:\s*=\s*("([^"]+)"|'([^']+)'|(\S+)))*)/ig;
 
@@ -234,18 +231,33 @@ function parse(html) {
       continue;
     }
 
-    // Add doctype to children list
+    // Add doctype or cdata to children list
     if (match[0][1] == '!') {
       const lastElIndex = parent.children.length;
-      parent.children.push(new HTMLDoctype({
-        start: match.index,
-        end: lastTextPos,
-        parent: () => parent,
-        previous: () => parent.children[lastElIndex - 1],
-        next: () => parent.children[lastElIndex + 1],
-        value: match[2] && match[2].trim(),
-        raw: match[0],
-      }));
+      if (match[0].substring(2, 9) === '[CDATA[') {
+        parent.children.push(new HTMLCData({
+          start: match.index,
+          end: lastTextPos,
+          parent: () => parent,
+          previous: () => parent.children[lastElIndex - 1],
+          next: () => parent.children[lastElIndex + 1],
+          value: match[2] && match[2]
+            .replace(/^\[CDATA\[/, '')
+            .replace(/]]$/, '')
+            .trim(),
+          raw: match[0],
+        }));
+      } else {
+        parent.children.push(new HTMLDoctype({
+          start: match.index,
+          end: lastTextPos,
+          parent: () => parent,
+          previous: () => parent.children[lastElIndex - 1],
+          next: () => parent.children[lastElIndex + 1],
+          value: match[2] && match[2].trim(),
+          raw: match[0],
+        }));
+      }
       continue;
     }
 
