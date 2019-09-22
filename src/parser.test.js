@@ -303,6 +303,44 @@ describe('parse', () => {
     expect(element3.closingElement.name.name).toBe('p');
   });
 
+  test('should not break paragraph with different closing tag', () => {
+    const input = '<p>foo</a>';
+    const output = parse(input);
+
+    /** @type {*} */
+    const element = output.children[0];
+
+    expect(element.openingElement.name.name).toBe('p');
+    expect(element.closingElement.name.name).toBe('a');
+  });
+
+  test('should not break paragraph with different closing tag', () => {
+    const input = '<p>foo</div>';
+    const output = parse(input);
+
+    /** @type {*} */
+    const element = output.children[0];
+
+    expect(element.openingElement.name.name).toBe('p');
+    expect(element.closingElement.name.name).toBe('div');
+  });
+
+  test('should not break paragraph with different surounding tag', () => {
+    const input = '<div><p>foo</div>';
+    const output = parse(input);
+
+    /** @type {*} */
+    const element1 = output.children[0];
+    /** @type {*} */
+    const element2 = element1.children[0];
+
+    expect(element1.openingElement.name.name).toBe('div');
+    expect(element1.closingElement.name.name).toBe('div');
+
+    expect(element2.openingElement.name.name).toBe('p');
+    expect(element2.closingElement).toBeNull();
+  });
+
   describe('correct start and end values', () => {
     const input =
       `asd <a

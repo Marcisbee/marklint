@@ -125,6 +125,30 @@ function canOmitEndTag(startName, endName) {
   return parts.indexOf(endNameNormal) > -1;
 }
 
+/**
+ * @param {string} startName
+ * @param {string} endName
+ * @param {HTMLElement} element
+ * @return {boolean}
+ */
+function canCloseFlow(startName, endName, element) {
+  if (!isFlowElement(startName)) {
+    return false;
+  }
+
+  const parent = element.parent();
+
+  if (parent.type !== 'HTMLElement') {
+    return false;
+  }
+
+  if (parent.openingElement.name.name !== endName) {
+    return false;
+  }
+
+  return true;
+}
+
 const NO_PARSE_ELEMENTS = [
   'style',
   'script',
@@ -358,7 +382,7 @@ function parse(html) {
     if (match[3]) {
       if (parent && parent.type === 'HTMLElement' && parent.openingElement.name.name.toLocaleLowerCase() !== match[4].toLocaleLowerCase() && (
         isBlockElement(parent.openingElement.name.name) ||
-        isFlowElement(parent.openingElement.name.name)
+        canCloseFlow(parent.openingElement.name.name, match[4], parent)
       )) {
         if (stack.length > 1) {
           stack.pop();
