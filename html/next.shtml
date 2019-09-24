@@ -1,0 +1,28 @@
+
+
+<head>
+  <meta>
+</head>
+
+<p> Hello <span>123</span>
+<div> World
+<p>asd</p>
+<p> ! </a>
+
+ asd  <a class="foo"
+          href="https://google.com"
+        home>
+    text
+</MessedUpTagName>
+
+<!-- Example of data from the client database: -->
+<!-- Name: Stephane Boyera, Tel: (212) 555-1212, Email: sb@foo.org -->
+
+<div id="client-boyera" class="client">
+<p><span class="client-title">Client information:</span>
+<table class="client-data">
+  <tr>
+    <th>Last name:
+    <td>Boyera <span>Blah</span></tr>
+</table>
+</div>
