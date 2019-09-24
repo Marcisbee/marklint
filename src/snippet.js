@@ -23,16 +23,16 @@ function getLineNumber(currentIndex, maxIndex) {
 function snippet(ast, start, end) {
   const { raw } = ast;
 
-  const targetStartLine = Math.max(0, start.line - 3);
-  const targetEndLine = Math.max(0, end.line - 3);
+  const targetStartLine = Math.max(0, start.line - 2);
+  const targetEndLine = Math.max(0, end.line - 2);
 
   const allLines = raw.split('\n');
-  const lines = allLines.slice(targetStartLine, targetEndLine + 5);
+  const lines = allLines.slice(targetStartLine, targetEndLine + 3);
   const linesInTotal = lines.length;
 
   const coloredAllLines = highlight(ast);
   const coloredLines =
-    coloredAllLines.slice(targetStartLine, targetEndLine + 5);
+    coloredAllLines.slice(targetStartLine, targetEndLine + 3);
 
   const linesWithNumbers = lines.reduce(
     (acc, line, index) => {

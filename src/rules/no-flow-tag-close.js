@@ -1,4 +1,3 @@
-// const { HTMLClosingElement, HTMLIdentifier } = require('../types');
 const getLOC = require('../utils/get-loc');
 const ruleHandler = require('../utils/rule-handler');
 

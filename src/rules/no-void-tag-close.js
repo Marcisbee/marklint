@@ -39,12 +39,6 @@ const handler = (diagnostics, ast, path, { severity, options: [close] }) => {
 
       diagnostics[severity].push(report);
 
-      report.advice.push({
-        type: 'log',
-        severity: 'info',
-        message: `This could be fixed by adding "/" at the end of tag <strong><style><${openTagName.name}/></style></strong>.`,
-      });
-
       /**
        * Apply the fix
        */
@@ -79,12 +73,6 @@ const handler = (diagnostics, ast, path, { severity, options: [close] }) => {
       });
 
       diagnostics[severity].push(report);
-
-      report.advice.push({
-        type: 'log',
-        severity: 'info',
-        message: `This could be fixed by removing "/" at the end of tag <strong>＜${openTagName.name}＞</strong>.`,
-      });
 
       /**
        * Apply the fix

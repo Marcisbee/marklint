@@ -5,7 +5,7 @@ interface RuleConfig {
 
 type RuleHandler = (diagnostics: any, ast: HTMLMarkupType, path: AnyHTMLType, config: RuleConfig) => HTMLMarkupType;
 
-type AnyReportType = ReportLogType | ReportSnippetType | ReportInspectType;
+type AnyReportType = ReportLogType | ReportSnippetType | ReportInspectType | ReportDiagnosticsType;
 
 interface ReportLogType {
   type: 'log';
@@ -25,6 +25,11 @@ interface ReportSnippetType {
 interface ReportInspectType {
   type: 'inspect';
   data: any;
+}
+
+interface ReportDiagnosticsType {
+  type: 'diagnostics';
+  diagnostics: Diagnostics[];
 }
 
 interface Loc {

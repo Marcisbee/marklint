@@ -1,3 +1,4 @@
+const directory = require('./directory');
 const errorMessage = require('./utils/error-message');
 const parse = require('./parser');
 const traverse = require('./traverse');
@@ -69,10 +70,47 @@ function lint(diagnostics, content, rules) {
   return ast;
 }
 
+/**
+ * @param {string} filePath
+ * @param {string} fileContent
+ * @param {Record<string, RuleConfig>} rules
+ * @return {Diagnostics}
+ */
+function diagnoticRun(filePath, fileContent, rules) {
+  /** @type {Diagnostics} */
+  const diagnostics = {
+    filePath,
+    error: [],
+    warning: [],
+    time: {
+      parser: {
+        start: null,
+        end: null,
+      },
+      traverse: {
+        start: null,
+        end: null,
+      },
+      all: {
+        start: null,
+        end: null,
+      },
+    },
+  };
+
+  calculateTime(diagnostics, 'all', () => {
+    lint(diagnostics, fileContent, rules);
+  });
+
+  return diagnostics;
+}
+
 
 /**
  * ---------------- MANUAL TESTING UNDER HERE --------------------
  */
+
+const rootPath = 'html';
 
 /** @type {Record<string, RuleConfig>} */
 const rules = {
@@ -94,122 +132,49 @@ const rules = {
   },
 };
 
-const fileIndex =
-`
+/** @type {Diagnostics[]} */
+const diagnostics = [];
+/** @type {(() => void)[]} */
+const queue = [];
 
-<head>
-  <meta>
-</head>
+process.stdout.write(`\r\x1b[KFetching markup files`);
 
-<p> Hello <span>123</span>
-<div> World
-<p>asd</p>
-<p> ! </a>
+try {
+  directory(rootPath, (filePath, read) => {
+    queue.push(() => {
+      process.stdout.write(`\r\x1b[KParsing ${filePath}`);
 
- asd  <a class="foo"
-          href="https://google.com"
-        home>
-    text
-</MessedUpTagName>
+      diagnostics.push(
+        diagnoticRun(filePath, read(), rules)
+      );
 
-<!-- Example of data from the client database: -->
-<!-- Name: Stephane Boyera, Tel: (212) 555-1212, Email: sb@foo.org -->
+      const next = queue.shift();
 
-<div id="client-boyera" class="client">
-<p><span class="client-title">Client information:</span>
-<table class="client-data">
-  <tr>
-    <th>Last name:
-    <td>Boyera <span>Blah</span></tr>
-</table>
-</div>`;
-
-// @TODO: Fix this case where prop inlines html style text
-// const fileIndex =
-// `<base
-//   class="<b></b>"
-//   href="<%= htmlWebpackPlugin.options.metadata.baseUrl %>"
-// >`;
-
-const filePath = 'index.html';
-
-/** @type {Diagnostics} */
-const diagnostics = {
-  filePath,
-  error: [],
-  warning: [],
-  time: {
-    parser: {
-      start: null,
-      end: null,
-    },
-    traverse: {
-      start: null,
-      end: null,
-    },
-    all: {
-      start: null,
-      end: null,
-    },
-  },
-};
-
-calculateTime(diagnostics, 'all', () => {
-  lint(diagnostics, fileIndex, rules);
-});
-
-report({
-  type: 'log',
-  severity: 'default',
-  message: `<a href="${filePath}">${filePath}</a>`,
-});
-
-diagnostics.error.forEach((issue) => {
-  issue.details.forEach((detail) => {
-    report(detail);
+      if (typeof next === 'function') {
+        next();
+      }
+    });
   });
+} catch (e) {}
 
-  issue.advice.forEach((advice) => {
-    report(advice);
+process.stdout.write(`\r\x1b[KRunning diagnostics..`);
+
+const fn = queue.shift();
+
+if (typeof fn !== 'function') {
+  process.stdout.write(`\r\x1b[K`);
+  report({
+    type: 'log',
+    severity: 'warning',
+    message: `No markup files found in directory "${rootPath}"\n`,
   });
-});
+} else {
+  fn();
 
-diagnostics.warning.forEach((issue) => {
-  issue.details.forEach((detail) => {
-    report(detail);
+  process.stdout.write(`\r\x1b[K`);
+
+  report({
+    diagnostics,
+    type: 'diagnostics',
   });
-
-  issue.advice.forEach((advice) => {
-    report(advice);
-  });
-});
-
-report({
-  type: 'log',
-  severity: 'info',
-  message: `Parser: ${diagnostics.time.parser.end - diagnostics.time.parser.start}ms;
-   Traverse: ${diagnostics.time.traverse.end - diagnostics.time.traverse.start}ms;
-   Overall: ${diagnostics.time.all.end - diagnostics.time.all.start}ms;`,
-});
-
-report({
-  type: 'log',
-  severity: 'error',
-  message: `Found ${diagnostics.error.length} problems and <color-yellow>${diagnostics.warning.length} warnings</color-yellow>.\n`,
-});
-
-// console.log(JSON.stringify(diagnostics, null, '  '));
-
-// eslint-disable-next-line require-jsdoc
-// function tick(i) {
-//   process.stdout.write(`\r\x1b[KData left: ${i}%`);
-
-//   if (i === 100) {
-//     process.stdout.write(`\nDone!\n`);
-//     return;
-//   }
-
-//   setTimeout(() => tick(i + 1), 10);
-// }
-
-// tick(0);
+}

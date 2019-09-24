@@ -137,6 +137,82 @@ function report(config) {
     process.stdout.write(JSON.stringify(data, null, '  '));
     process.stdout.write('\n');
   }
+
+  if (config.type === 'diagnostics') {
+    const { diagnostics } = config;
+
+    let errors = 0;
+    let warnings = 0;
+
+    diagnostics.forEach((diagnostic) => {
+      const localErrors = diagnostic.error.length;
+      const localWarnings = diagnostic.warning.length;
+
+      errors += localErrors;
+      warnings += localWarnings;
+
+      if (localErrors === localWarnings && localErrors === 0) return;
+
+      report({
+        type: 'log',
+        severity: 'default',
+        message: `<a href="${diagnostic.filePath}">${diagnostic.filePath}</a>`,
+      });
+
+      diagnostic.error.forEach((issue) => {
+        issue.details.forEach((detail) => {
+          report(detail);
+        });
+
+        issue.advice.forEach((advice) => {
+          report(advice);
+        });
+      });
+
+      diagnostic.warning.forEach((issue) => {
+        issue.details.forEach((detail) => {
+          report(detail);
+        });
+
+        issue.advice.forEach((advice) => {
+          report(advice);
+        });
+      });
+    });
+
+    // @TODO: Do diagnostics report on performance & time
+    //   report({
+    //     type: 'log',
+    //     severity: 'info',
+    //     message: `Parser: ${diagnostics.time.parser.end - diagnostics.time.parser.start}ms;
+    //  Traverse: ${diagnostics.time.traverse.end - diagnostics.time.traverse.start}ms;
+    //  Overall: ${diagnostics.time.all.end - diagnostics.time.all.start}ms;`,
+    //   });
+
+    if (errors === 0 && warnings === 0) {
+      report({
+        type: 'log',
+        severity: 'success',
+        message: `Found no problems.\n`,
+      });
+    }
+
+    if (errors === 0 && warnings > 0) {
+      report({
+        type: 'log',
+        severity: 'warning',
+        message: `Found ${warnings} warnings.\n`,
+      });
+    }
+
+    if (errors > 0) {
+      report({
+        type: 'log',
+        severity: 'error',
+        message: `Found ${errors} errors and <color-yellow>${warnings} warnings</color-yellow>.\n`,
+      });
+    }
+  }
 }
 
 module.exports = report;
