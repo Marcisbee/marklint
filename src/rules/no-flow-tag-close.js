@@ -11,7 +11,7 @@ const defaults = {
 const handler = (diagnostics, ast, path, { severity, options: [close] }) => {
   if (path.type === 'HTMLOpeningElement') {
     if (close && path.flowElement &&
-      (!path.selfClosing || !path.parent().closingElement)) {
+      (!path.selfClosing && !path.parent().closingElement)) {
       const openTagName = path.name;
 
       const report = {

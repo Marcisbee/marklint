@@ -232,6 +232,24 @@ describe('parse', () => {
     expect(element2.children.length).toBe(1);
   });
 
+  test('should correctly handle closing of p tag', () => {
+    const input = '<div><p>a</p></div>';
+    const output = parse(input);
+
+    /** @type {*} */
+    const element1 = output.children[0];
+    /** @type {*} */
+    const element2 = element1.children[0];
+
+    expect(element1.openingElement.name.name).toBe('div');
+    expect(element1.closingElement.name.name).toBe('div');
+    expect(element1.children.length).toBe(1);
+
+    expect(element2.openingElement.name.name).toBe('p');
+    expect(element2.closingElement.name.name).toBe('p');
+    expect(element2.children.length).toBe(1);
+  });
+
   test('should correctly handle unclosed content flow tags', () => {
     const input = '<tr><th>Hello<td>World<td>!</td><td>Foo</tr>';
     const output = parse(input);
