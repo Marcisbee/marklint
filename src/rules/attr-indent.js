@@ -12,6 +12,8 @@ const handler = (diagnostics, ast, path, {
   severity,
   options: [indentSize],
 }) => {
+  if (severity === 'off') return;
+
   let lastIndent = 0;
 
   if (path.type === 'HTMLOpeningElement') {
@@ -39,11 +41,13 @@ const handler = (diagnostics, ast, path, {
       }
 
       if (attribute.raw !== `\n${correctIndent}`) {
+        /** @type {DiagnosticsReport} */
         const report = {
-          type: diagnostics.type,
+          type: diagnostics.rule,
           details: [],
           advice: [],
-          fixable: true,
+          applyFix: null,
+          getAst: () => ast,
         };
 
         report.details.push({
@@ -69,7 +73,9 @@ const handler = (diagnostics, ast, path, {
         /**
          * Apply the fix
          */
-        attribute.raw = `\n${correctIndent}`;
+        report.applyFix = () => {
+          attribute.raw = `\n${correctIndent}`;
+        };
       }
     });
   }

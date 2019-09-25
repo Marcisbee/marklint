@@ -9,6 +9,8 @@ const defaults = {
 
 /** @type {RuleHandler} */
 const handler = (diagnostics, ast, path, { severity }) => {
+  if (severity === 'off') return;
+
   if (path.type === 'HTMLElement') {
     const openTag = path.openingElement;
     const closeTag = path.closingElement;
@@ -21,11 +23,13 @@ const handler = (diagnostics, ast, path, { severity }) => {
       const openTagName = openTag.name;
       const closeTagName = closeTag && closeTag.name;
 
+      /** @type {DiagnosticsReport} */
       const report = {
-        type: diagnostics.type,
+        type: diagnostics.rule,
         details: [],
         advice: [],
-        fixable: false,
+        applyFix: null,
+        getAst: () => ast,
       };
 
       report.details.push({

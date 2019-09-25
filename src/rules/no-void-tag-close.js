@@ -9,15 +9,19 @@ const defaults = {
 
 /** @type {RuleHandler} */
 const handler = (diagnostics, ast, path, { severity, options: [close] }) => {
+  if (severity === 'off') return;
+
   if (path.type === 'HTMLOpeningElement') {
     if (close && path.voidElement && !path.selfClosing) {
       const openTagName = path.name;
 
+      /** @type {DiagnosticsReport} */
       const report = {
-        type: diagnostics.type,
+        type: diagnostics.rule,
         details: [],
         advice: [],
-        fixable: true,
+        applyFix: null,
+        getAst: () => ast,
       };
 
       report.details.push({
@@ -42,17 +46,21 @@ const handler = (diagnostics, ast, path, { severity, options: [close] }) => {
       /**
        * Apply the fix
        */
-      path.selfClosing = true;
+      report.applyFix = () => {
+        path.selfClosing = true;
+      };
     }
 
     if (!close && path.voidElement && path.selfClosing) {
       const openTagName = path.name;
 
+      /** @type {DiagnosticsReport} */
       const report = {
-        type: diagnostics.type,
+        type: diagnostics.rule,
         details: [],
         advice: [],
-        fixable: false,
+        applyFix: null,
+        getAst: () => ast,
       };
 
       report.details.push({
@@ -77,7 +85,9 @@ const handler = (diagnostics, ast, path, { severity, options: [close] }) => {
       /**
        * Apply the fix
        */
-      path.selfClosing = false;
+      report.applyFix = () => {
+        path.selfClosing = false;
+      };
     }
   }
 

@@ -251,7 +251,7 @@ describe('parse', () => {
   });
 
   test('should correctly handle unclosed content flow tags', () => {
-    const input = '<tr><th>Hello<td>World<td>!</td><td>Foo</tr>';
+    const input = '<tr><th>Hello<td>World<td>!</td><td>Foo<span>123</span></tr>';
     const output = parse(input);
 
     /** @type {*} */
@@ -283,7 +283,7 @@ describe('parse', () => {
 
     expect(td3.openingElement.name.name).toBe('td');
     expect(td3.closingElement).toBe(null);
-    expect(td3.children.length).toBe(1);
+    expect(td3.children.length).toBe(2);
   });
 
   test('should set everything inside style tag as text', () => {

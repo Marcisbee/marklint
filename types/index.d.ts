@@ -3,7 +3,7 @@ interface RuleConfig {
   options: any;
 }
 
-type RuleHandler = (diagnostics: any, ast: HTMLMarkupType, path: AnyHTMLType, config: RuleConfig) => HTMLMarkupType;
+type RuleHandler = (diagnostics: LocalDiagnostics, ast: HTMLMarkupType, path: AnyHTMLType, config: RuleConfig) => HTMLMarkupType;
 
 type AnyReportType = ReportLogType | ReportSnippetType | ReportInspectType | ReportDiagnosticsType;
 
@@ -41,9 +41,11 @@ interface Loc {
 type DiagnosticsTypes = 'all' | 'parser' | 'traverse';
 
 interface DiagnosticsReport {
+  type: string;
   details: AnyReportType[];
   advice: AnyReportType[];
-  fixable: boolean;
+  applyFix: Function;
+  getAst: () => HTMLMarkupType;
 }
 
 interface DiagnosticsTimes {
@@ -56,6 +58,22 @@ interface Diagnostics {
   error: DiagnosticsReport[];
   warning: DiagnosticsReport[];
   time: Record<DiagnosticsTypes, DiagnosticsTimes>;
+}
+
+interface LocalDiagnostics {
+  rule: string;
+  error: DiagnosticsReport[];
+  warning: DiagnosticsReport[];
+}
+
+
+// Walker
+
+interface WalkerResponse {
+  type: 'tag' | 'string';
+  start: number;
+  end: number;
+  data: string;
 }
 
 

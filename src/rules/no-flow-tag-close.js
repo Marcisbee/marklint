@@ -1,3 +1,8 @@
+const {
+  HTMLClosingElement,
+  HTMLIdentifier,
+} = require('../types');
+
 const getLOC = require('../utils/get-loc');
 const ruleHandler = require('../utils/rule-handler');
 
@@ -9,16 +14,20 @@ const defaults = {
 
 /** @type {RuleHandler} */
 const handler = (diagnostics, ast, path, { severity, options: [close] }) => {
+  if (severity === 'off') return;
+
   if (path.type === 'HTMLOpeningElement') {
     if (close && path.flowElement &&
       (!path.selfClosing && !path.parent().closingElement)) {
       const openTagName = path.name;
 
+      /** @type {DiagnosticsReport} */
       const report = {
-        type: diagnostics.type,
+        type: diagnostics.rule,
         details: [],
         advice: [],
-        fixable: true,
+        applyFix: null,
+        getAst: () => ast,
       };
 
       report.details.push({
@@ -64,29 +73,33 @@ const handler = (diagnostics, ast, path, { severity, options: [close] }) => {
       /**
        * Apply the fix
        */
-      // path.parent().closingElement = new HTMLClosingElement({
-      //   start: 0,
-      //   end: 0,
-      //   parent: () => path.parent(),
-      //   name: new HTMLIdentifier({
-      //     start: 0,
-      //     end: 0,
-      //     parent: () => path.parent().closingElement,
-      //     name: openTagName.name,
-      //     raw: openTagName.name,
-      //   }),
-      // });
+      report.applyFix = () => {
+        path.parent().closingElement = new HTMLClosingElement({
+          start: 0,
+          end: 0,
+          parent: () => path.parent(),
+          name: new HTMLIdentifier({
+            start: 0,
+            end: 0,
+            parent: () => path.parent().closingElement,
+            name: openTagName.name,
+            raw: openTagName.name,
+          }),
+        });
+      };
     }
 
     if (!close && path.flowElement &&
       (path.selfClosing || path.parent().closingElement)) {
       const openTagName = path.name;
 
+      /** @type {DiagnosticsReport} */
       const report = {
-        type: diagnostics.type,
+        type: diagnostics.rule,
         details: [],
         advice: [],
-        fixable: false,
+        applyFix: null,
+        getAst: () => ast,
       };
 
       report.details.push({
@@ -132,7 +145,9 @@ const handler = (diagnostics, ast, path, { severity, options: [close] }) => {
       /**
        * Apply the fix
        */
-      // path.parent().closingElement = null;
+      report.applyFix = () => {
+        path.parent().closingElement = null;
+      };
     }
   }
 

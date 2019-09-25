@@ -49,6 +49,7 @@ function lint(diagnostics, content, rules) {
             const ruleConfig = config(rules[rule]);
 
             if (rules[rule] && rules[rule].severity !== 'off' || true) {
+              /** @type {LocalDiagnostics} */
               const localDiagnostics = {
                 rule,
                 error: [],
