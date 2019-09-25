@@ -1,4 +1,41 @@
 
+const DIFF_GROUPS = {
+  '(': ')',
+  '[': ']',
+  '{': '}',
+  ')': '(',
+  ']': '[',
+  '}': '{',
+};
+
+/**
+ * @param {Record<string, number>} diff
+ * @return {boolean}
+ */
+function shouldSkip(diff) {
+  const keys = Object.keys(diff);
+  let skip = false;
+
+  keys.forEach((key) => {
+    const num = diff[key];
+    const match = DIFF_GROUPS[key];
+    const matchNum = diff[match];
+
+    if (!match) {
+      if (num % 2 === 1) {
+        skip = true;
+      }
+      return;
+    }
+
+    if (num !== matchNum) {
+      skip = true;
+    }
+  });
+
+  return skip;
+}
+
 /**
  * @param {string} html
  * @return {WalkerResponse[]}
@@ -14,6 +51,8 @@ function walker(html) {
     '`': 0,
     '(': 0,
     ')': 0,
+    '[': 0,
+    ']': 0,
     '{': 0,
     '}': 0,
   };
@@ -58,25 +97,22 @@ function walker(html) {
   }
 
   chars.forEach((char, index) => {
-    let touched = false;
-
-    if (!skip && index > 0 && char === '<' && lastChar !== '>') {
-      handleString(lastIndex, index, charString);
-      touched = true;
-    }
-
     const firstChar = charString[0];
     const secondChar = charString[1];
-    if (!skip && char === '>' && firstChar === '<' &&
-      (/[a-z0-9\_\-\.\/]/i.test(secondChar) || lastChar === secondChar)) {
-      handleTag(lastIndex, index + 1, charString + char);
-      char = '';
-      touched = true;
+
+    if (!skip && index > 0 && char === '<' && firstChar !== '<') {
+      handleString(lastIndex, index, charString);
     }
 
-    if (!touched && diffKeys.indexOf(char) > -1) {
+    if (!skip && char === '>' && firstChar === '<' &&
+      (/[a-z0-9\_\-\.\/\!]/i.test(secondChar) || lastChar === secondChar)) {
+      handleTag(lastIndex, index + 1, charString + char);
+      char = '';
+    }
+
+    if (diffKeys.indexOf(char) > -1) {
       diff[char] += 1;
-      skip = Object.values(diff).reduce((acc, i) => acc + i, 0) % 2 === 1;
+      skip = shouldSkip(diff);
     }
 
     charString += char;
@@ -93,5 +129,5 @@ function walker(html) {
   return output;
 }
 
-// walker('<? a>1 ?>');
+// walker('<![]>');
 module.exports = walker;

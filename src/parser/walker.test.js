@@ -53,6 +53,70 @@ describe('walker', () => {
     expect(output).toEqual(expectation);
   });
 
+  test('returns ending tag', () => {
+    const input = `</a>`;
+    const expectation = [
+      {
+        start: 0,
+        end: 4,
+        data: '</a>',
+        type: 'tag',
+      },
+    ];
+
+    const output = walker(input);
+
+    expect(output).toEqual(expectation);
+  });
+
+  test('returns doctype', () => {
+    const input = `<!DOCTYPE html>`;
+    const expectation = [
+      {
+        start: 0,
+        end: 15,
+        data: '<!DOCTYPE html>',
+        type: 'tag',
+      },
+    ];
+
+    const output = walker(input);
+
+    expect(output).toEqual(expectation);
+  });
+
+  test('returns comment', () => {
+    const input = `<!-- comment -->`;
+    const expectation = [
+      {
+        start: 0,
+        end: 16,
+        data: '<!-- comment -->',
+        type: 'tag',
+      },
+    ];
+
+    const output = walker(input);
+
+    expect(output).toEqual(expectation);
+  });
+
+  test('returns cdata', () => {
+    const input = `<![CDATA[ document.write("<"); a > 2; ]]>`;
+    const expectation = [
+      {
+        start: 0,
+        end: 41,
+        data: '<![CDATA[ document.write("<"); a > 2; ]]>',
+        type: 'tag',
+      },
+    ];
+
+    const output = walker(input);
+
+    expect(output).toEqual(expectation);
+  });
+
   test('returns full tag block', () => {
     const input = `<a>foo</a>`;
     const expectation = [
@@ -91,12 +155,12 @@ describe('walker', () => {
   });
 
   test('returns nested tag correctly', () => {
-    const input = `<a attr="<br/>">`;
+    const input = `<a alt='<br/>&("<")& &amp;(&quot;&gt; &lt;&quot;)&amp;'>`;
     const expectation = [
       {
         start: 0,
-        end: 16,
-        data: '<a attr="<br/>">',
+        end: 56,
+        data: `<a alt='<br/>&("<")& &amp;(&quot;&gt; &lt;&quot;)&amp;'>`,
         type: 'tag',
       },
     ];
