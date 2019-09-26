@@ -129,5 +129,4 @@ function walker(html) {
   return output;
 }
 
-// walker('<![]>');
 module.exports = walker;
