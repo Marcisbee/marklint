@@ -8,6 +8,8 @@ const DIFF_GROUPS = {
   '}': '{',
 };
 
+let unparsedData = null;
+
 /**
  * @param {Record<string, number>} diff
  * @return {boolean}
@@ -70,6 +72,16 @@ function walker(html) {
    * @param {string} data
    */
   function handleString(start, end, data) {
+    if (unparsedData) {
+      const match = data.match(/^(.*)(\<\/(style|script)[ ]*>)$/);
+      if (match && match[1] && match[2] && match[3] === unparsedData) {
+        unparsedData = null;
+        handleString(start, start + match[1].length, match[1]);
+        handleTag(start + match[1].length, end, match[2]);
+      }
+      return;
+    }
+
     output.push({
       start,
       end,
@@ -86,6 +98,13 @@ function walker(html) {
    * @param {string} data
    */
   function handleTag(start, end, data) {
+    if (unparsedData) return false;
+
+    const match = data.match(/^\<(style|script).*>$/);
+    if (match && match[1]) {
+      unparsedData = match[1];
+    }
+
     output.push({
       start,
       end,
@@ -94,20 +113,23 @@ function walker(html) {
     });
     lastIndex += data.length;
     charString = '';
+
+    return true;
   }
 
   chars.forEach((char, index) => {
     const firstChar = charString[0];
     const secondChar = charString[1];
 
-    if (!skip && index > 0 && char === '<' && firstChar !== '<') {
+    if (!skip && index > 0 && char === '<' && (firstChar !== '<' || lastChar !== '>')) {
       handleString(lastIndex, index, charString);
     }
 
-    if (!skip && char === '>' && firstChar === '<' &&
+    if (!skip && !unparsedData && char === '>' && firstChar === '<' &&
       (/[a-z0-9\_\-\.\/\!]/i.test(secondChar) || lastChar === secondChar)) {
-      handleTag(lastIndex, index + 1, charString + char);
-      char = '';
+      const handled = handleTag(lastIndex, index + 1, charString + char);
+
+      if (handled) char = '';
     }
 
     if (diffKeys.indexOf(char) > -1) {

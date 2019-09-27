@@ -217,4 +217,138 @@ describe('walker', () => {
 
     expect(output).toEqual(expectation);
   });
+
+  test('returns broken tag', () => {
+    const input = `<<a>`;
+    const expectation = [
+      {
+        start: 0,
+        end: 1,
+        data: '<',
+        type: 'string',
+      },
+      {
+        start: 1,
+        end: 4,
+        data: '<a>',
+        type: 'tag',
+      },
+    ];
+
+    const output = walker(input);
+
+    expect(output).toEqual(expectation);
+  });
+
+  test('returns broken tag 2', () => {
+    const input = `<a<a>`;
+    const expectation = [
+      {
+        start: 0,
+        end: 2,
+        data: '<a',
+        type: 'string',
+      },
+      {
+        start: 2,
+        end: 5,
+        data: '<a>',
+        type: 'tag',
+      },
+    ];
+
+    const output = walker(input);
+
+    expect(output).toEqual(expectation);
+  });
+
+  test('returns everything in style tag as a string', () => {
+    const input = `<style>a > b {} <a>123</a></style>`;
+    const expectation = [
+      {
+        start: 0,
+        end: 7,
+        data: '<style>',
+        type: 'tag',
+      },
+      {
+        start: 7,
+        end: 26,
+        data: 'a > b {} <a>123</a>',
+        type: 'string',
+      },
+      {
+        start: 26,
+        end: 34,
+        data: '</style>',
+        type: 'tag',
+      },
+    ];
+
+    const output = walker(input);
+
+    expect(output).toEqual(expectation);
+  });
+
+  test('returns tag after style', () => {
+    const input = `<style>a {}</style><a>`;
+    const expectation = [
+      {
+        start: 0,
+        end: 7,
+        data: '<style>',
+        type: 'tag',
+      },
+      {
+        start: 7,
+        end: 11,
+        data: 'a {}',
+        type: 'string',
+      },
+      {
+        start: 11,
+        end: 19,
+        data: '</style>',
+        type: 'tag',
+      },
+      {
+        start: 19,
+        end: 22,
+        data: '<a>',
+        type: 'tag',
+      },
+    ];
+
+    const output = walker(input);
+
+    expect(output).toEqual(expectation);
+  });
+
+  test('returns everything in script tag as a string', () => {
+    const input = `<script>a > b {} <a>123</a></script>`;
+    const expectation = [
+      {
+        start: 0,
+        end: 8,
+        data: '<script>',
+        type: 'tag',
+      },
+      {
+        start: 8,
+        end: 27,
+        data: 'a > b {} <a>123</a>',
+        type: 'string',
+      },
+      {
+        start: 27,
+        end: 36,
+        data: '</script>',
+        type: 'tag',
+      },
+    ];
+
+    const output = walker(input);
+
+    expect(output).toEqual(expectation);
+  });
 });
