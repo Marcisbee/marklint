@@ -24,7 +24,7 @@ const handler = (diagnostics, ast, path, {
     const textBeforeTag = path.parent().previous();
 
     if (textBeforeTag && textBeforeTag.type === 'HTMLText') {
-      const textLines = textBeforeTag.raw.split(/\n/g);
+      const textLines = textBeforeTag.value.split(/\n/g);
       lastIndent = textLines[textLines.length - 1].length;
     }
 
@@ -32,15 +32,16 @@ const handler = (diagnostics, ast, path, {
       .filter((attribute) => attribute.type === 'HTMLText');
 
     filteredAttributes.forEach((attribute) => {
-      const correctionStart = (attribute.raw.match(/^\n/) || '').length;
+      if (typeof attribute.value !== 'string') return;
+      const correctionStart = (attribute.value.match(/^\n/) || '').length;
       const normalizedIndent = indentSize + lastIndent;
       const correctIndent = new Array(normalizedIndent).fill(' ').join('');
 
-      if (!/^\n/.test(attribute.raw)) {
+      if (!/^\n/.test(attribute.value)) {
         return;
       }
 
-      if (attribute.raw !== `\n${correctIndent}`) {
+      if (attribute.value !== `\n${correctIndent}`) {
         /** @type {DiagnosticsReport} */
         const report = {
           type: diagnostics.rule,
@@ -53,7 +54,7 @@ const handler = (diagnostics, ast, path, {
         report.details.push({
           type: 'log',
           severity,
-          message: `Expected an indent of <strong>${normalizedIndent}</strong> spaces but instead got <strong>${attribute.raw.length - correctionStart}</strong>.`,
+          message: `Expected an indent of <strong>${normalizedIndent}</strong> spaces but instead got <strong>${attribute.value.length - correctionStart}</strong>.`,
         });
 
         const loc = getLOC(
@@ -74,7 +75,7 @@ const handler = (diagnostics, ast, path, {
          * Apply the fix
          */
         report.applyFix = () => {
-          attribute.raw = `\n${correctIndent}`;
+          attribute.value = `\n${correctIndent}`;
         };
       }
     });

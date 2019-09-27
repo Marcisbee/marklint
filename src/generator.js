@@ -1,5 +1,6 @@
 const {
   HTMLText,
+  HTMLCData,
   HTMLOpeningElement,
   HTMLClosingElement,
   HTMLAttributeIdentifier,
@@ -20,9 +21,7 @@ function generator(ast, options = {}) {
   traverse(ast, {
     enter(path) {
       if (path instanceof HTMLText) {
-        if (path instanceof HTMLText) {
-          code = code.concat(path.raw);
-        }
+        code = code.concat(path.value);
 
         const parent = path.parent();
 
@@ -65,7 +64,7 @@ function generator(ast, options = {}) {
           const next = attribute.next();
           const value = attribute.value;
 
-          if (!next && value.raw === undefined) {
+          if (!next && value.value === undefined) {
             if (parent.selfClosing) {
               code = code.concat(`/`);
             }
@@ -83,8 +82,8 @@ function generator(ast, options = {}) {
         return;
       }
 
-      if (path instanceof HTMLLiteral && path.raw) {
-        code = code.concat(`=${path.raw}`);
+      if (path instanceof HTMLLiteral && path.value) {
+        code = code.concat(`=${path.value}`);
 
         const attribute = path.parent();
         const parent = attribute.parent();
@@ -104,11 +103,20 @@ function generator(ast, options = {}) {
         return;
       }
 
-      if (
-        (path instanceof HTMLDoctype || path instanceof HTMLComment) &&
-        path.raw
-      ) {
-        code = code.concat(path.raw);
+      if (path instanceof HTMLDoctype && path.value) {
+        code = code.concat(`<!DOCTYPE${path.value}>`);
+
+        return;
+      }
+
+      if (path instanceof HTMLCData && path.value) {
+        code = code.concat(`<![CDATA[${path.value}]]>`);
+
+        return;
+      }
+
+      if (path instanceof HTMLComment && path.value) {
+        code = code.concat(`<!-- ${path.value} -->`);
 
         return;
       }

@@ -90,7 +90,7 @@ function stylizeString(severity, string) {
         }
 
         if (pureText) {
-          process.stdout.write(path.raw);
+          process.stdout.write(path.value);
 
           return;
         }
@@ -99,7 +99,7 @@ function stylizeString(severity, string) {
           .filter((s) => s)
           .reduce((acc, s) => acc.concat(s), []);
 
-        style(path.raw, styles)();
+        style(path.value, styles)();
 
         return;
       }

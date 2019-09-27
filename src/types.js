@@ -46,6 +46,7 @@ class HTMLOpeningElement extends HTMLToken {
     this.start = data.start;
     this.end = data.end;
     this.parent = data.parent;
+    this.raw = data.raw;
 
     this.name = data.name;
     this.attributes = data.attributes;
@@ -66,6 +67,7 @@ class HTMLClosingElement extends HTMLToken {
     this.start = data.start;
     this.end = data.end;
     this.parent = data.parent;
+    this.raw = data.raw;
 
     this.name = data.name;
   }
@@ -83,7 +85,6 @@ class HTMLIdentifier extends HTMLToken {
     this.parent = data.parent;
 
     this.name = data.name;
-    this.raw = data.raw;
   }
 }
 
@@ -102,7 +103,6 @@ class HTMLAttribute extends HTMLToken {
 
     this.name = data.name;
     this.value = data.value;
-    this.raw = data.raw;
   }
 }
 
@@ -133,7 +133,6 @@ class HTMLLiteral extends HTMLToken {
     this.parent = data.parent;
 
     this.value = data.value;
-    this.raw = data.raw;
   }
 }
 
@@ -151,7 +150,6 @@ class HTMLDoctype extends HTMLToken {
     this.next = data.next;
 
     this.value = data.value;
-    this.raw = data.raw;
   }
 }
 
@@ -169,7 +167,6 @@ class HTMLCData extends HTMLToken {
     this.next = data.next;
 
     this.value = data.value;
-    this.raw = data.raw;
   }
 }
 
@@ -187,7 +184,6 @@ class HTMLComment extends HTMLToken {
     this.next = data.next;
 
     this.value = data.value;
-    this.raw = data.raw;
   }
 }
 
@@ -205,7 +201,6 @@ class HTMLText extends HTMLToken {
     this.next = data.next;
 
     this.value = data.value;
-    this.raw = data.raw;
   }
 }
 

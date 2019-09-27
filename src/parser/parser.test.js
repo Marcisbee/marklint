@@ -64,8 +64,7 @@ describe('parse', () => {
         parent: expect.any(Function),
         next: expect.any(Function),
         previous: expect.any(Function),
-        raw: ' ',
-        value: '',
+        value: ' ',
       }),
     ]);
   });
@@ -89,8 +88,8 @@ describe('parse', () => {
           end: 2,
           parent: expect.any(Function),
           name: 'a',
-          raw: 'a',
         }),
+        raw: '<a>',
         attributes: [],
         selfClosing: false,
         voidElement: false,
@@ -112,8 +111,7 @@ describe('parse', () => {
       parent: expect.any(Function),
       next: expect.any(Function),
       previous: expect.any(Function),
-      raw: ` this is a comment `,
-      value: `this is a comment`,
+      value: ' this is a comment ',
     }));
   });
 
@@ -127,8 +125,7 @@ describe('parse', () => {
       parent: expect.any(Function),
       next: expect.any(Function),
       previous: expect.any(Function),
-      raw: ` HTML PUBLIC \"-//W3C//DTD HTML 4.01//EN\" \"http://www.w3.org/TR/html4/strict.dtd\"`,
-      value: `HTML PUBLIC \"-//W3C//DTD HTML 4.01//EN\" \"http://www.w3.org/TR/html4/strict.dtd\"`,
+      value: ` HTML PUBLIC \"-//W3C//DTD HTML 4.01//EN\" \"http://www.w3.org/TR/html4/strict.dtd\"`,
     }));
   });
 
@@ -142,8 +139,7 @@ describe('parse', () => {
       parent: expect.any(Function),
       next: expect.any(Function),
       previous: expect.any(Function),
-      raw: ` Hello World `,
-      value: `Hello World`,
+      value: ' Hello World ',
     }));
   });
 
@@ -160,7 +156,18 @@ describe('parse', () => {
     expect(attribute1.value.value).toEqual(undefined);
 
     expect(attribute2.name.name).toEqual('name');
-    expect(attribute2.value.value).toEqual('foo');
+    expect(attribute2.value.value).toEqual('"foo"');
+  });
+
+  test('should handle attribute whitespaces', () => {
+    const input = '<meta data />';
+    const output = parse(input);
+
+    /** @type {*} */
+    const element = output.children[0];
+
+    expect(element.openingElement.attributes[0].value).toEqual(' ');
+    expect(element.openingElement.attributes[2].value).toEqual(' ');
   });
 
   test('should handle attribute name and value with position', () => {
@@ -193,7 +200,7 @@ describe('parse', () => {
     const attribute = element.openingElement.attributes[1];
 
     expect(attribute.name.name).toEqual('foo');
-    expect(attribute.value.value).toEqual(' bar\nbaz ');
+    expect(attribute.value.value).toEqual('" bar\nbaz "');
   });
 
   test('should handle root as plain text', () => {
@@ -204,7 +211,7 @@ describe('parse', () => {
     const element = output.children[0];
 
     expect(input.substring(element.start, element.end)).toEqual('Hello world!');
-    expect(element.raw).toEqual('Hello world!');
+    expect(element.value).toEqual('Hello world!');
   });
 
   test('should void "meta" tag', () => {
@@ -347,7 +354,7 @@ describe('parse', () => {
     expect(style.openingElement.name.name).toBe('style');
     expect(style.closingElement.name.name).toBe('style');
     expect(style.children[0].type).toBe('HTMLText');
-    expect(style.children[0].raw).toBe('<b>text</b>');
+    expect(style.children[0].value).toBe('<b>text</b>');
   });
 
   test('should not break with div and table inside', () => {

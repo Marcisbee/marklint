@@ -150,17 +150,83 @@ function canCloseFlow(startName, endName, element) {
   return true;
 }
 
-const NO_PARSE_ELEMENTS = [
-  'style',
-  'script',
-];
+const ATTRIBUTES = /(^|\s*)([\w-@:*.\[\]\(\)\#%]+)((?:\s*=\s*("[^"]+[^\\]"|'[^']+'|\S+))*)/g;
 
 /**
- * @param {string} name
- * @return {boolean}
+ * @param {string} attributes
+ * @param {number} start
+ * @param {HTMLOpeningElement} parent
+ * @return {(HTMLAttribute|HTMLText)[]}
  */
-function isNonParseElement(name) {
-  return NO_PARSE_ELEMENTS.indexOf(name.toLocaleLowerCase()) > -1;
+function parseAttributes(attributes, start, parent) {
+  const output = [];
+
+  let lastAttrPost = -1;
+  for (let attMatch; attMatch = ATTRIBUTES.exec(attributes);) {
+    const whitespace = attMatch[1];
+    const name = attMatch[2];
+    const value = attMatch[4];
+
+    lastAttrPost = ATTRIBUTES.lastIndex;
+
+    const attrIndex = start + attMatch.index;
+
+    if (whitespace) {
+      const lastAttrIndex = output.length;
+      output.push(new HTMLText({
+        start: attrIndex,
+        end: attrIndex + whitespace.length,
+        parent: () => parent,
+        previous:
+          () => output[lastAttrIndex - 1],
+        next: () => output[lastAttrIndex + 1],
+        value: whitespace,
+      }));
+    }
+
+    const lastAttrIndex = output.length;
+    const attribute = new HTMLAttribute({
+      start: attrIndex + whitespace.length,
+      end: start + lastAttrPost,
+      parent: () => parent,
+      previous: () => output[lastAttrIndex - 1],
+      next: () => output[lastAttrIndex + 1],
+      name: new HTMLAttributeIdentifier({
+        name,
+        start: attrIndex + whitespace.length,
+        end: attrIndex + whitespace.length + name.length,
+        parent: () => attribute,
+      }),
+      value: new HTMLLiteral({
+        value,
+        start: attrIndex + attMatch[0].indexOf(value),
+        end: attrIndex + attMatch[0].indexOf(value) + (
+          value ? value.length : 0
+        ),
+        parent: () => attribute,
+      }),
+    });
+
+    output.push(attribute);
+  }
+
+  if (attributes.length > lastAttrPost) {
+    const value = attributes.substring(lastAttrPost);
+    if (value !== '') {
+      const lastAttrIndex = output.length;
+      output.push(new HTMLText({
+        start: start + lastAttrPost,
+        end: start + lastAttrPost + value.length,
+        parent: () => parent,
+        previous:
+          () => output[lastAttrIndex - 1],
+        next: () => output[lastAttrIndex + 1],
+        value: value,
+      }));
+    }
+  }
+
+  return output;
 }
 
 /**
@@ -193,8 +259,7 @@ function parser(html) {
           parent: () => parent,
           previous: () => parent.children[lastElIndex - 1],
           next: () => parent.children[lastElIndex + 1],
-          value: value && value.trim(),
-          raw: value,
+          value: value && value,
         }));
       }
       return;
@@ -240,15 +305,19 @@ function parser(html) {
           end: token.start + 1 + tagName.length,
           parent: () => element.openingElement,
           name: tagName,
-          raw: tagName,
         }),
+        raw: token.data,
         selfClosing,
         voidElement: isVoidElement(tagName),
         blockElement: isBlockElement(tagName),
         flowElement: isFlowElement(tagName),
       });
 
-      // @TODO: Handle attributes
+      element.openingElement.attributes = parseAttributes(
+        attributes,
+        token.start + 1 + tagName.length,
+        element.openingElement,
+      );
 
       if (!isVoidElement(tagName)) {
         stack.push(element);
@@ -292,8 +361,8 @@ function parser(html) {
             end: token.start + 2 + tagName.length,
             parent: () => localParent.closingElement,
             name: tagName,
-            raw: token.data,
           }),
+          raw: token.data,
         });
 
         stack.pop();
@@ -312,15 +381,14 @@ function parser(html) {
         parent: () => parent,
         previous: () => parent.children[lastElIndex - 1],
         next: () => parent.children[lastElIndex + 1],
-        value: value.trim(),
-        raw: value,
+        value,
       }));
       return;
     }
 
     const doctype = token.data.match(DOCTYPE);
     if (doctype) {
-      const [params] = doctype.slice(1);
+      const [value] = doctype.slice(1);
       const lastElIndex = parent.children.length;
       parent.children.push(new HTMLDoctype({
         start: token.start,
@@ -328,8 +396,7 @@ function parser(html) {
         parent: () => parent,
         previous: () => parent.children[lastElIndex - 1],
         next: () => parent.children[lastElIndex + 1],
-        value: params.trim(),
-        raw: params,
+        value,
       }));
       return;
     }
@@ -344,8 +411,7 @@ function parser(html) {
         parent: () => parent,
         previous: () => parent.children[lastElIndex - 1],
         next: () => parent.children[lastElIndex + 1],
-        value: value.trim(),
-        raw: value,
+        value,
       }));
       return;
     }
@@ -357,8 +423,7 @@ function parser(html) {
       parent: () => parent,
       previous: () => parent.children[lastElIndex - 1],
       next: () => parent.children[lastElIndex + 1],
-      value: token.data.trim(),
-      raw: token.data,
+      value: token.data,
     }));
   });
 

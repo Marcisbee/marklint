@@ -83,8 +83,8 @@ const handler = (diagnostics, ast, path, { severity, options: [close] }) => {
             end: 0,
             parent: () => path.parent().closingElement,
             name: openTagName.name,
-            raw: openTagName.name,
           }),
+          raw: `</${openTagName.name}?`,
         });
       };
     }

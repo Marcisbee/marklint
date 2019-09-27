@@ -131,6 +131,7 @@ interface HTMLOpeningElementInput {
   parent: () => HTMLElementType;
   name: HTMLIdentifierType;
   attributes: (HTMLAttributeType | HTMLTextType)[];
+  raw: string;
   selfClosing: boolean;
   voidElement: boolean;
   blockElement: boolean;
@@ -148,6 +149,7 @@ interface HTMLClosingElementInput {
   end: number;
   parent: () => HTMLElementType;
   name: HTMLIdentifierType;
+  raw: string;
 }
 
 interface HTMLClosingElementType extends HTMLClosingElementInput {
@@ -161,7 +163,6 @@ interface HTMLIdentifierInput {
   end: number;
   parent: () => HTMLOpeningElementType | HTMLClosingElementType;
   name: string;
-  raw: string;
 }
 
 interface HTMLIdentifierType extends HTMLIdentifierInput {
@@ -178,7 +179,6 @@ interface HTMLAttributeInput {
   next: () => HTMLAttributeType | HTMLTextType;
   name: HTMLAttributeIdentifierType;
   value: HTMLLiteralType;
-  raw: string;
 }
 
 interface HTMLAttributeType extends HTMLAttributeInput {
@@ -205,7 +205,6 @@ interface HTMLLiteralInput {
   end: number;
   parent: () => HTMLAttributeType;
   value: string;
-  raw: string;
 }
 
 interface HTMLLiteralType extends HTMLLiteralInput {
@@ -221,7 +220,6 @@ interface HTMLDoctypeInput {
   previous: () => HTMLElementType | HTMLDoctypeType | HTMLCDataType | HTMLTextType | HTMLCommentType;
   next: () => HTMLElementType | HTMLDoctypeType | HTMLCDataType | HTMLTextType | HTMLCommentType;
   value: string;
-  raw: string;
 }
 
 interface HTMLDoctypeType extends HTMLDoctypeInput {
@@ -237,7 +235,6 @@ interface HTMLCDataInput {
   previous: () => HTMLElementType | HTMLDoctypeType | HTMLCDataType | HTMLTextType | HTMLCommentType;
   next: () => HTMLElementType | HTMLDoctypeType | HTMLCDataType | HTMLTextType | HTMLCommentType;
   value: string;
-  raw: string;
 }
 
 interface HTMLCDataType extends HTMLCDataInput {
@@ -253,7 +250,6 @@ interface HTMLCommentInput {
   previous: () => HTMLElementType | HTMLDoctypeType | HTMLCDataType | HTMLTextType | HTMLCommentType;
   next: () => HTMLElementType | HTMLDoctypeType | HTMLCDataType | HTMLTextType | HTMLCommentType;
   value: string;
-  raw: string;
 }
 
 interface HTMLCommentType extends HTMLCommentInput {
@@ -269,7 +265,6 @@ interface HTMLTextInput {
   previous: () => HTMLElementType | HTMLDoctypeType | HTMLCDataType | HTMLTextType | HTMLCommentType | HTMLAttributeType;
   next: () => HTMLElementType | HTMLDoctypeType | HTMLCDataType | HTMLTextType | HTMLCommentType | HTMLAttributeType;
   value: string;
-  raw: string;
 }
 
 interface HTMLTextType extends HTMLTextInput {

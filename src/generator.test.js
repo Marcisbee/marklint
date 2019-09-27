@@ -35,7 +35,6 @@ describe('generator', () => {
           start: 0,
           end: 6,
           value: 'FooBar',
-          raw: 'FooBar',
           /** @type {*} */
           parent: () => ({}),
           /** @type {*} */

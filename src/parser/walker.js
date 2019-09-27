@@ -8,8 +8,6 @@ const DIFF_GROUPS = {
   '}': '{',
 };
 
-let unparsedData = null;
-
 /**
  * @param {Record<string, number>} diff
  * @return {boolean}
@@ -65,6 +63,7 @@ function walker(html) {
   let lastChar = '';
 
   let skip = false;
+  let unparsedData = null;
 
   /**
    * @param {number} start
@@ -129,7 +128,9 @@ function walker(html) {
       (/[a-z0-9\_\-\.\/\!]/i.test(secondChar) || lastChar === secondChar)) {
       const handled = handleTag(lastIndex, index + 1, charString + char);
 
-      if (handled) char = '';
+      if (handled) {
+        char = '';
+      }
     }
 
     if (diffKeys.indexOf(char) > -1) {
