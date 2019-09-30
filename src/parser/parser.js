@@ -14,11 +14,11 @@ const {
 } = require('../types');
 const walker = require('./walker');
 
-const OPENING_TAG = /^<([a-zA-Z0-9\_\-\.]+)([\s\S]*)>$/;
-const CLOSING_TAG = /^<\/([a-zA-Z0-9\_\-\.]+)>$/;
-const COMMENT = /^<!--(.*)-->$/;
-const DOCTYPE = /^<!DOCTYPE([\s\S]*)>$/;
-const CDATA = /^<!\[CDATA\[(.*)\]\]>$/;
+const OPENING_TAG = /^\<([a-zA-Z0-9\_\-\.]+)([\s\S]*)\>$/;
+const CLOSING_TAG = /^\<\/([a-zA-Z0-9\_\-\.]+)\>$/;
+const COMMENT = /^\<\!--([\s\S]*)--\>$/;
+const DOCTYPE = /^\<\!DOCTYPE([\s\S]*)\>$/;
+const CDATA = /^\<\!\[CDATA\[([\s\S]*)\]\]\>$/;
 
 const VOID_ELEMENTS = [
   'br',
@@ -265,6 +265,51 @@ function parser(html) {
       return;
     }
 
+    const comment = token.data.match(COMMENT);
+    if (comment) {
+      const [value] = comment.slice(1);
+      const lastElIndex = parent.children.length;
+      parent.children.push(new HTMLComment({
+        start: token.start,
+        end: token.end,
+        parent: () => parent,
+        previous: () => parent.children[lastElIndex - 1],
+        next: () => parent.children[lastElIndex + 1],
+        value,
+      }));
+      return;
+    }
+
+    const doctype = token.data.match(DOCTYPE);
+    if (doctype) {
+      const [value] = doctype.slice(1);
+      const lastElIndex = parent.children.length;
+      parent.children.push(new HTMLDoctype({
+        start: token.start,
+        end: token.end,
+        parent: () => parent,
+        previous: () => parent.children[lastElIndex - 1],
+        next: () => parent.children[lastElIndex + 1],
+        value,
+      }));
+      return;
+    }
+
+    const cdata = token.data.match(CDATA);
+    if (cdata) {
+      const [value] = cdata.slice(1);
+      const lastElIndex = parent.children.length;
+      parent.children.push(new HTMLCData({
+        start: token.start,
+        end: token.end,
+        parent: () => parent,
+        previous: () => parent.children[lastElIndex - 1],
+        next: () => parent.children[lastElIndex + 1],
+        value,
+      }));
+      return;
+    }
+
     const openingTag = token.data.match(OPENING_TAG);
     if (openingTag) {
       const [tagName, attributesBlock] = openingTag.slice(1);
@@ -369,51 +414,6 @@ function parser(html) {
 
         return;
       }
-    }
-
-    const comment = token.data.match(COMMENT);
-    if (comment) {
-      const [value] = comment.slice(1);
-      const lastElIndex = parent.children.length;
-      parent.children.push(new HTMLComment({
-        start: token.start,
-        end: token.end,
-        parent: () => parent,
-        previous: () => parent.children[lastElIndex - 1],
-        next: () => parent.children[lastElIndex + 1],
-        value,
-      }));
-      return;
-    }
-
-    const doctype = token.data.match(DOCTYPE);
-    if (doctype) {
-      const [value] = doctype.slice(1);
-      const lastElIndex = parent.children.length;
-      parent.children.push(new HTMLDoctype({
-        start: token.start,
-        end: token.end,
-        parent: () => parent,
-        previous: () => parent.children[lastElIndex - 1],
-        next: () => parent.children[lastElIndex + 1],
-        value,
-      }));
-      return;
-    }
-
-    const cdata = token.data.match(CDATA);
-    if (cdata) {
-      const [value] = cdata.slice(1);
-      const lastElIndex = parent.children.length;
-      parent.children.push(new HTMLCData({
-        start: token.start,
-        end: token.end,
-        parent: () => parent,
-        previous: () => parent.children[lastElIndex - 1],
-        next: () => parent.children[lastElIndex + 1],
-        value,
-      }));
-      return;
     }
 
     const lastElIndex = parent.children.length;

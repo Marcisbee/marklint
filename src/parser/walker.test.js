@@ -324,6 +324,99 @@ describe('walker', () => {
     expect(output).toEqual(expectation);
   });
 
+  test('returns empty script tag', () => {
+    const input = `<script src="https://unpkg.com/monaco-editor@0.8.3/min/vs/loader.js"></script>`;
+    const expectation = [
+      {
+        start: 0,
+        end: 69,
+        data: '<script src="https://unpkg.com/monaco-editor@0.8.3/min/vs/loader.js">',
+        type: 'tag',
+      },
+      {
+        start: 69,
+        end: 69,
+        data: '',
+        type: 'string',
+      },
+      {
+        start: 69,
+        end: 78,
+        data: '</script>',
+        type: 'tag',
+      },
+    ];
+
+    const output = walker(input);
+
+    expect(output).toEqual(expectation);
+  });
+
+  test('returns script with a line break', () => {
+    const input = `<script>
+    </script>`;
+    const expectation = [
+      {
+        start: 0,
+        end: 8,
+        data: '<script>',
+        type: 'tag',
+      },
+      {
+        start: 8,
+        end: 13,
+        data: '\n    ',
+        type: 'string',
+      },
+      {
+        start: 13,
+        end: 22,
+        data: '</script>',
+        type: 'tag',
+      },
+    ];
+
+    const output = walker(input);
+
+    expect(output).toEqual(expectation);
+  });
+
+  test('returns script with a line break after', () => {
+    const input = `<script>
+    </script>
+    `;
+    const expectation = [
+      {
+        start: 0,
+        end: 8,
+        data: '<script>',
+        type: 'tag',
+      },
+      {
+        start: 8,
+        end: 13,
+        data: '\n    ',
+        type: 'string',
+      },
+      {
+        start: 13,
+        end: 22,
+        data: '</script>',
+        type: 'tag',
+      },
+      {
+        start: 22,
+        end: 27,
+        data: '\n    ',
+        type: 'string',
+      },
+    ];
+
+    const output = walker(input);
+
+    expect(output).toEqual(expectation);
+  });
+
   test('returns everything in script tag as a string', () => {
     const input = `<script>a > b {} <a>123</a></script>`;
     const expectation = [
@@ -343,6 +436,22 @@ describe('walker', () => {
         start: 27,
         end: 36,
         data: '</script>',
+        type: 'tag',
+      },
+    ];
+
+    const output = walker(input);
+
+    expect(output).toEqual(expectation);
+  });
+
+  test('does not parse tags inside comment', () => {
+    const input = `<!-- <b>strong</b> -->`;
+    const expectation = [
+      {
+        start: 0,
+        end: 22,
+        data: '<!-- <b>strong</b> -->',
         type: 'tag',
       },
     ];

@@ -1,3 +1,7 @@
+const UNPARSED_OPEN = /^\<(style|script)[\S\s]*\>$/;
+const UNPARSED_CLOSE = /^([\S\s]*)(\<\/(style|script)[ ]*\>)$/;
+const COMMENT = /^\<\!--([\S\s]*)--\>$/;
+const UNFINISHED_COMMENT = /^\<\!--[\S\s]*[^\>](?!--\>)$/;
 
 const DIFF_GROUPS = {
   '(': ')',
@@ -70,15 +74,38 @@ function walker(html) {
    * @param {number} end
    * @param {string} data
    */
+  function handleUnparsedData(start, end, data) {
+    const comment = data.match(COMMENT);
+    if (comment && unparsedData === 'comment') {
+      unparsedData = null;
+      handleTag(start, end, data);
+      return;
+    }
+
+    const [before, fullTag, tagName] = (data.match(UNPARSED_CLOSE) || [])
+      .slice(1);
+    if (typeof before !== 'undefined' && fullTag && tagName === unparsedData) {
+      unparsedData = null;
+      handleString(start, start + before.length, before);
+      handleTag(start + before.length, end, fullTag);
+    }
+  }
+
+  /**
+   * @param {number} start
+   * @param {number} end
+   * @param {string} data
+   */
   function handleString(start, end, data) {
     if (unparsedData) {
-      const match = data.match(/^(.*)(\<\/(style|script)[ ]*>)$/);
-      if (match && match[1] && match[2] && match[3] === unparsedData) {
-        unparsedData = null;
-        handleString(start, start + match[1].length, match[1]);
-        handleTag(start + match[1].length, end, match[2]);
-      }
-      return;
+      handleUnparsedData(start, end, data);
+      return false;
+    }
+
+    const isUnfinishedComment = data.match(UNFINISHED_COMMENT);
+    if (!unparsedData && isUnfinishedComment) {
+      unparsedData = 'comment';
+      return false;
     }
 
     output.push({
@@ -89,6 +116,7 @@ function walker(html) {
     });
     lastIndex += data.length;
     charString = '';
+    return true;
   }
 
   /**
@@ -97,9 +125,18 @@ function walker(html) {
    * @param {string} data
    */
   function handleTag(start, end, data) {
-    if (unparsedData) return false;
+    if (unparsedData) {
+      handleUnparsedData(start, end, data);
+      return false;
+    }
 
-    const match = data.match(/^\<(style|script).*>$/);
+    const isUnfinishedComment = data.match(UNFINISHED_COMMENT);
+    if (isUnfinishedComment) {
+      unparsedData = 'comment';
+      return false;
+    }
+
+    const match = data.match(UNPARSED_OPEN);
     if (match && match[1]) {
       unparsedData = match[1];
     }
@@ -120,13 +157,21 @@ function walker(html) {
     const firstChar = charString[0];
     const secondChar = charString[1];
 
-    if (!skip && index > 0 && char === '<' && (firstChar !== '<' || lastChar !== '>')) {
+    if (!skip && index > 0 && char === '<') {
       handleString(lastIndex, index, charString);
     }
 
     if (!skip && !unparsedData && char === '>' && firstChar === '<' &&
       (/[a-z0-9\_\-\.\/\!]/i.test(secondChar) || lastChar === secondChar)) {
       const handled = handleTag(lastIndex, index + 1, charString + char);
+
+      if (handled) {
+        char = '';
+      }
+    }
+
+    if (!skip && index > 0 && char !== '' && lastChar === '>' && UNPARSED_CLOSE.test(charString)) {
+      const handled = handleString(lastIndex, index, charString);
 
       if (handled) {
         char = '';

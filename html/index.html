@@ -2,9 +2,9 @@
 <html lang="en">
 
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="X-UA-Compatible" content="ie=edge"/>
   <!-- @TODO: Fix "Expected a corresponding HTML closing tag for style." -->
   <style>
     @import 'https://unpkg.com/chipolette@latest/dist/chipolette.css';
@@ -134,7 +134,7 @@
   <script src="https://unpkg.com/boldom@1.1.0/src/boldom.js"></script>
   <script>
     (function () {
-      const source = `\<script\>
+      const source = `<script>
   var count = 0;
 
   export function increment() {
@@ -144,18 +144,18 @@
   export function decrement() {
     count -= 1;
   }
-\</script\>
+</script>
 
-\<style\>
+<style>
   h1 {
-    font-size: \${count+4}rem;
+    font-size: ${count+4}rem;
   }
-\</style\>
+</style>
 
-\<h1\>\${count}\</h1\>
+<h1>${count}</h1>
 
-\<button onclick="decrement()" \${count <=0 && 'disabled' }\>-\</button\>
-\<button onclick="increment()"\>+\</button\>
+<button onclick="decrement()" ${count <=0 && 'disabled' }>-</button>
+<button onclick="increment()">+</button>
 `;
 
       Boldom.disableCache('scripts');

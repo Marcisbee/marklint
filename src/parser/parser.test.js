@@ -2,12 +2,16 @@ const {
   HTMLToken,
   HTMLElement,
   HTMLOpeningElement,
+  HTMLClosingElement,
   HTMLIdentifier,
   HTMLComment,
   HTMLMarkup,
   HTMLDoctype,
   HTMLCData,
   HTMLText,
+  HTMLAttribute,
+  HTMLAttributeIdentifier,
+  HTMLLiteral,
 } = require('../types');
 const parse = require('./parser');
 
@@ -129,6 +133,86 @@ describe('parse', () => {
     }));
   });
 
+  test('should handle DOCTYPE and tags after it', () => {
+    const input = `<!DOCTYPE html><html lang="en"></html>`;
+    const output = parse(input);
+
+    expect(output.children[0]).toEqual(new HTMLDoctype({
+      start: 0,
+      end: 15,
+      parent: expect.any(Function),
+      next: expect.any(Function),
+      previous: expect.any(Function),
+      value: ' html',
+    }));
+
+    expect(output.children[1]).toEqual(new HTMLElement({
+      start: 15,
+      end: 38,
+      parent: expect.any(Function),
+      next: expect.any(Function),
+      previous: expect.any(Function),
+      openingElement: new HTMLOpeningElement({
+        start: 15,
+        end: 31,
+        parent: expect.any(Function),
+        name: new HTMLIdentifier({
+          start: 16,
+          end: 20,
+          parent: expect.any(Function),
+          name: 'html',
+        }),
+        raw: '<html lang=\"en\">',
+        attributes: [
+          new HTMLText({
+            start: 20,
+            end: 21,
+            parent: expect.any(Function),
+            next: expect.any(Function),
+            previous: expect.any(Function),
+            value: ' ',
+          }),
+          new HTMLAttribute({
+            end: 30,
+            name: new HTMLAttributeIdentifier({
+              end: 25,
+              name: 'lang',
+              parent: expect.any(Function),
+              start: 21,
+            }),
+            parent: expect.any(Function),
+            next: expect.any(Function),
+            previous: expect.any(Function),
+            start: 21,
+            value: new HTMLLiteral({
+              end: 30,
+              parent: expect.any(Function),
+              start: 26,
+              value: '"en"',
+            }),
+          }),
+        ],
+        selfClosing: false,
+        voidElement: false,
+        blockElement: false,
+        flowElement: false,
+      }),
+      closingElement: new HTMLClosingElement({
+        start: 31,
+        end: 38,
+        parent: expect.any(Function),
+        name: new HTMLIdentifier({
+          start: 33,
+          end: 37,
+          parent: expect.any(Function),
+          name: 'html',
+        }),
+        raw: '</html>',
+      }),
+      children: [],
+    }));
+  });
+
   test('should handle CDATA', () => {
     const input = `<![CDATA[ Hello World ]]>`;
     const output = parse(input);
@@ -141,6 +225,17 @@ describe('parse', () => {
       previous: expect.any(Function),
       value: ' Hello World ',
     }));
+  });
+
+  test('should handle script tag', () => {
+    const input = `\n<script>\n</script>\n`;
+    const output = parse(input);
+
+    /** @type {any} */
+    const element = output.children[1];
+
+    expect(element.openingElement.name.name).toEqual('script');
+    expect(element.closingElement.name.name).toEqual('script');
   });
 
   test('should handle attribute name and value', () => {
