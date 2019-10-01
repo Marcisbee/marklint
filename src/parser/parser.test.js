@@ -238,6 +238,23 @@ describe('parse', () => {
     expect(element.closingElement.name.name).toEqual('script');
   });
 
+  test('should handle template tag', () => {
+    const input = `<template>
+  <!-- <strong> -->
+</template>`;
+    const output = parse(input);
+
+    /** @type {any} */
+    const element = output.children[0];
+    /** @type {any} */
+    const comment = element.children[1];
+
+    expect(element.openingElement.name.name).toEqual('template');
+    expect(element.closingElement.name.name).toEqual('template');
+
+    expect(comment.value).toEqual(' <strong> ');
+  });
+
   test('should handle attribute name and value', () => {
     const input = '<meta\n  stylesheet\n  name="foo"\n/>';
     const output = parse(input);
