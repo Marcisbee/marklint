@@ -11,6 +11,11 @@ Config defaults
 }
 ```
 
+Options interface:
+```ts
+[number, 'space' | 'tab']
+```
+
 GOOD:
 ```html
 <input
