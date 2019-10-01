@@ -102,6 +102,8 @@ function walker(html) {
       return false;
     }
 
+    if (!data) return false;
+
     const isUnfinishedComment = data.match(UNFINISHED_COMMENT);
     if (!unparsedData && isUnfinishedComment) {
       unparsedData = 'comment';
@@ -178,7 +180,12 @@ function walker(html) {
       }
     }
 
-    if (diffKeys.indexOf(char) > -1) {
+    const isUnfinishedComment = `${charString}${char}`.match(UNFINISHED_COMMENT);
+    if (unparsedData === null && isUnfinishedComment) {
+      unparsedData = 'comment';
+    }
+
+    if ((unparsedData === null || unparsedData !== 'comment') && diffKeys.indexOf(char) > -1) {
       diff[char] += 1;
       skip = shouldSkip(diff);
     }

@@ -7,14 +7,7 @@ describe('walker', () => {
 
   test('returns empty string', () => {
     const input = ``;
-    const expectation = [
-      {
-        data: '',
-        end: 0,
-        start: 0,
-        type: 'string',
-      },
-    ];
+    const expectation = [];
 
     const output = walker(input);
 
@@ -335,12 +328,6 @@ describe('walker', () => {
       },
       {
         start: 69,
-        end: 69,
-        data: '',
-        type: 'string',
-      },
-      {
-        start: 69,
         end: 78,
         data: '</script>',
         type: 'tag',
@@ -454,6 +441,51 @@ describe('walker', () => {
         data: '<!-- <b>strong</b> -->',
         type: 'tag',
       },
+    ];
+
+    const output = walker(input);
+
+    expect(output).toEqual(expectation);
+  });
+
+  test('does not parse tags inside comment wrapped by tags', () => {
+    const input = `<div>
+  <!-- <strong>July 5, 2018</strong> -->
+</div>`;
+    const expectation = [
+      { data: '<div>', end: 5, start: 0, type: 'tag' },
+      { data: '\n  ', end: 8, start: 5, type: 'string' },
+      { data: '<!-- <strong>July 5, 2018</strong> -->', end: 46, start: 8, type: 'tag' },
+      { data: '\n', end: 47, start: 46, type: 'string' },
+      { data: '</div>', end: 53, start: 47, type: 'tag' },
+    ];
+
+    const output = walker(input);
+
+    expect(output).toEqual(expectation);
+  });
+
+  test('does not count character inside unparsed data blocks', () => {
+    const input = `<a><!--"--></a>`;
+    const expectation = [
+      { data: '<a>', end: 3, start: 0, type: 'tag' },
+      { data: '<!--"-->', end: 11, start: 3, type: 'tag' },
+      { data: '</a>', end: 15, start: 11, type: 'tag' },
+    ];
+
+    const output = walker(input);
+
+    expect(output).toEqual(expectation);
+  });
+
+  test('does not count character inside unparsed data blocks 2', () => {
+    const input = `<html><script>"</script>"</script></html>`;
+    const expectation = [
+      { data: '<html>', end: 6, start: 0, type: 'tag' },
+      { data: '<script>', end: 14, start: 6, type: 'tag' },
+      { data: '"</script>"', end: 25, start: 14, type: 'string' },
+      { data: '</script>', end: 34, start: 25, type: 'tag' },
+      { data: '</html>', end: 41, start: 34, type: 'tag' },
     ];
 
     const output = walker(input);
