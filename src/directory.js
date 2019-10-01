@@ -40,7 +40,7 @@ function isInRuleset(path, rules) {
       .replace(/[.+?^${}()|[\]\\]/g, '\\$&')
       .replace(/\*\*/g, '.+')
       .replace(/\*/g, '[^\\/]*');
-    const expression = new RegExp(normalRule);
+    const expression = new RegExp(`${normalRule}$`);
 
 
     if (expression.test(path)) {
