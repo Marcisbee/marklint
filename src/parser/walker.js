@@ -170,7 +170,7 @@ function walker(html) {
       }
     }
 
-    if (!skip && index > 0 && char !== '' && lastChar === '>' && UNPARSED_CLOSE.test(charString)) {
+    if (!skip && index > 0 && char !== '' && lastChar === '>' && (UNPARSED_CLOSE.test(charString) || COMMENT.test(charString))) {
       const handled = handleString(lastIndex, index, charString);
 
       if (handled) {
