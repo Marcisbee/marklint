@@ -21,12 +21,8 @@ const handler = (diagnostics, ast, path, {
 
     if (attributes.length === 0) return;
 
-    const textBeforeTag = path.parent().previous();
-
-    if (textBeforeTag && textBeforeTag.type === 'HTMLText') {
-      const textLines = textBeforeTag.value.split(/\n/g);
-      lastIndent = textLines[textLines.length - 1].length;
-    }
+    const lastTextLine = ast.raw.substring(0, path.start).split('\n').pop();
+    lastIndent = lastTextLine.length;
 
     const filteredAttributes = attributes
       .filter((attribute) => attribute.type === 'HTMLText');

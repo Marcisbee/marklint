@@ -155,6 +155,12 @@ try {
         next();
       }
     });
+  }, {
+    include: [
+      '*.html',
+      '*.htm',
+      '*.vue',
+    ],
   });
 } catch (e) {}
 

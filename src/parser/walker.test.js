@@ -492,4 +492,17 @@ describe('walker', () => {
 
     expect(output).toEqual(expectation);
   });
+
+  test('does not count character inside unparsed data blocks 3', () => {
+    const input = `<strong>"</strong>`;
+    const expectation = [
+      { data: '<strong>', end: 8, start: 0, type: 'tag' },
+      { data: '"', end: 9, start: 8, type: 'string' },
+      { data: '</strong>', end: 18, start: 9, type: 'tag' },
+    ];
+
+    const output = walker(input);
+
+    expect(output).toEqual(expectation);
+  });
 });

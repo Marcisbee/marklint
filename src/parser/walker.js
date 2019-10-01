@@ -185,7 +185,7 @@ function walker(html) {
       unparsedData = 'comment';
     }
 
-    if ((unparsedData === null || unparsedData !== 'comment') && diffKeys.indexOf(char) > -1) {
+    if (((unparsedData !== null && unparsedData !== 'comment') || (unparsedData === null && firstChar === '<')) && diffKeys.indexOf(char) > -1) {
       diff[char] += 1;
       skip = shouldSkip(diff);
     }
