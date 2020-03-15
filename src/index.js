@@ -162,7 +162,7 @@ try {
       '*.vue',
     ],
   });
-} catch (e) {}
+} catch (e) { }
 
 process.stdout.write(`\r\x1b[KRunning diagnostics..`);
 
