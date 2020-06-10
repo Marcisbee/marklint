@@ -9,6 +9,8 @@ const ruleHandling = {
   'no-flow-tag-close': require('./rules/no-flow-tag-close'),
   'no-unclosed-tag': require('./rules/no-unclosed-tag'),
   'attr-indent': require('./rules/attr-indent'),
+  'attr-closing-bracket': require('./rules/attr-closing-bracket'),
+  'closing-tag': require('./rules/closing-tag'),
 };
 
 /**
@@ -123,6 +125,10 @@ const rules = {
     severity: 'error',
     options: [2],
   },
+  'attr-closing-bracket': {
+    severity: 'error',
+    options: ['newline'],
+  },
   'no-void-tag-close': {
     severity: 'warning',
     options: [true],
@@ -130,6 +136,10 @@ const rules = {
   'no-flow-tag-close': {
     severity: 'warning',
     options: [true],
+  },
+  'closing-tag': {
+    severity: 'warning',
+    options: [],
   },
 };
 
@@ -159,7 +169,7 @@ try {
     include: [
       '*.html',
       '*.htm',
-      '*.vue',
+      // '*.vue',
     ],
   });
 } catch (e) { }

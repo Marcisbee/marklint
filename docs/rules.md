@@ -30,6 +30,69 @@ value=""
     name="input"/>
 ```
 
+## Rule: `attr-closing-bracket`
+Forces indent before opening tag closing bracket.
+
+Config defaults
+```js
+"attr-closing-bracket": {
+  severity: 'error',
+  options: ['eol'],
+}
+```
+
+Options interface:
+```ts
+['eol' | 'newline', number | undefined]
+```
+
+### End of last attribute (line) 'eol'
+Forces closing bracket `>` or `/>` to be on the same line as last attribute.
+
+GOOD:
+```html
+<input name="input"/>
+```
+
+```html
+<input
+  name="input"/>
+```
+
+It is possible to set a custom whitespace number here in config: `['eol', 1]`
+
+GOOD:
+```html
+<input name="input" />
+```
+
+BAD:
+```html
+<input name="input"
+/>
+```
+
+### New line before closing 'newline'
+Forces closing bracket `>` or `/>` to have a new line before closing with same whitespace as tag.
+
+GOOD:
+```html
+<input
+  name="input"
+/>
+```
+
+```html
+  <input
+    name="input"
+  />
+```
+
+BAD:
+```html
+<input name="input"/>
+```
+
 ## Rule: `no-void-tag-close`
 Forces all void elements to be self closed.
 
@@ -256,4 +319,37 @@ Config defaults
 BAD:
 ```html
 <h1 style="background: red;">hello</h1>
+```
+
+## Rule: `closing-tag`
+Forces all void elements to be self closed.
+
+Config defaults
+```js
+"closing-tag": {
+  severity: 'error',
+}
+```
+
+GOOD:
+```html
+<strong>
+  text
+</strong>
+```
+
+```html
+<strong>text</strong>
+```
+
+BAD:
+```html
+<strong>
+  text</strong>
+```
+
+```html
+<strong>
+  text
+  </strong>
 ```
