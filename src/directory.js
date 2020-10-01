@@ -59,7 +59,7 @@ function isInRuleset(path, rules) {
 function directory(
   root,
   traverse,
-  { include = includeDefaults, exclude = excludeDefaults } = {}
+  { include = includeDefaults, exclude = excludeDefaults } = {},
 ) {
   const absolutePath = path.resolve(__dirname, '../' + root);
 

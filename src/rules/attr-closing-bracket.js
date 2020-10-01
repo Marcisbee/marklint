@@ -90,7 +90,7 @@ const handler = (diagnostics, ast, path, {
 
     const currentIndent = getIndentSize(
       attribute,
-      ast.raw.substring(0, path.start)
+      ast.raw.substring(0, path.start),
     );
 
     if (currentIndent === tagIndent) return;
@@ -113,7 +113,7 @@ const handler = (diagnostics, ast, path, {
     const loc = getLOC(
       ast.raw,
       attribute.type !== 'HTMLText' ? attribute.end : attribute.start + 1,
-      attribute.type !== 'HTMLText' ? attribute.end + 1 : attribute.end
+      attribute.type !== 'HTMLText' ? attribute.end + 1 : attribute.end,
     );
 
     report.details.push({

@@ -20,19 +20,19 @@ function highlight(ast) {
     enter(path) {
       if (path.type === 'HTMLIdentifier') {
         instructions.push(
-          [path.start, path.end, 'tagIdentifier']
+          [path.start, path.end, 'tagIdentifier'],
         );
       }
 
       if (path.type === 'HTMLAttributeIdentifier') {
         instructions.push(
-          [path.start, path.end, 'attributeIdentifier']
+          [path.start, path.end, 'attributeIdentifier'],
         );
       }
 
       if (path.type === 'HTMLLiteral') {
         instructions.push(
-          [path.start, path.end, 'attributeLiteral']
+          [path.start, path.end, 'attributeLiteral'],
         );
       }
 
