@@ -1,0 +1,7 @@
+alt-require
+attr-lowercase
+attr-no-duplication
+attr-value-not-empty
+attr-value-double-quotes
+style-disabled
+inline-style-disabled
