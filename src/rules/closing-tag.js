@@ -56,7 +56,7 @@ const handler = (diagnostics, ast, path, {
     const loc = getLOC(
       ast.raw,
       path.start - childIndent,
-      path.start
+      path.start,
     );
 
     report.details.push({

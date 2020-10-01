@@ -40,7 +40,7 @@ function snippet(ast, start, end) {
       const currentNumber = number + targetStartLine;
       const lineNumber = getLineNumber(
         number + targetStartLine,
-        linesInTotal + targetStartLine
+        linesInTotal + targetStartLine,
       );
       const faulty = currentNumber >= start.line &&
         currentNumber <= end.line;
@@ -94,7 +94,7 @@ function snippet(ast, start, end) {
 
       return newAcc;
     },
-    []
+    [],
   );
 
   return linesWithNumbers;

@@ -156,7 +156,7 @@ try {
       process.stdout.write(`\r\x1b[KParsing ${filePath}`);
 
       diagnostics.push(
-        diagnoticRun(filePath, read(), rules)
+        diagnoticRun(filePath, read(), rules),
       );
 
       const next = queue.shift();
