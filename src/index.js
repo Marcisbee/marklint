@@ -178,7 +178,7 @@ module.exports = function main(
       queue.push(() => {
         const pathEnding = filePath.slice(-60);
         const printPath = pathEnding.length < filePath.length ? `...${pathEnding}` : pathEnding;
-        process.stdout.write(`\r\x1b[KParsing ${printPath}\n`);
+        process.stdout.write(`\r\x1b[KParsing ${printPath}`);
 
         diagnostics.push(
           diagnosticRun(filePath, read(), rules),
