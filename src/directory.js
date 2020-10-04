@@ -26,7 +26,7 @@ const includeDefaults = [
   '*.htm',
 ];
 const excludeDefaults = [
-  '/node_modules',
+  '/node_modules.*',
 ];
 
 /**
@@ -42,7 +42,6 @@ function isInRuleset(path, rules) {
       .replace(/\*/g, '[^\\/]*');
     const expression = new RegExp(`${normalRule}$`);
 
-
     if (expression.test(path)) {
       return true;
     }
@@ -52,17 +51,15 @@ function isInRuleset(path, rules) {
 }
 
 /**
- * @param {string} root
+ * @param {string} absolutePath
  * @param {(name: string, read: () => string) => void} traverse
  * @param {{ include?: string[], exclude?: string[] }} options
  */
 function directory(
-  root,
+  absolutePath,
   traverse,
   { include = includeDefaults, exclude = excludeDefaults } = {},
 ) {
-  const absolutePath = path.resolve(__dirname, '../' + root);
-
   for (const file of walkSync(absolutePath)) {
     const excluded = isInRuleset(file, exclude);
     const included = isInRuleset(file, include);

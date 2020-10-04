@@ -1,3 +1,5 @@
+const path = require('path');
+
 const directory = require('./directory');
 const errorMessage = require('./utils/error-message');
 const parse = require('./parser');
@@ -79,7 +81,7 @@ function lint(diagnostics, content, rules) {
  * @param {Record<string, RuleConfig>} rules
  * @return {Diagnostics}
  */
-function diagnoticRun(filePath, fileContent, rules) {
+function diagnosticRun(filePath, fileContent, rules) {
   /** @type {Diagnostics} */
   const diagnostics = {
     filePath,
@@ -108,15 +110,10 @@ function diagnoticRun(filePath, fileContent, rules) {
   return diagnostics;
 }
 
-
-/**
- * ---------------- MANUAL TESTING UNDER HERE --------------------
- */
-
-const rootPath = 'html';
+const defaultPath = path.resolve(__dirname, '..');
 
 /** @type {Record<string, RuleConfig>} */
-const rules = {
+const defaultRules = {
   'no-unclosed-tag': {
     severity: 'error',
     options: [],
@@ -143,55 +140,80 @@ const rules = {
   },
 };
 
-/** @type {Diagnostics[]} */
-const diagnostics = [];
-/** @type {(() => void)[]} */
-const queue = [];
+/**
+ * @typedef {Object} Config
+ * @property {string[]=} extensions
+ */
 
-process.stdout.write(`\r\x1b[KFetching markup files`);
+/** @type {Config} */
+const defaultConfig = {
+  extensions: [
+    '*.html',
+    '*.htm',
+    // '*.vue',
+  ],
+};
 
-try {
-  directory(rootPath, (filePath, read) => {
-    queue.push(() => {
-      process.stdout.write(`\r\x1b[KParsing ${filePath}`);
+/**
+ * @param {string} rootPath
+ * @param {Record<string, RuleConfig>} rules
+ * @param {Config} userConfig
+ */
+module.exports = function main(
+  rootPath = defaultPath,
+  rules = defaultRules,
+  userConfig = {},
+) {
+  /** @type {Diagnostics[]} */
+  const diagnostics = [];
+  /** @type {(() => void)[]} */
+  const queue = [];
 
-      diagnostics.push(
-        diagnoticRun(filePath, read(), rules),
-      );
+  const config = Object.assign({}, defaultConfig, userConfig);
 
-      const next = queue.shift();
+  process.stdout.write(`\r\x1b[KFetching markup files`);
 
-      if (typeof next === 'function') {
-        next();
-      }
+  try {
+    directory(rootPath, (filePath, read) => {
+      queue.push(() => {
+        const pathEnding = filePath.slice(-60);
+        const printPath = pathEnding.length < filePath.length ? `...${pathEnding}` : pathEnding;
+        process.stdout.write(`\r\x1b[KParsing ${printPath}`);
+
+        diagnostics.push(
+          diagnosticRun(filePath, read(), rules),
+        );
+
+        const next = queue.shift();
+
+        if (typeof next === 'function') {
+          next();
+        }
+      });
+    }, {
+      include: config.extensions,
     });
-  }, {
-    include: [
-      '*.html',
-      '*.htm',
-      // '*.vue',
-    ],
-  });
-} catch (e) { }
+  } catch (e) {}
 
-process.stdout.write(`\r\x1b[KRunning diagnostics..`);
+  process.stdout.write(`\r\x1b[KRunning diagnostics..`);
 
-const fn = queue.shift();
+  const fn = queue.shift();
 
-if (typeof fn !== 'function') {
-  process.stdout.write(`\r\x1b[K`);
-  report({
-    type: 'log',
-    severity: 'warning',
-    message: `No markup files found in directory "${rootPath}"\n`,
-  });
-} else {
-  fn();
+  if (typeof fn !== 'function') {
+    process.stdout.write(`\r\x1b[K`);
+    report({
+      type: 'log',
+      severity: 'warning',
+      message: `No markup files found in directory "${rootPath}"\n`,
+    });
+  } else {
+    fn();
 
-  process.stdout.write(`\r\x1b[K`);
+    process.stdout.write(`\r\x1b[K`);
 
-  report({
-    diagnostics,
-    type: 'diagnostics',
-  });
-}
+    report({
+      diagnostics,
+      type: 'diagnostics',
+    });
+  }
+};
