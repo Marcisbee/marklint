@@ -8,6 +8,7 @@ const report = require('./utils/report');
 
 const ruleHandling = {
   'alt-require': require('./rules/alt-require'),
+  'attr-value-not-empty': require('./rules/attr-value-not-empty'),
   'no-void-tag-close': require('./rules/no-void-tag-close'),
   'no-flow-tag-close': require('./rules/no-flow-tag-close'),
   'no-unclosed-tag': require('./rules/no-unclosed-tag'),
@@ -118,6 +119,12 @@ const defaultRules = {
   'alt-require': {
     severity: 'error',
     options: [],
+  },
+  'attr-value-not-empty': {
+    severity: 'error',
+    options: {
+      ignore: ['disabled'],
+    },
   },
   'no-unclosed-tag': {
     severity: 'error',

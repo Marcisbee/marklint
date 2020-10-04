@@ -5,11 +5,11 @@ const { HTMLAttribute } = require('../types');
 /** @type {RuleConfig} */
 const defaults = {
   severity: 'error',
-  options: [true],
+  options: [],
 };
 
 /** @type {RuleHandler} */
-const handler = (diagnostics, ast, path, { severity, options: [close] }) => {
+const handler = (diagnostics, ast, path, { severity, options: [] }) => {
   if (severity === 'off') return;
 
   if (path.type === 'HTMLOpeningElement') {
