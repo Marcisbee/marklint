@@ -7,6 +7,7 @@ const traverse = require('./traverse');
 const report = require('./utils/report');
 
 const ruleHandling = {
+  'alt-require': require('./rules/alt-require'),
   'no-void-tag-close': require('./rules/no-void-tag-close'),
   'no-flow-tag-close': require('./rules/no-flow-tag-close'),
   'no-unclosed-tag': require('./rules/no-unclosed-tag'),
@@ -114,6 +115,10 @@ const defaultPath = path.resolve(__dirname, '..');
 
 /** @type {Record<string, RuleConfig>} */
 const defaultRules = {
+  'alt-require': {
+    severity: 'error',
+    options: [],
+  },
   'no-unclosed-tag': {
     severity: 'error',
     options: [],
