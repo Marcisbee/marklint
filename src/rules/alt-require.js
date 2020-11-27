@@ -16,7 +16,9 @@ const handler = (diagnostics, ast, path, { severity, options: [] }) => {
     const openTagName = path.name;
     if (openTagName.name === 'img') {
       const altAttribute = path.attributes.find((attribute) => (
-        attribute instanceof HTMLAttribute && attribute.name.name === 'alt'
+        attribute instanceof HTMLAttribute && (
+          attribute.name.name === 'alt' || attribute.name.name === '[alt]'
+        )
       ));
 
       if (altAttribute) {
