@@ -29,6 +29,7 @@ file     file to parse; otherwise uses stdin
 
 Options:
    -v, --version            print version and exit
+   --fix                    fixes all auto fixable issues
    -i, --include            array of file paths to include (default: *.html, *.htm)
    -e, --exclude            array of file paths to exclude (default: node_modules/**)
 ```

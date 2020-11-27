@@ -3,8 +3,10 @@ const snippet = require('../snippet');
 const style = require('../style');
 const parse = require('../parser');
 const traverse = require('../traverse');
+const generator = require('../generator');
 
 const errorMessage = require('./error-message');
+const { writeFileSync } = require('fs');
 
 const PREFIX = {
   success: ' <strong>✔</strong> ',
@@ -139,8 +141,9 @@ function report(config) {
   }
 
   if (config.type === 'diagnostics') {
-    const { diagnostics } = config;
+    const { diagnostics, fix } = config;
 
+    let fixes = 0;
     let errors = 0;
     let warnings = 0;
 
@@ -159,7 +162,18 @@ function report(config) {
         message: `<a href="${diagnostic.filePath}">${diagnostic.filePath}</a>`,
       });
 
+      let newAst;
+      let localFixes = 0;
+
       diagnostic.error.forEach((issue) => {
+        if (fix && issue.applyFix) {
+          issue.applyFix();
+          newAst = issue.getAst();
+          errors -= 1;
+          localFixes += 1;
+          return;
+        }
+
         issue.details.forEach((detail) => {
           report(detail);
         });
@@ -170,6 +184,14 @@ function report(config) {
       });
 
       diagnostic.warning.forEach((issue) => {
+        if (fix && issue.applyFix) {
+          issue.applyFix();
+          newAst = issue.getAst();
+          warnings -= 1;
+          localFixes += 1;
+          return;
+        }
+
         issue.details.forEach((detail) => {
           report(detail);
         });
@@ -178,6 +200,19 @@ function report(config) {
           report(advice);
         });
       });
+
+      if (fix && newAst) {
+        const newHtml = generator(newAst);
+        writeFileSync(diagnostic.filePath, newHtml.code);
+
+        fixes += localFixes;
+
+        report({
+          type: 'log',
+          severity: 'info',
+          message: `Automatically fixed ${localFixes} issues.`,
+        });
+      }
     });
 
     // @TODO: Do diagnostics report on performance & time
@@ -194,6 +229,14 @@ function report(config) {
       severity: 'info',
       message: `Parsed ${diagnostics.length} markup files.`,
     });
+
+    if (fix && fixes > 0) {
+      report({
+        type: 'log',
+        severity: 'info',
+        message: `Total of ${fixes} fixes applied.`,
+      });
+    }
 
     if (errors === 0 && warnings === 0) {
       report({

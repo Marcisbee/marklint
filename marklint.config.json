@@ -28,7 +28,7 @@
     },
     "attr-closing-bracket": {
       "severity": "error",
-      "options": ["newline"]
+      "options": ["eol", 0, 4]
     },
     "no-void-tag-close": {
       "severity": "warning",

@@ -156,6 +156,7 @@ const defaultRules = {
 
 /**
  * @typedef {Object} Config
+ * @property {boolean=} fix
  * @property {string[]=} include
  * @property {string[]=} exclude
  * @property {Record<string, RuleConfig>=} rules
@@ -176,6 +177,7 @@ try {
 
 /** @type {Config} */
 const defaultConfig = {
+  fix: false,
   include: [
     '*.html',
     '*.htm',
@@ -257,6 +259,7 @@ function main(
     report({
       diagnostics,
       type: 'diagnostics',
+      fix: config.fix,
     });
   }
 };
@@ -268,6 +271,7 @@ module.exports = function validator() {
   const args = arg({
     // Types
     '--version': Boolean,
+    '--fix': Boolean,
     '--include': [String],
     '--exclude': [String],
 
@@ -291,6 +295,10 @@ module.exports = function validator() {
 
   if (args['--exclude']) {
     userConfig.exclude = args['--exclude'];
+  }
+
+  if (args['--fix']) {
+    userConfig.fix = args['--fix'];
   }
 
   const rootPathRelative = args._[0] || '.';

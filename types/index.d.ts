@@ -30,6 +30,7 @@ interface ReportInspectType {
 interface ReportDiagnosticsType {
   type: 'diagnostics';
   diagnostics: Diagnostics[];
+  fix: boolean;
 }
 
 interface Loc {

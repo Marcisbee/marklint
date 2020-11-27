@@ -78,7 +78,8 @@ const handler = (diagnostics, ast, path, {
        * Apply the fix
        */
       report.applyFix = () => {
-        attribute.value = `\n${whitespaceSize}`;
+        const correctIndent = new Array(whitespaceSize).fill(' ').join('');
+        attribute.value = correctIndent;
       };
 
       return;
@@ -131,7 +132,8 @@ const handler = (diagnostics, ast, path, {
      * Apply the fix
      */
     report.applyFix = () => {
-      attribute.value = `\n${tagIndent}`;
+      const correctIndent = new Array(tagIndent).fill(' ').join('');
+      attribute.value = `\n${correctIndent}`;
     };
   }
 };
