@@ -230,7 +230,7 @@ function report(config) {
       message: `Parsed ${diagnostics.length} markup files.`,
     });
 
-    if (fix && fixes > 0) {
+    if (fix) {
       report({
         type: 'log',
         severity: 'info',
