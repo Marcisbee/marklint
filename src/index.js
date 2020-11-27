@@ -228,7 +228,15 @@ function main(
       include: config.include,
       exclude: config.exclude,
     });
-  } catch (e) {}
+  } catch (e) {
+    process.stdout.write(`\r\x1b[K`);
+    report({
+      type: 'log',
+      severity: 'error',
+      message: `${e.message}\n`,
+    });
+    process.exit(1);
+  }
 
   process.stdout.write(`\r\x1b[KRunning diagnostics..`);
 

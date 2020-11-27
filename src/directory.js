@@ -8,7 +8,7 @@ const path = require('path');
  * @returns {IterableIterator<String>}
  */
 function* walkSync(dir) {
-  const files = fs.readdirSync(dir);
+  const files = fs.readdirSync(dir, 'utf-8');
 
   for (const file of files) {
     const pathToFile = path.join(dir, file);
