@@ -1,7 +1,7 @@
 {
-  "name": "markup-lint",
+  "name": "marklint",
   "version": "0.1.0",
-  "description": "🗳 HTML (Vue and Angular template) markup linter",
+  "description": "🗳 HTML/Markup (Vue and Angular template) linter",
   "main": "src/index.js",
   "tags": [
     "html",
@@ -13,10 +13,10 @@
     "angular"
   ],
   "bin": {
-    "markuplint": "bin/markuplint.js"
+    "marklint": "bin/marklint.js"
   },
   "scripts": {
-    "start": "bin/markuplint.js html",
+    "start": "bin/marklint.js html",
     "lint": "eslint .",
     "test": "jest",
     "test:ci": "npm run test -- --ci",
@@ -25,14 +25,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Marcisbee/markup-lint.git"
+    "url": "git+https://github.com/Marcisbee/marklint.git"
   },
   "author": "Marcis Bergmanis <marcisbergmanis@gmail.com>",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/Marcisbee/markup-lint/issues"
+    "url": "https://github.com/Marcisbee/marklint/issues"
   },
-  "homepage": "https://github.com/Marcisbee/markup-lint#readme",
+  "homepage": "https://github.com/Marcisbee/marklint#readme",
   "devDependencies": {
     "@types/jest": "^26.0.15",
     "@types/node": "^14.14.10",
@@ -48,7 +48,7 @@
     "bin",
     "schemas",
     "src",
-    "markuplint.config.json",
+    "marklint.config.json",
     "theme.json"
   ]
 }

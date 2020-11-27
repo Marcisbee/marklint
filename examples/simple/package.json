@@ -1,9 +1,9 @@
 {
   "scripts": {
-    "lint": "markuplint ./html",
-    "v": "markuplint --version"
+    "lint": "marklint ./html",
+    "v": "marklint --version"
   },
   "dependencies": {
-    "markup-lint": "file:../.."
+    "marklint": "file:../.."
   }
 }

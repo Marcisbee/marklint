@@ -165,12 +165,12 @@ const defaultRules = {
 let configFileData = {};
 
 try {
-  configFileData = require(join(resolve('.'), 'markuplint.config.json')) || {};
+  configFileData = require(join(resolve('.'), 'marklint.config.json')) || {};
 } catch (_) {
   report({
     type: 'log',
     severity: 'warning',
-    message: 'No config "markuplint.config.json" file found.',
+    message: 'No config "marklint.config.json" file found.',
   });
 }
 

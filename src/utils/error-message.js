@@ -3,7 +3,7 @@
  * @return  {Error}
  */
 function errorMessage(message) {
-  return new Error(`[markup-lint]: ${message}`);
+  return new Error(`[marklint]: ${message}`);
 }
 
 module.exports = errorMessage;
