@@ -1,0 +1,229 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema",
+  "type": "object",
+  "properties": {
+    "$schema": {
+      "type": "string"
+    },
+    "include": {
+      "type": "array",
+      "default": [
+        "*.html",
+        "*.htm"
+      ],
+      "examples": [
+        [
+          "*.html",
+          "*.htm"
+        ],
+        [
+          "*.html",
+          "*.htm",
+          "*.vue"
+        ]
+      ],
+      "items": {
+        "type": "string"
+      }
+    },
+    "exclude": {
+      "type": "array",
+      "default": [
+        "node_modules/**"
+      ],
+      "examples": [
+        [
+          "node_modules/**"
+        ]
+      ],
+      "items": {
+        "type": "string"
+      }
+    },
+    "rules": {
+      "type": "object",
+      "properties": {
+        "alt-require": {
+          "$ref": "#/definitions/AltRequire"
+        },
+        "attr-value-not-empty": {
+          "$ref": "#/definitions/AttrValueNotEmpty"
+        },
+        "no-unclosed-tag": {
+          "$ref": "#/definitions/NoUnclosedTag"
+        },
+        "attr-indent": {
+          "$ref": "#/definitions/AttrIndent"
+        },
+        "attr-closing-bracket": {
+          "$ref": "#/definitions/AttrClosingBracket"
+        },
+        "no-void-tag-close": {
+          "$ref": "#/definitions/NoVoidTagClose"
+        },
+        "no-flow-tag-close": {
+          "$ref": "#/definitions/NoFlowTagClose"
+        },
+        "closing-tag": {
+          "$ref": "#/definitions/ClosingTag"
+        }
+      }
+    }
+  },
+  "additionalProperties": false,
+  "definitions": {
+    "Severity": {
+      "type": "string",
+      "enum": [
+        "off",
+        "warning",
+        "error"
+      ]
+    },
+    "AltRequire": {
+      "type": "object",
+      "properties": {
+        "severity": {
+          "$ref": "#/definitions/Severity"
+        },
+        "options": {
+          "type": "array"
+        }
+      },
+      "additionalProperties": false
+    },
+    "AttrValueNotEmpty": {
+      "type": "object",
+      "properties": {
+        "severity": {
+          "$ref": "#/definitions/Severity"
+        },
+        "options": {
+          "type": "object",
+          "properties": {
+            "ignore": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "NoUnclosedTag": {
+      "type": "object",
+      "properties": {
+        "severity": {
+          "$ref": "#/definitions/Severity"
+        },
+        "options": {
+          "type": "array"
+        }
+      },
+      "additionalProperties": false
+    },
+    "AttrIndent": {
+      "type": "object",
+      "properties": {
+        "severity": {
+          "$ref": "#/definitions/Severity"
+        },
+        "options": {
+          "type": "array",
+          "items": {
+            "type": "number"
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "AttrClosingBracket": {
+      "type": "object",
+      "properties": {
+        "severity": {
+          "$ref": "#/definitions/Severity"
+        },
+        "options": {
+          "type": "array",
+          "items": [
+            {
+              "title": "Last Whitespace",
+              "type": "string",
+              "enum": [
+                "eol",
+                "newline"
+              ],
+              "default": "newline"
+            },
+            {
+              "title": "Whitespace Size",
+              "type": "number",
+              "default": 0
+            },
+            {
+              "title": "Attribute Size",
+              "type": "number",
+              "default": 4
+            }
+          ]
+        }
+      },
+      "additionalProperties": false
+    },
+    "NoVoidTagClose": {
+      "type": "object",
+      "properties": {
+        "severity": {
+          "$ref": "#/definitions/Severity",
+          "default": "warning"
+        },
+        "options": {
+          "type": "array",
+          "items": [
+            {
+              "title": "Should close",
+              "type": "boolean",
+              "default": true
+            }
+          ]
+        }
+      },
+      "additionalProperties": false
+    },
+    "NoFlowTagClose": {
+      "type": "object",
+      "properties": {
+        "severity": {
+          "$ref": "#/definitions/Severity",
+          "default": "warning"
+        },
+        "options": {
+          "type": "array",
+          "items": [
+            {
+              "title": "Should close",
+              "type": "boolean",
+              "default": true
+            }
+          ]
+        }
+      },
+      "additionalProperties": false
+    },
+    "ClosingTag": {
+      "type": "object",
+      "properties": {
+        "severity": {
+          "$ref": "#/definitions/Severity",
+          "default": "warning"
+        },
+        "options": {
+          "type": "array"
+        }
+      },
+      "additionalProperties": false
+    }
+  }
+}

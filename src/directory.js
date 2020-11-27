@@ -26,7 +26,7 @@ const includeDefaults = [
   '*.htm',
 ];
 const excludeDefaults = [
-  '/node_modules.*',
+  'node_modules/**',
 ];
 
 /**

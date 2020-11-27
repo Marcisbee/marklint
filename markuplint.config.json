@@ -1,0 +1,46 @@
+{
+  "$schema": "./schemas/config.json",
+  "include": [
+    "*.html",
+    "*.htm"
+  ],
+  "exclude": [
+    "node_modules/**"
+  ],
+  "rules": {
+    "alt-require": {
+      "severity": "error",
+      "options": []
+    },
+    "attr-value-not-empty": {
+      "severity": "error",
+      "options": {
+        "ignore": ["disabled"]
+      }
+    },
+    "no-unclosed-tag": {
+      "severity": "error",
+      "options": []
+    },
+    "attr-indent": {
+      "severity": "error",
+      "options": [2]
+    },
+    "attr-closing-bracket": {
+      "severity": "error",
+      "options": ["newline"]
+    },
+    "no-void-tag-close": {
+      "severity": "warning",
+      "options": [true]
+    },
+    "no-flow-tag-close": {
+      "severity": "warning",
+      "options": [true]
+    },
+    "closing-tag": {
+      "severity": "warning",
+      "options": []
+    }
+  }
+}

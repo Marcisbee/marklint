@@ -1,3 +1,4 @@
+const arg = require('arg');
 const path = require('path');
 
 const directory = require('./directory');
@@ -5,6 +6,7 @@ const errorMessage = require('./utils/error-message');
 const parse = require('./parser');
 const traverse = require('./traverse');
 const report = require('./utils/report');
+const { resolve, join } = require('path');
 
 const ruleHandling = {
   'alt-require': require('./rules/alt-require'),
@@ -112,7 +114,7 @@ function diagnosticRun(filePath, fileContent, rules) {
   return diagnostics;
 }
 
-const defaultPath = path.resolve(__dirname, '..');
+const defaultPath = path.resolve(__dirname, '.');
 
 /** @type {Record<string, RuleConfig>} */
 const defaultRules = {
@@ -154,28 +156,48 @@ const defaultRules = {
 
 /**
  * @typedef {Object} Config
- * @property {string[]=} extensions
+ * @property {string[]=} include
+ * @property {string[]=} exclude
+ * @property {Record<string, RuleConfig>=} rules
  */
 
 /** @type {Config} */
+let configFileData = {};
+
+try {
+  configFileData = require(join(resolve('.'), 'markuplint.config.json')) || {};
+} catch (_) {
+  report({
+    type: 'log',
+    severity: 'warning',
+    message: 'No config "markuplint.config.json" file found.',
+  });
+}
+
+/** @type {Config} */
 const defaultConfig = {
-  extensions: [
+  include: [
     '*.html',
     '*.htm',
     // '*.vue',
   ],
+  exclude: [
+    'node_modules/**',
+  ],
+  rules: defaultRules,
+
+  ...configFileData,
 };
 
 /**
  * @param {string} rootPath
- * @param {Record<string, RuleConfig>} rules
  * @param {Config} userConfig
  */
-module.exports = function main(
+function main(
   rootPath = defaultPath,
-  rules = defaultRules,
   userConfig = {},
 ) {
+  const rules = userConfig.rules || defaultRules;
   /** @type {Diagnostics[]} */
   const diagnostics = [];
   /** @type {(() => void)[]} */
@@ -203,7 +225,8 @@ module.exports = function main(
         }
       });
     }, {
-      include: config.extensions,
+      include: config.include,
+      exclude: config.exclude,
     });
   } catch (e) {}
 
@@ -228,4 +251,43 @@ module.exports = function main(
       type: 'diagnostics',
     });
   }
+};
+
+/**
+ * Runs linter
+ */
+module.exports = function validator() {
+  const args = arg({
+    // Types
+    '--version': Boolean,
+    '--include': [String],
+    '--exclude': [String],
+
+    // Aliases
+    '-v': '--version',
+    '-i': '--include',
+    '-e': '--exclude',
+  });
+
+  if (args['--version']) {
+    // @ts-ignore
+    const packageJson = require('../package.json');
+    console.log(`v${packageJson.version}`);
+    process.exit(0);
+  }
+
+  const userConfig = {};
+  if (args['--include']) {
+    userConfig.include = args['--include'];
+  }
+
+  if (args['--exclude']) {
+    userConfig.exclude = args['--exclude'];
+  }
+
+  const rootPathRelative = args._[0] || '.';
+  const rootPath = resolve(rootPathRelative);
+  const config = { ...defaultConfig, ...userConfig };
+
+  main(rootPath, config);
 };

@@ -189,12 +189,19 @@ function report(config) {
     //  Overall: ${diagnostics.time.all.end - diagnostics.time.all.start}ms;`,
     //   });
 
+    report({
+      type: 'log',
+      severity: 'info',
+      message: `Parsed ${diagnostics.length} markup files.`,
+    });
+
     if (errors === 0 && warnings === 0) {
       report({
         type: 'log',
         severity: 'success',
         message: `Found no problems.\n`,
       });
+      process.exit(0);
     }
 
     if (errors === 0 && warnings > 0) {
@@ -203,6 +210,7 @@ function report(config) {
         severity: 'warning',
         message: `Found ${warnings} warnings.\n`,
       });
+      process.exit(0);
     }
 
     if (errors > 0) {
@@ -211,6 +219,7 @@ function report(config) {
         severity: 'error',
         message: `Found ${errors} errors and <color-yellow>${warnings} warnings</color-yellow>.\n`,
       });
+      process.exit(1);
     }
   }
 }
