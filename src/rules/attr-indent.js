@@ -1,3 +1,4 @@
+const { HTMLAttribute } = require('../types');
 const getLOC = require('../utils/get-loc');
 const ruleHandler = require('../utils/rule-handler');
 
@@ -27,9 +28,11 @@ const handler = (diagnostics, ast, path, {
     const filteredAttributes = attributes
       .filter((attribute) => attribute.type === 'HTMLText');
     const lastIndex = filteredAttributes.length - 1;
+    const hasLastAttribute =
+      filteredAttributes[lastIndent] instanceof HTMLAttribute;
 
     filteredAttributes.forEach((attribute, index) => {
-      if (lastIndex === index) return;
+      if (hasLastAttribute && lastIndex === index) return;
       if (typeof attribute.value !== 'string') return;
       const correctionStart = (attribute.value.match(/^\n/) || '').length;
       const normalizedIndent = indentSize + lastIndent;

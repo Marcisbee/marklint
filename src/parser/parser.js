@@ -150,7 +150,7 @@ function canCloseFlow(startName, endName, element) {
   return true;
 }
 
-const ATTRIBUTES = /(^|\s*)([\w-@:*.\[\]\(\)\#%]+)((?:\s*=\s*("[^"]+[^\\]"|'[^']+'|\S+))*)/g;
+const ATTRIBUTES = /(^|\s*)([\w-@:*.\[\]\(\)\#\$%]+)((?:\s*=\s*("[^"]+[^\\]"|'[^']+'|\S+))*)/g;
 
 /**
  * @param {string} attributes

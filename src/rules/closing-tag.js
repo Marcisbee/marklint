@@ -74,7 +74,14 @@ const handler = (diagnostics, ast, path, {
      * Apply the fix
      */
     report.applyFix = () => {
-      childBefore.value = `\n${tagIndent}`;
+      const correctIndent = new Array(tagIndent).fill(' ').join('');
+
+      if (childBefore.value.trim() === '') {
+        childBefore.value = `\n${correctIndent}`;
+        return;
+      }
+
+      childBefore.value = `${childBefore.value}\n${correctIndent}`;
     };
   }
 };
