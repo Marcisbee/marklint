@@ -226,7 +226,45 @@ function parseAttributes(attributes, start, parent) {
     }
   }
 
-  return output;
+  // Ensure every attribute is has empty text in between
+  return output.reduce((acc, attr, index) => {
+    const isLastAttr = output.length === index + 1;
+    const last = acc[acc.length - 1];
+
+    const addition = [attr];
+
+    if (attr instanceof HTMLAttribute && !(last instanceof HTMLText)) {
+      addition.unshift(
+        new HTMLText({
+          start: attr.start,
+          end: attr.start,
+          parent: () => parent,
+          previous:
+            () => output[index - 1],
+          next: () => output[index + 1],
+          value: '',
+        })
+      );
+    }
+
+    if (isLastAttr &&
+      !(last instanceof HTMLText) &&
+      !(attr instanceof HTMLText)) {
+      addition.push(
+        new HTMLText({
+          start: attr.end,
+          end: attr.end,
+          parent: () => parent,
+          previous:
+            () => output[index - 1],
+          next: () => output[index + 1],
+          value: '',
+        })
+      );
+    }
+
+    return acc.concat(addition);
+  }, []);
 }
 
 /**

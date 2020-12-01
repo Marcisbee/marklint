@@ -5,13 +5,13 @@ const ruleHandler = require('../utils/rule-handler');
 /** @type {RuleConfig} */
 const defaults = {
   severity: 'error',
-  options: [2],
+  options: [2, 1],
 };
 
 /** @type {RuleHandler} */
 const handler = (diagnostics, ast, path, {
   severity,
-  options: [indentSize],
+  options: [indentSize, spacesBetweenOneLiner = 1],
 }) => {
   if (severity === 'off') return;
 
@@ -39,6 +39,52 @@ const handler = (diagnostics, ast, path, {
       const correctIndent = new Array(normalizedIndent).fill(' ').join('');
 
       if (!/^\n/.test(attribute.value)) {
+        if (attribute.value === ' ') {
+          return;
+        }
+
+        /** @type {DiagnosticsReport} */
+        const report = {
+          type: diagnostics.rule,
+          details: [],
+          advice: [],
+          applyFix: null,
+          getAst: () => ast,
+        };
+
+        report.details.push({
+          type: 'log',
+          severity,
+          message: `Expected an indent of <strong>${spacesBetweenOneLiner}</strong> spaces but instead got <strong>${attribute.value.length}</strong>.`,
+        });
+
+        const loc = getLOC(
+          ast.raw,
+          attribute.start,
+          attribute.start === attribute.end ?
+            attribute.end + 1 :
+            attribute.end
+        );
+
+        report.details.push({
+          type: 'snippet',
+          snippet: {
+            ast,
+            start: loc.start,
+            end: loc.end,
+          },
+        });
+
+        diagnostics[severity].push(report);
+
+        /**
+         * Apply the fix
+         */
+        report.applyFix = () => {
+          const correctOneLinerIndent = new Array(spacesBetweenOneLiner).fill(' ').join('');
+          attribute.value = correctOneLinerIndent;
+        };
+
         return;
       }
 

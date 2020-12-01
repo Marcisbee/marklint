@@ -132,9 +132,18 @@
         },
         "options": {
           "type": "array",
-          "items": {
-            "type": "number"
-          }
+          "items": [
+            {
+              "title": "Newline indentation spaces",
+              "default": 2,
+              "type": "number"
+            },
+            {
+              "title": "One liner separation spaces",
+              "default": 1,
+              "type": "number"
+            }
+          ]
         }
       },
       "additionalProperties": false

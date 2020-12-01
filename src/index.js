@@ -134,7 +134,7 @@ const defaultRules = {
   },
   'attr-indent': {
     severity: 'error',
-    options: [2],
+    options: [2, 1],
   },
   'attr-closing-bracket': {
     severity: 'error',
