@@ -7,9 +7,9 @@
     },
     "baseUrl": ".",
     "module": "commonjs",
-    "target": "ES2017",
+    "target": "ES2019",
     "lib": [
-      "es2017"
+      "es2019"
     ],
     "checkJs": true,
     "noImplicitThis": true,
