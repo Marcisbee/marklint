@@ -14,7 +14,7 @@ const ruleHandling = {
   'no-void-tag-close': require('./rules/no-void-tag-close'),
   'no-flow-tag-close': require('./rules/no-flow-tag-close'),
   'no-unclosed-tag': require('./rules/no-unclosed-tag'),
-  'attr-indent': require('./rules/attr-indent'),
+  'attr-format': require('./rules/attr-format'),
   'attr-closing-bracket': require('./rules/attr-closing-bracket'),
   'closing-tag': require('./rules/closing-tag'),
 };
@@ -132,9 +132,9 @@ const defaultRules = {
     severity: 'error',
     options: [],
   },
-  'attr-indent': {
+  'attr-format': {
     severity: 'error',
-    options: [2, 1],
+    options: {},
   },
   'attr-closing-bracket': {
     severity: 'error',

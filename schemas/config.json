@@ -52,8 +52,8 @@
         "no-unclosed-tag": {
           "$ref": "#/definitions/NoUnclosedTag"
         },
-        "attr-indent": {
-          "$ref": "#/definitions/AttrIndent"
+        "attr-format": {
+          "$ref": "#/definitions/AttrFormat"
         },
         "attr-closing-bracket": {
           "$ref": "#/definitions/AttrClosingBracket"
@@ -124,26 +124,36 @@
       },
       "additionalProperties": false
     },
-    "AttrIndent": {
+    "AttrFormat": {
       "type": "object",
       "properties": {
         "severity": {
           "$ref": "#/definitions/Severity"
         },
         "options": {
-          "type": "array",
-          "items": [
-            {
-              "title": "Newline indentation spaces",
-              "default": 2,
-              "type": "number"
+          "type": "object",
+          "properties": {
+            "type": {
+              "type": "string",
+              "default": "space",
+              "enum": ["space", "tab"]
             },
-            {
-              "title": "One liner separation spaces",
-              "default": 1,
-              "type": "number"
+            "newline": {
+              "title": "Newline indentation size",
+              "type": "number",
+              "default": 2
+            },
+            "inline": {
+              "title": "Inline indentation spaces",
+              "type": "number",
+              "default": 1
+            },
+            "maxInlineSize": {
+              "title": "Max length of attributes in one line",
+              "type": "number",
+              "default": 50
             }
-          ]
+          }
         }
       },
       "additionalProperties": false

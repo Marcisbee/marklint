@@ -1,19 +1,29 @@
 # All rules
 
-## Rule: `attr-indent`
+## Rule: `attr-format`
 Forces indent for html attributes that have line break between.
 
 Config defaults
 ```js
-"attr-indent": {
-  severity: 'error',
-  options: [2, 'spaces'],
+"attr-format": {
+  "severity": "error",
+  "options": {
+    "type": "space",
+    "newline": 2,
+    "inline": 1,
+    "maxInlineSize": 50
+  }
 }
 ```
 
 Options interface:
 ```ts
-[number, 'space' | 'tab']
+{
+  type: "space" | "tab";
+  newline: number;
+  inline: number;
+  maxInlineSize: number;
+}
 ```
 
 GOOD:

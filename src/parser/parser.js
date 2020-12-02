@@ -240,8 +240,8 @@ function parseAttributes(attributes, start, parent) {
           end: attr.start,
           parent: () => parent,
           previous:
-            () => output[index - 1],
-          next: () => output[index + 1],
+            () => output[index - 2],
+          next: () => output[index],
           value: '',
         })
       );
@@ -256,8 +256,8 @@ function parseAttributes(attributes, start, parent) {
           end: attr.end,
           parent: () => parent,
           previous:
-            () => output[index - 1],
-          next: () => output[index + 1],
+            () => output[index - 2],
+          next: () => output[index],
           value: '',
         })
       );

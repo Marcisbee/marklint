@@ -22,9 +22,9 @@
       "severity": "error",
       "options": []
     },
-    "attr-indent": {
+    "attr-format": {
       "severity": "error",
-      "options": [2, 1]
+      "options": {}
     },
     "attr-closing-bracket": {
       "severity": "error",
