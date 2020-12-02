@@ -17,6 +17,7 @@ const ruleHandling = {
   'attr-format': require('./rules/attr-format'),
   'attr-closing-bracket': require('./rules/attr-closing-bracket'),
   'closing-tag': require('./rules/closing-tag'),
+  'comment-format': require('./rules/comment-format'),
 };
 
 /**
@@ -151,6 +152,10 @@ const defaultRules = {
   'closing-tag': {
     severity: 'warning',
     options: [],
+  },
+  'comment-format': {
+    severity: 'warning',
+    options: {},
   },
 };
 

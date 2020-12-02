@@ -66,6 +66,9 @@
         },
         "closing-tag": {
           "$ref": "#/definitions/ClosingTag"
+        },
+        "comment-format": {
+          "$ref": "#/definitions/CommentFormat"
         }
       }
     }
@@ -240,6 +243,29 @@
         },
         "options": {
           "type": "array"
+        }
+      },
+      "additionalProperties": false
+    },
+    "CommentFormat": {
+      "type": "object",
+      "properties": {
+        "severity": {
+          "$ref": "#/definitions/Severity",
+          "default": "warning"
+        },
+        "options": {
+          "type": "object",
+          "properties": {
+            "start": {
+              "type": "number",
+              "default": 1
+            },
+            "end": {
+              "type": "number",
+              "default": 1
+            }
+          }
         }
       },
       "additionalProperties": false

@@ -41,6 +41,10 @@
     "closing-tag": {
       "severity": "warning",
       "options": []
+    },
+    "comment-format": {
+      "severity": "warning",
+      "options": {}
     }
   }
 }

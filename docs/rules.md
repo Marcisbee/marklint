@@ -363,3 +363,27 @@ BAD:
   text
   </strong>
 ```
+
+## Rule: `comment-format`
+Forces all comments to have spaces in start and end.
+
+Config defaults
+```js
+"comment-format": {
+  "severity": "warning",
+  "options": {
+    "start": 1,
+    "end": 1
+  }
+}
+```
+
+GOOD:
+```html
+<!-- Comment -->
+```
+
+BAD:
+```html
+<!--  Comment-->
+```

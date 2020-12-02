@@ -116,7 +116,7 @@ function generator(ast, options = {}) {
       }
 
       if (path instanceof HTMLComment && path.value) {
-        code = code.concat(`<!-- ${path.value} -->`);
+        code = code.concat(`<!--${path.value}-->`);
 
         return;
       }
