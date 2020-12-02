@@ -18,7 +18,7 @@ function getLineNumber(currentIndex, maxIndex) {
  * @param {HTMLMarkupType} ast
  * @param {Loc} start
  * @param {Loc} end
- * @return {function[]}
+ * @return {string[]}
  */
 function snippet(ast, start, end) {
   const { raw } = ast;

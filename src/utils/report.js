@@ -34,6 +34,8 @@ function stylizeString(severity, string) {
 
   let pureText = false;
 
+  const out = [];
+
   traverse(ast, {
     enter(path) {
       if (path.type === 'HTMLOpeningElement') {
@@ -44,7 +46,7 @@ function stylizeString(severity, string) {
             .find((s) => s.type === 'HTMLAttribute' && s.name.name === 'href');
 
           if (url.type === 'HTMLAttribute') {
-            process.stdout.write([
+            out.push([
               OSC,
               '8',
               SEP,
@@ -69,7 +71,7 @@ function stylizeString(severity, string) {
         const name = path.name.name;
 
         if (name === 'a') {
-          process.stdout.write([
+          out.push([
             OSC,
             '8',
             SEP,
@@ -92,7 +94,7 @@ function stylizeString(severity, string) {
         }
 
         if (pureText) {
-          process.stdout.write(path.value);
+          out.push(path.value);
 
           return;
         }
@@ -101,7 +103,7 @@ function stylizeString(severity, string) {
           .filter((s) => s)
           .reduce((acc, s) => acc.concat(s), []);
 
-        style(path.value, styles)();
+        out.push(...style(path.value, styles));
 
         return;
       }
@@ -109,6 +111,8 @@ function stylizeString(severity, string) {
       return ast;
     },
   });
+
+  return out;
 }
 
 /**
@@ -122,22 +126,26 @@ function report(config) {
   if (config.type === 'log') {
     const { severity, message } = config;
 
-    stylizeString(severity, message);
+    return stylizeString(severity, message);
   }
 
   if (config.type === 'snippet') {
     const { snippet: { ast, start, end } } = config;
 
-    process.stdout.write('\n');
-    snippet(ast, start, end).forEach((fn) => fn());
+    return [
+      '\n',
+      ...snippet(ast, start, end),
+    ];
   }
 
   if (config.type === 'inspect') {
     const { data } = config;
 
-    process.stdout.write('\n');
-    process.stdout.write(JSON.stringify(data, null, '  '));
-    process.stdout.write('\n');
+    return [
+      '\n',
+      JSON.stringify(data, null, '  '),
+      '\n',
+    ];
   }
 
   if (config.type === 'diagnostics') {
@@ -146,6 +154,8 @@ function report(config) {
     let fixes = 0;
     let errors = 0;
     let warnings = 0;
+
+    const outputReports = [];
 
     diagnostics.forEach((diagnostic) => {
       const localErrors = diagnostic.error.length;
@@ -156,11 +166,7 @@ function report(config) {
 
       if (localErrors === localWarnings && localErrors === 0) return;
 
-      report({
-        type: 'log',
-        severity: 'default',
-        message: `<a href="${diagnostic.filePath}">${diagnostic.filePath}</a>`,
-      });
+      let localReports = [];
 
       let newAst;
       let localFixes = 0;
@@ -175,11 +181,11 @@ function report(config) {
         }
 
         issue.details.forEach((detail) => {
-          report(detail);
+          localReports.push(...report(detail));
         });
 
         issue.advice.forEach((advice) => {
-          report(advice);
+          localReports.push(...report(advice));
         });
       });
 
@@ -193,11 +199,11 @@ function report(config) {
         }
 
         issue.details.forEach((detail) => {
-          report(detail);
+          localReports.push(...report(detail));
         });
 
         issue.advice.forEach((advice) => {
-          report(advice);
+          localReports.push(...report(advice));
         });
       });
 
@@ -206,13 +212,17 @@ function report(config) {
         writeFileSync(diagnostic.filePath, newHtml.code);
 
         fixes += localFixes;
-
-        report({
-          type: 'log',
-          severity: 'info',
-          message: `Automatically fixed ${localFixes} issues.`,
-        });
       }
+
+      if (localReports.length > 0) {
+        localReports = report({
+          type: 'log',
+          severity: 'default',
+          message: `<a href="${diagnostic.filePath}">${diagnostic.filePath}</a>`,
+        }).concat(localReports);
+      }
+
+      outputReports.push(...localReports);
     });
 
     // @TODO: Do diagnostics report on performance & time
@@ -224,44 +234,48 @@ function report(config) {
     //  Overall: ${diagnostics.time.all.end - diagnostics.time.all.start}ms;`,
     //   });
 
-    report({
-      type: 'log',
-      severity: 'info',
-      message: `Parsed ${diagnostics.length} markup files.`,
-    });
+    const fixLog = fix ? ` and total of ${fixes} fixes applied` : '';
 
-    if (fix) {
-      report({
+    outputReports.push(
+      ...report({
         type: 'log',
         severity: 'info',
-        message: `Total of ${fixes} fixes applied.`,
-      });
-    }
+        message: `Parsed ${diagnostics.length} markup files${fixLog}.`,
+      })
+    );
+
+    process.stdout.write(outputReports.flat().join(''));
 
     if (errors === 0 && warnings === 0) {
-      report({
-        type: 'log',
-        severity: 'success',
-        message: `Found no problems.\n`,
-      });
+      process.stdout.write(
+        report({
+          type: 'log',
+          severity: 'success',
+          message: `Found no problems.\n`,
+        }).flat().join('')
+      );
       process.exit(0);
     }
 
     if (errors === 0 && warnings > 0) {
-      report({
-        type: 'log',
-        severity: 'warning',
-        message: `Found ${warnings} warnings.\n`,
-      });
+      process.stdout.write(
+        report({
+          type: 'log',
+          severity: 'warning',
+          message: `Found ${warnings} warnings.\n`,
+        }).flat().join('')
+      );
       process.exit(0);
     }
 
     if (errors > 0) {
-      report({
-        type: 'log',
-        severity: 'error',
-        message: `Found ${errors} errors and <color-yellow>${warnings} warnings</color-yellow>.\n`,
-      });
+      process.stdout.write(
+        report({
+          type: 'log',
+          severity: 'error',
+          message: `Found ${errors} errors and <color-yellow>${warnings} warnings</color-yellow>.\n`,
+        }).flat().join('')
+      );
       process.exit(1);
     }
   }

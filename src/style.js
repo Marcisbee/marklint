@@ -1,20 +1,15 @@
 /**
  * @param {string} text
  * @param {string[]} styles
- * @return {Function}
+ * @return {string[]}
  */
 function style(text, styles = []) {
-  return () => {
-    styles.forEach((style) => {
-      process.stdout.write(style);
-    });
+  return [
+    ...styles,
 
-    process.stdout.write(text);
-
-    // Reset styles
-    process.stdout.write('\x1b[0m');
-    return text;
-  };
+    text,
+    '\x1b[0m',
+  ];
 }
 
 module.exports = style;
