@@ -12,7 +12,14 @@ function* walkSync(dir) {
 
   for (const file of files) {
     const pathToFile = path.join(dir, file);
-    const isDirectory = fs.statSync(pathToFile).isDirectory();
+    let isDirectory = false;
+
+    try {
+      isDirectory = fs.statSync(pathToFile).isDirectory();
+    } catch (_) {
+      // No biggie, something maybe denied permission or something
+    }
+
     if (isDirectory) {
       yield* walkSync(pathToFile);
     } else {

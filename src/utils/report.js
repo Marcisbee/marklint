@@ -7,6 +7,7 @@ const generator = require('../generator');
 
 const errorMessage = require('./error-message');
 const { writeFileSync } = require('fs');
+const print = require('./print');
 
 const PREFIX = {
   success: ' <strong>✔</strong> ',
@@ -246,37 +247,37 @@ function report(config) {
       }),
     );
 
-    process.stdout.write(outputReports.flat().join(''));
+    print(outputReports);
 
     if (errors === 0 && warnings === 0) {
-      process.stdout.write(
+      print(
         report({
           type: 'log',
           severity: 'success',
           message: `Found no problems.\n`,
-        }).flat().join(''),
+        }),
       );
       process.exit(0);
     }
 
     if (errors === 0 && warnings > 0) {
-      process.stdout.write(
+      print(
         report({
           type: 'log',
           severity: 'warning',
           message: `Found ${warnings} warnings.\n`,
-        }).flat().join(''),
+        }),
       );
       process.exit(0);
     }
 
     if (errors > 0) {
-      process.stdout.write(
+      print(
         report({
           type: 'log',
           severity: 'error',
           message: `Found ${errors} errors and <color-yellow>${warnings} warnings</color-yellow>.\n`,
-        }).flat().join(''),
+        }),
       );
       process.exit(1);
     }

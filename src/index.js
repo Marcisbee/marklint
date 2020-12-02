@@ -7,6 +7,7 @@ const parse = require('./parser');
 const traverse = require('./traverse');
 const report = require('./utils/report');
 const { resolve, join } = require('path');
+const print = require('./utils/print');
 
 const ruleHandling = {
   'alt-require': require('./rules/alt-require'),
@@ -237,11 +238,13 @@ function main(
     });
   } catch (e) {
     process.stdout.write(`\r\x1b[K`);
-    report({
-      type: 'log',
-      severity: 'error',
-      message: `${e.message}\n`,
-    });
+    print(
+      report({
+        type: 'log',
+        severity: 'error',
+        message: `${e.message}\n`,
+      }),
+    );
     process.exit(1);
   }
 
@@ -251,11 +254,13 @@ function main(
 
   if (typeof fn !== 'function') {
     process.stdout.write(`\r\x1b[K`);
-    report({
-      type: 'log',
-      severity: 'warning',
-      message: `No markup files found in directory "${rootPath}"\n`,
-    });
+    print(
+      report({
+        type: 'log',
+        severity: 'warning',
+        message: `No markup files found in directory "${rootPath}"\n`,
+      }),
+    );
   } else {
     fn();
 

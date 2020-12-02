@@ -16,7 +16,7 @@
     "marklint": "bin/marklint.js"
   },
   "scripts": {
-    "start": "bin/marklint.js html",
+    "start": "bin/marklint.js",
     "lint": "eslint .",
     "test": "jest",
     "test:ci": "npm run test -- --ci",
