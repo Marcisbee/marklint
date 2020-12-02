@@ -198,11 +198,11 @@ const defaultConfig = {
 };
 
 /**
- * @param {string} rootPath
+ * @param {string[]} rootPaths
  * @param {Config} userConfig
  */
 function main(
-  rootPath = defaultPath,
+  rootPaths = [defaultPath],
   userConfig = {},
 ) {
   const rules = userConfig.rules || defaultRules;
@@ -216,7 +216,7 @@ function main(
   process.stdout.write(`\r\x1b[KFetching markup files`);
 
   try {
-    directory(rootPath, (filePath, read) => {
+    directory(rootPaths, (filePath, read) => {
       queue.push(() => {
         const pathEnding = filePath.slice(-60);
         const printPath = pathEnding.length < filePath.length ? `...${pathEnding}` : pathEnding;
@@ -258,7 +258,7 @@ function main(
       report({
         type: 'log',
         severity: 'warning',
-        message: `No markup files found in directory "${rootPath}"\n`,
+        message: `No markup files found in "${rootPaths.join('", "')}"\n`,
       }),
     );
   } else {
@@ -311,9 +311,9 @@ module.exports = function validator() {
     userConfig.fix = args['--fix'];
   }
 
-  const rootPathRelative = args._[0] || '.';
-  const rootPath = resolve(rootPathRelative);
+  const rootPath = resolve('.');
+  const paths = args._ || [rootPath];
   const config = { ...defaultConfig, ...userConfig };
 
-  main(rootPath, config);
+  main(paths, config);
 };

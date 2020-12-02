@@ -58,21 +58,23 @@ function isInRuleset(path, rules) {
 }
 
 /**
- * @param {string} absolutePath
+ * @param {string[]} absolutePaths
  * @param {(name: string, read: () => string) => void} traverse
  * @param {{ include?: string[], exclude?: string[] }} options
  */
 function directory(
-  absolutePath,
+  absolutePaths,
   traverse,
   { include = includeDefaults, exclude = excludeDefaults } = {},
 ) {
-  for (const file of walkSync(absolutePath)) {
-    const excluded = isInRuleset(file, exclude);
-    const included = isInRuleset(file, include);
+  for (const p of absolutePaths) {
+    for (const file of walkSync(p)) {
+      const excluded = isInRuleset(file, exclude);
+      const included = isInRuleset(file, include);
 
-    if (!excluded && included) {
-      traverse(file, () => fs.readFileSync(file).toString());
+      if (!excluded && included) {
+        traverse(file, () => fs.readFileSync(file).toString());
+      }
     }
   }
 }
