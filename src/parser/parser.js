@@ -243,7 +243,7 @@ function parseAttributes(attributes, start, parent) {
             () => output[index - 2],
           next: () => output[index],
           value: '',
-        })
+        }),
       );
     }
 
@@ -259,7 +259,7 @@ function parseAttributes(attributes, start, parent) {
             () => output[index - 2],
           next: () => output[index],
           value: '',
-        })
+        }),
       );
     }
 

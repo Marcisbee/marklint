@@ -241,7 +241,7 @@ function report(config) {
         type: 'log',
         severity: 'info',
         message: `Parsed ${diagnostics.length} markup files${fixLog}.`,
-      })
+      }),
     );
 
     process.stdout.write(outputReports.flat().join(''));
@@ -252,7 +252,7 @@ function report(config) {
           type: 'log',
           severity: 'success',
           message: `Found no problems.\n`,
-        }).flat().join('')
+        }).flat().join(''),
       );
       process.exit(0);
     }
@@ -263,7 +263,7 @@ function report(config) {
           type: 'log',
           severity: 'warning',
           message: `Found ${warnings} warnings.\n`,
-        }).flat().join('')
+        }).flat().join(''),
       );
       process.exit(0);
     }
@@ -274,7 +274,7 @@ function report(config) {
           type: 'log',
           severity: 'error',
           message: `Found ${errors} errors and <color-yellow>${warnings} warnings</color-yellow>.\n`,
-        }).flat().join('')
+        }).flat().join(''),
       );
       process.exit(1);
     }

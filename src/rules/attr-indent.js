@@ -63,7 +63,7 @@ const handler = (diagnostics, ast, path, {
           attribute.start,
           attribute.start === attribute.end ?
             attribute.end + 1 :
-            attribute.end
+            attribute.end,
         );
 
         report.details.push({

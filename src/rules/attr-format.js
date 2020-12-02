@@ -69,7 +69,7 @@ const handler = (diagnostics, ast, path, {
             attribute.start + 1,
             attribute.start === attribute.end ?
               attribute.end + 1 :
-              attribute.end
+              attribute.end,
           );
 
           report.details.push({
@@ -112,7 +112,7 @@ const handler = (diagnostics, ast, path, {
         const loc = getLOC(
           ast.raw,
           next.name.start,
-          next.name.end
+          next.name.end,
         );
 
         report.details.push({
@@ -166,7 +166,7 @@ const handler = (diagnostics, ast, path, {
           attribute.start,
           attribute.start === attribute.end ?
             attribute.end + 1 :
-            attribute.end
+            attribute.end,
         );
 
         report.details.push({
@@ -209,7 +209,7 @@ const handler = (diagnostics, ast, path, {
       const loc = getLOC(
         ast.raw,
         next.name.start,
-        next.name.end
+        next.name.end,
       );
 
       report.details.push({
