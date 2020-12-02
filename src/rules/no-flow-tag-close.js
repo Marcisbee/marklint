@@ -33,6 +33,7 @@ const handler = (diagnostics, ast, path, { severity, options: [close] }) => {
       report.details.push({
         type: 'log',
         severity,
+        suffix: diagnostics.rule,
         message: `Expected element <strong>${openTagName.name}</strong> to be closed.`,
       });
 
@@ -105,6 +106,7 @@ const handler = (diagnostics, ast, path, { severity, options: [close] }) => {
       report.details.push({
         type: 'log',
         severity,
+        suffix: diagnostics.rule,
         message: `Expected element <strong>${openTagName.name}</strong> to not be closed.`,
       });
 

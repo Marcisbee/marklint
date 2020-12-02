@@ -124,9 +124,11 @@ function report(config) {
   }
 
   if (config.type === 'log') {
-    const { severity, message } = config;
+    const { severity, message, suffix } = config;
 
-    return stylizeString(severity, message);
+    const suffixText = suffix ? ` <gray>[${suffix}]</gray>` : '';
+
+    return stylizeString(severity, message + suffixText);
   }
 
   if (config.type === 'snippet') {

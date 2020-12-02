@@ -58,6 +58,7 @@ module.exports = {
   },
 
   inlineStyles: {
+    'gray': [colors.dim, colors.fg.white],
     'strong': [colors.bold],
     'underline': [colors.underscore],
     'color-yellow': [colors.fg.yellow],

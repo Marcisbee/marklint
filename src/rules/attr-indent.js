@@ -55,6 +55,7 @@ const handler = (diagnostics, ast, path, {
         report.details.push({
           type: 'log',
           severity,
+          suffix: diagnostics.rule,
           message: `Expected an indent of <strong>${spacesBetweenOneLiner}</strong> spaces but instead got <strong>${attribute.value.length}</strong>.`,
         });
 
@@ -101,6 +102,7 @@ const handler = (diagnostics, ast, path, {
         report.details.push({
           type: 'log',
           severity,
+          suffix: diagnostics.rule,
           message: `Expected an indent of <strong>${normalizedIndent}</strong> spaces but instead got <strong>${attribute.value.length - correctionStart}</strong>.`,
         });
 

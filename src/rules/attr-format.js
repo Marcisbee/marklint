@@ -61,6 +61,7 @@ const handler = (diagnostics, ast, path, {
           report.details.push({
             type: 'log',
             severity,
+            suffix: diagnostics.rule,
             message: `Expected an indent of <strong>${correctIndentSize + newline}</strong> ${type}s but instead got <strong>${attribute.value.replace(/^\n/, '').length}</strong>.`,
           });
 
@@ -106,6 +107,7 @@ const handler = (diagnostics, ast, path, {
         report.details.push({
           type: 'log',
           severity,
+          suffix: diagnostics.rule,
           message: `Expected <strong>${next.name.name}</strong> attribute to be in new line.`,
         });
 
@@ -158,6 +160,7 @@ const handler = (diagnostics, ast, path, {
         report.details.push({
           type: 'log',
           severity,
+          suffix: diagnostics.rule,
           message: `Expected an indent of <strong>${inline}</strong> spaces but instead got <strong>${attribute.value.length}</strong>.`,
         });
 
@@ -203,6 +206,7 @@ const handler = (diagnostics, ast, path, {
       report.details.push({
         type: 'log',
         severity,
+        suffix: diagnostics.rule,
         message: `Expected <strong>${next.name.name}</strong> attribute to be in the same line.`,
       });
 

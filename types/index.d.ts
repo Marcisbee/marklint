@@ -9,6 +9,7 @@ type AnyReportType = ReportLogType | ReportSnippetType | ReportInspectType | Rep
 
 interface ReportLogType {
   type: 'log';
+  suffix?: string;
   severity: 'error' | 'warning' | 'info' | 'success' | 'default';
   message: string;
 }

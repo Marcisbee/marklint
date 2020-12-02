@@ -27,6 +27,7 @@ const handler = (diagnostics, ast, path, { severity, options: [close] }) => {
       report.details.push({
         type: 'log',
         severity,
+        suffix: diagnostics.rule,
         message: `Expected void element <strong>${openTagName.name}</strong> to be self closed.`,
       });
 
@@ -66,6 +67,7 @@ const handler = (diagnostics, ast, path, { severity, options: [close] }) => {
       report.details.push({
         type: 'log',
         severity,
+        suffix: diagnostics.rule,
         message: `Expected void element <strong>${openTagName.name}</strong> to not be self closed.`,
       });
 

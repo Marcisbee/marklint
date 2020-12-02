@@ -35,6 +35,7 @@ const handler = (diagnostics, ast, path, { severity }) => {
       report.details.push({
         type: 'log',
         severity,
+        suffix: diagnostics.rule,
         message: `Expected a corresponding HTML closing tag for <strong>${openTagName.name}</strong>.`,
       });
 

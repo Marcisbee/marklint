@@ -50,6 +50,7 @@ const handler = (diagnostics, ast, path, {
     report.details.push({
       type: 'log',
       severity,
+      suffix: diagnostics.rule,
       message: `Expected an indent of <strong>${tagIndent}</strong> spaces but instead got <strong>${childIndent}</strong>.`,
     });
 

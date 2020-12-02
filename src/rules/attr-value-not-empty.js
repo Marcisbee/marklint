@@ -37,6 +37,7 @@ const handler = (diagnostics, ast, path, { severity, options }) => {
     report.details.push({
       type: 'log',
       severity,
+      suffix: diagnostics.rule,
       message: `Expected <strong>${attributeName.name}</strong> attribute to have value.`,
     });
 
