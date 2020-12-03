@@ -119,6 +119,7 @@ interface HTMLElementInput {
   children: (HTMLElementType | HTMLDoctypeType | HTMLCDataType | HTMLTextType | HTMLCommentType)[];
   openingElement: HTMLOpeningElementType;
   closingElement: HTMLClosingElementType;
+  depth: number;
 }
 
 interface HTMLElementType extends HTMLElementInput {

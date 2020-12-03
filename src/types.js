@@ -30,6 +30,7 @@ class HTMLElement extends HTMLToken {
     this.previous = data.previous;
     this.next = data.next;
 
+    this.depth = data.depth;
     this.openingElement = data.openingElement;
     this.children = data.children;
     this.closingElement = data.closingElement;

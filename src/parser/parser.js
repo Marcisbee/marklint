@@ -284,6 +284,8 @@ function parser(html) {
   /** @type {(HTMLMarkupType | HTMLElementType)[]} */
   const stack = [ast];
 
+  let depth = 0;
+
   tokens.forEach((token) => {
     let parent = stack[stack.length - 1];
 
@@ -373,6 +375,7 @@ function parser(html) {
         parent: () => parent,
         previous: () => parent.children[lastElIndex - 1],
         next: () => parent.children[lastElIndex + 1],
+        depth,
         openingElement: null,
         closingElement: null,
         children: [],
@@ -404,6 +407,7 @@ function parser(html) {
 
       if (!isVoidElement(tagName)) {
         stack.push(element);
+        depth += 1;
       }
 
       parent.children.push(element);
@@ -427,6 +431,7 @@ function parser(html) {
       )) {
         if (stack.length > 1) {
           stack.pop();
+          depth -= 1;
           parent = stack[stack.length - 1];
         }
       }
@@ -449,6 +454,7 @@ function parser(html) {
         });
 
         stack.pop();
+        depth -= 1;
 
         return;
       }

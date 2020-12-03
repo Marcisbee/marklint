@@ -101,6 +101,7 @@ describe('parse', () => {
         flowElement: false,
       }),
       closingElement: null,
+      depth: 0,
       children: [],
     }));
   });
@@ -209,6 +210,7 @@ describe('parse', () => {
         }),
         raw: '</html>',
       }),
+      depth: 0,
       children: [],
     }));
   });
