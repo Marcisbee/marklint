@@ -1,5 +1,5 @@
 # marklint (Markup Lint)
-HTML/Markup (Vue and Angular template) linter
+HTML lint tool that works well with Angular and Vue templates too
 
 ![CI](https://img.shields.io/github/workflow/status/Marcisbee/marklint/CI?style=flat-square)
 [![Snyk](https://img.shields.io/snyk/vulnerabilities/github/Marcisbee/marklint?style=flat-square)](https://snyk.io/test/github/Marcisbee/marklint)
@@ -7,15 +7,24 @@ HTML/Markup (Vue and Angular template) linter
 [![npm downloads](https://img.shields.io/npm/dm/marklint.svg?style=flat-square)](https://www.npmjs.com/package/marklint)
 [![gzip bundle size](https://img.shields.io/bundlephobia/minzip/marklint?style=flat-square)](https://bundlephobia.com/result?p=marklint)
 
+# Features
+- ⚡️ Fast html parsing
+- 📏 Uses editorconfig
+- 🖍 Prints beautiful code frames
+- 🛠 Fixes auto fixable issues
+- 🎭 Works with Vue and Angular too
+- 🗂 Only 1 dependency ([arg](https://www.npmjs.com/package/arg))
+<!-- - 📑 Lint and transform API -->
 
-## Command line interface
-Install marklint with npm to use the command line interface:
+# Installation
 
 ```bash
 npm install marklint -g
 ```
 
-Validate a file like so:
+# Command line interface
+
+Lint a file like so:
 
 ```bash
 marklint
@@ -26,20 +35,23 @@ marklint
 ```
 Usage: marklint [file] [options]
 
-file     file to parse; otherwise uses stdin
+file or directory     file or directory to parse; otherwise uses '.'
 
 Options:
-   -v, --version            print version and exit
    --fix                    fixes all auto fixable issues
+   -v, --version            print version and exit
    -i, --include            array of file paths to include (default: *.html, *.htm)
    -e, --exclude            array of file paths to exclude (default: node_modules/**)
 ```
 
+<!-- # Lint & transform API -->
+
+<!-- # Rules -->
+
+# Motivation
+By the time I started this project there were not many html lint tools and none of them provided features I wanted for my templates to have such as indent attributes based on length of attributes length and none of them really worked with Angular templates, that was my primary target from the start.
+
+And since I hate that JS ecosystem has dependency rabbit hole I wanted to build markup linter that checks and fixes issues in any html markup file as well as Angular and Vue templates with minimum dependency count.
+
 # MIT License
 Copyright (C) 2020 Marcis Bergmanis
-
-Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.

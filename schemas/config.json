@@ -64,8 +64,8 @@
         "no-flow-tag-close": {
           "$ref": "#/definitions/NoFlowTagClose"
         },
-        "closing-tag": {
-          "$ref": "#/definitions/ClosingTag"
+        "tag-indent": {
+          "$ref": "#/definitions/TagIndent"
         },
         "comment-format": {
           "$ref": "#/definitions/CommentFormat"
@@ -234,7 +234,7 @@
       },
       "additionalProperties": false
     },
-    "ClosingTag": {
+    "TagIndent": {
       "type": "object",
       "properties": {
         "severity": {
@@ -242,7 +242,34 @@
           "default": "warning"
         },
         "options": {
-          "type": "array"
+          "type": "object",
+          "properties": {
+            "type": {
+              "type": "string",
+              "default": "space",
+              "enum": [
+                "space",
+                "tab"
+              ]
+            },
+            "newline": {
+              "title": "Newline indentation size",
+              "type": "number",
+              "default": 2
+            },
+            "ignore": {
+              "title": "Ignored tag content indentation",
+              "type": "array",
+              "default": [
+                "pre",
+                "script",
+                "style"
+              ],
+              "items": {
+                "type": "string"
+              }
+            }
+          }
         }
       },
       "additionalProperties": false

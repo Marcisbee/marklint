@@ -17,7 +17,7 @@ const ruleHandling = {
   'no-unclosed-tag': require('./rules/no-unclosed-tag'),
   'attr-format': require('./rules/attr-format'),
   'attr-closing-bracket': require('./rules/attr-closing-bracket'),
-  'closing-tag': require('./rules/closing-tag'),
+  'tag-indent': require('./rules/tag-indent'),
   'comment-format': require('./rules/comment-format'),
 };
 
@@ -150,9 +150,9 @@ const defaultRules = {
     severity: 'warning',
     options: [true],
   },
-  'closing-tag': {
+  'tag-indent': {
     severity: 'warning',
-    options: [],
+    options: {},
   },
   'comment-format': {
     severity: 'warning',

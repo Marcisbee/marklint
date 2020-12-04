@@ -38,9 +38,11 @@
       "severity": "warning",
       "options": [true]
     },
-    "closing-tag": {
+    "tag-indent": {
       "severity": "warning",
-      "options": []
+      "options": {
+
+      }
     },
     "comment-format": {
       "severity": "warning",

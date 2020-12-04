@@ -88,7 +88,7 @@ const handler = (diagnostics, ast, path, {
            * Apply the fix
            */
           report.applyFix = () => {
-            const correctOneLinerIndent = new Array(correctIndentSize + newline).fill(indentTypes[type]).join('');
+            const correctOneLinerIndent = new Array((path.parent().depth * newline) + newline).fill(indentTypes[type]).join('');
             attribute.value = `\n${correctOneLinerIndent}`;
           };
 
@@ -132,7 +132,7 @@ const handler = (diagnostics, ast, path, {
          * Apply the fix
          */
         report.applyFix = () => {
-          const correctOneLinerIndent = new Array(correctIndentSize + newline).fill(indentTypes[type]).join('');
+          const correctOneLinerIndent = new Array((path.parent().depth * newline) + newline).fill(indentTypes[type]).join('');
           attribute.value = `\n${correctOneLinerIndent}`;
         };
       });

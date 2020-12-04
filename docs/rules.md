@@ -331,13 +331,14 @@ BAD:
 <h1 style="background: red;">hello</h1>
 ```
 
-## Rule: `closing-tag`
-Forces all void elements to be self closed.
+## Rule: `tag-indent`
+Forces tag indentation in depth based on editorconfig or overwritten options.
 
 Config defaults
 ```js
-"closing-tag": {
-  severity: 'error',
+"tag-indent": {
+  "severity": "error",
+  "options": {}
 }
 ```
 
@@ -362,6 +363,12 @@ BAD:
 <strong>
   text
   </strong>
+```
+
+```html
+  <strong>
+    text
+    </strong>
 ```
 
 ## Rule: `comment-format`
