@@ -42,6 +42,7 @@ Options:
    -v, --version            print version and exit
    -i, --include            array of file paths to include (default: *.html, *.htm)
    -e, --exclude            array of file paths to exclude (default: node_modules/**)
+   -c, --config             location of config file
 ```
 
 <!-- # Lint & transform API -->

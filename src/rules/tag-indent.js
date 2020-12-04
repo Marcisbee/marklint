@@ -208,10 +208,10 @@ const handler = (diagnostics, ast, path, {
       const depth = parent.depth + 1;
 
       const next = path.next();
-      const previous = path.previous();
+      // const previous = path.previous();
 
       const hasNextElement = next && next.type !== 'HTMLText';
-      const hasPreviousElement = previous && previous.type !== 'HTMLText';
+      // const hasPreviousElement = previous && previous.type !== 'HTMLText';
 
       const correctIndent = new Array(depth).fill(indentStep).join('');
 
@@ -259,6 +259,8 @@ const handler = (diagnostics, ast, path, {
         if (!hasNextElement && index === lines.length - 1) {
           closingIndent = true;
         }
+
+        if (!isLast && line === '') return;
 
         const correctLocalIndent = correctIndent
           .slice(0, correctIndent.length - (closingIndent ? newline : 0));

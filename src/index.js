@@ -169,19 +169,6 @@ const defaultRules = {
  */
 
 /** @type {Config} */
-let configFileData = {};
-
-try {
-  configFileData = require(join(resolve('.'), 'marklint.config.json')) || {};
-} catch (_) {
-  report({
-    type: 'log',
-    severity: 'warning',
-    message: 'No config "marklint.config.json" file found.',
-  });
-}
-
-/** @type {Config} */
 const defaultConfig = {
   fix: false,
   include: [
@@ -193,8 +180,6 @@ const defaultConfig = {
     'node_modules/**',
   ],
   rules: defaultRules,
-
-  ...configFileData,
 };
 
 /**
@@ -282,11 +267,13 @@ module.exports = function validator() {
     // Types
     '--version': Boolean,
     '--fix': Boolean,
+    '--config': String,
     '--include': [String],
     '--exclude': [String],
 
     // Aliases
     '-v': '--version',
+    '-c': '--config',
     '-i': '--include',
     '-e': '--exclude',
   });
@@ -307,8 +294,26 @@ module.exports = function validator() {
     userConfig.exclude = args['--exclude'];
   }
 
+  if (args['--config']) {
+    userConfig.config = args['--config'];
+  }
+
   if (args['--fix']) {
     userConfig.fix = args['--fix'];
+  }
+
+  const configLocation = resolve(userConfig.config) || join(resolve('.'), 'marklint.config.json');
+
+  try {
+    Object.assign(defaultConfig, require(configLocation) || {});
+  } catch (_) {
+    print(
+      report({
+        type: 'log',
+        severity: 'warning',
+        message: `No config "marklint.config.json" file found at "${configLocation}".`,
+      }),
+    );
   }
 
   const rootPath = resolve('.');

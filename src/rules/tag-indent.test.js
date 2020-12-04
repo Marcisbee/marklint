@@ -61,7 +61,7 @@ it('handles two nested tags', () => {
 </div>`;
 
   const ast = parser(input);
-  const errors = getErrors(ast);
+  getErrors(ast);
 
   expect(generator(ast).code).toBe(expectation);
 });
@@ -74,7 +74,7 @@ it('handles three nested tags', () => {
 </div>`;
 
   const ast = parser(input);
-  const errors = getErrors(ast);
+  getErrors(ast);
 
   expect(generator(ast).code).toBe(expectation);
 });
@@ -86,7 +86,7 @@ it('handles irregular case with text nodes', () => {
 </strong>`;
 
   const ast = parser(input);
-  const errors = getErrors(ast);
+  getErrors(ast);
 
   expect(generator(ast).code).toBe(expectation);
 });
@@ -99,7 +99,7 @@ it('handles irregular case with text nodes 2', () => {
 </strong>`;
 
   const ast = parser(input);
-  const errors = getErrors(ast);
+  getErrors(ast);
 
   expect(generator(ast).code).toBe(expectation);
 });
@@ -120,7 +120,7 @@ it('handles simple layout', () => {
 </html>`;
 
   const ast = parser(input);
-  const errors = getErrors(ast);
+  getErrors(ast);
 
   expect(generator(ast).code).toBe(expectation);
 });
@@ -142,7 +142,63 @@ it('handles already linted layout', () => {
 </html>`;
 
   const ast = parser(input);
-  const errors = getErrors(ast);
+  getErrors(ast);
+
+  expect(generator(ast).code).toBe(expectation);
+});
+
+it('handles empty lines', () => {
+  const input = `<html lang="en">
+
+  <head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+    <title>Document</title>
+  </head>
+
+</html>`;
+  const expectation = `<html lang="en">
+
+  <head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+    <title>Document</title>
+  </head>
+
+</html>`;
+
+  const ast = parser(input);
+  getErrors(ast);
+
+  expect(generator(ast).code).toBe(expectation);
+});
+
+it('handles empty lines with spaces', () => {
+  const input = `<html lang="en">
+
+  <head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+    <title>Document</title>
+  </head>
+
+</html>`;
+  const expectation = `<html lang="en">
+
+  <head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+    <title>Document</title>
+  </head>
+
+</html>`;
+
+  const ast = parser(input);
+  getErrors(ast);
 
   expect(generator(ast).code).toBe(expectation);
 });
