@@ -250,7 +250,7 @@ const handler = (diagnostics, ast, path, {
       }
 
       lines.forEach((line, index) => {
-        const spaces = line.replace(/\w+.*$/, '');
+        const spaces = line.replace(/[^ \t\n]+.*$/, '');
         const isLast = index === lines.length - 1;
         let closingIndent = false;
 
@@ -313,7 +313,12 @@ const handler = (diagnostics, ast, path, {
         report.applyFix = () => {
           const trimmedLine = isLast ? line.trimStart() : line.trim();
 
-          lines[index] = correctLocalIndent + trimmedLine;
+          if (isLast || trimmedLine !== '') {
+            lines[index] = correctLocalIndent + trimmedLine;
+          } else {
+            lines[index] = trimmedLine;
+          }
+
           path.value = lines.join('\n');
         };
       });

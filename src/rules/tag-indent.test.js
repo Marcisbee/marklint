@@ -176,16 +176,7 @@ it('handles empty lines', () => {
 });
 
 it('handles empty lines with spaces', () => {
-  const input = `<html lang="en">
-
-  <head>
-    <meta charset="UTF-8"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-
-    <title>Document</title>
-  </head>
-
-</html>`;
+  const input = `<html lang="en">\n   \n  <head>\n    <meta charset="UTF-8"/>\n    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>\n        \n    <title>Document</title>\n  </head>\n \n</html>`;
   const expectation = `<html lang="en">
 
   <head>

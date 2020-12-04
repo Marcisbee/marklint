@@ -302,16 +302,15 @@ module.exports = function validator() {
     userConfig.fix = args['--fix'];
   }
 
-  const configLocation = resolve(userConfig.config) || join(resolve('.'), 'marklint.config.json');
-
   try {
+    const configLocation = resolve(userConfig.config || join(resolve('.'), 'marklint.config.json'));
     Object.assign(defaultConfig, require(configLocation) || {});
   } catch (_) {
     print(
       report({
         type: 'log',
         severity: 'warning',
-        message: `No config "marklint.config.json" file found at "${configLocation}".`,
+        message: `No config "marklint.config.json" file found${userConfig.config ? ` at "${userConfig.config}"` : ''}.`,
       }),
     );
   }
