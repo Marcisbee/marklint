@@ -338,7 +338,15 @@ Config defaults
 ```js
 "tag-indent": {
   "severity": "error",
-  "options": {}
+  "options": {
+    "type": "space",
+    "newline": 2,
+    "ignore": [
+      "pre",
+      "script",
+      "style"
+    ]
+  }
 }
 ```
 
