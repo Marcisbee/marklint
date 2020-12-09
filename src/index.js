@@ -316,7 +316,7 @@ module.exports = function validator() {
   }
 
   const rootPath = resolve('.');
-  const paths = args._ || [rootPath];
+  const paths = args._.length ? args._ : [rootPath];
   const config = { ...defaultConfig, ...userConfig };
 
   main(paths, config);

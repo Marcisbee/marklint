@@ -21,8 +21,8 @@ const handler = (diagnostics, ast, path, {
     const correctStartChunk = new Array(start).fill(' ').join('');
     const correctEndChunk = new Array(end).fill(' ').join('');
 
-    const [startChunk] = path.value.match(/^\W+/) || [''];
-    const [endChunk] = path.value.match(/\W+$/) || [''];
+    const [startChunk] = path.value.match(/^[ \t\n]+/) || [''];
+    const [endChunk] = path.value.match(/[ \t\n]+$/) || [''];
 
     const skipStart = startChunk === correctStartChunk;
     const skipEnd = endChunk === correctEndChunk;
