@@ -16,6 +16,22 @@ HTML lint tool that works well with Angular and Vue templates too
 - 🗂 Only 1 dependency ([arg](https://www.npmjs.com/package/arg))
 <!-- - 📑 Lint and transform API -->
 
+# Example screenshots
+
+<table>
+<tr>
+<td>
+
+![image](https://user-images.githubusercontent.com/16621507/101641617-a246df80-3a3a-11eb-9bce-8d7a7e7160d9.png)
+</td>
+<td>
+
+![image](https://user-images.githubusercontent.com/16621507/101642222-6b24fe00-3a3b-11eb-94d3-2c2b1689e664.png)
+</td>
+</tr>
+</table>
+
+
 # Installation
 
 ```bash
