@@ -63,7 +63,22 @@ Options:
 
 <!-- # Lint & transform API -->
 
-<!-- # Rules -->
+# Rules
+
+- ✅ [alt-require](/docs/rules.md#rule-alt-require)
+- ✅ [attr-closing-bracket](/docs/rules.md#rule-attr-closing-bracket)
+- ✅ [attr-format](/docs/rules.md#rule-attr-format)
+- ⭕ [attr-lowercase](/docs/rules.md#rule-attr-lowercase) - _WIP_
+- ⭕ [attr-no-duplication](/docs/rules.md#rule-attr-no-duplication) - _WIP_
+- ✅ [attr-value-not-empty](/docs/rules.md#rule-attr-value-not-empty)
+- ⭕ [attr-value-double-quotes](/docs/rules.md#rule-attr-value-double-quotes) - _WIP_
+- ✅ [comment-format](/docs/rules.md#rule-comment-format)
+- ⭕ [inline-style-disabled](/docs/rules.md#rule-inline-style-disabled) - _WIP_
+- ✅ [no-flow-tag-close](/docs/rules.md#rule-no-flow-tag-close)
+- ✅ [no-unclosed-tag](/docs/rules.md#rule-no-unclosed-tag)
+- ✅ [no-void-tag-close](/docs/rules.md#rule-no-void-tag-close)
+- ⭕ [style-disabled](/docs/rules.md#rule-style-disabled) - _WIP_
+- ✅ [tag-indent](/docs/rules.md#rule-tag-indent)
 
 # Motivation
 By the time I started this project there were not many html lint tools and none of them provided features I wanted for my templates to have such as indent attributes based on length of attributes length and none of them really worked with Angular templates, that was my primary target from the start.
