@@ -46,6 +46,9 @@
         "alt-require": {
           "$ref": "#/definitions/AltRequire"
         },
+        "attr-lowercase": {
+          "$ref": "#/definitions/AttrLowercase"
+        },
         "attr-value-not-empty": {
           "$ref": "#/definitions/AttrValueNotEmpty"
         },
@@ -91,6 +94,26 @@
         },
         "options": {
           "type": "array"
+        }
+      },
+      "additionalProperties": false
+    },
+    "AttrLowercase": {
+      "type": "object",
+      "properties": {
+        "severity": {
+          "$ref": "#/definitions/Severity"
+        },
+        "options": {
+          "type": "object",
+          "properties": {
+            "ignore": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          }
         }
       },
       "additionalProperties": false

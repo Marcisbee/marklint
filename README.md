@@ -68,7 +68,7 @@ Options:
 - ✅ [alt-require](/docs/rules.md#rule-alt-require)
 - ✅ [attr-closing-bracket](/docs/rules.md#rule-attr-closing-bracket)
 - ✅ [attr-format](/docs/rules.md#rule-attr-format)
-- ⭕ [attr-lowercase](/docs/rules.md#rule-attr-lowercase) - _WIP_
+- ✅ [attr-lowercase](/docs/rules.md#rule-attr-lowercase)
 - ⭕ [attr-no-duplication](/docs/rules.md#rule-attr-no-duplication) - _WIP_
 - ✅ [attr-value-not-empty](/docs/rules.md#rule-attr-value-not-empty)
 - ⭕ [attr-value-double-quotes](/docs/rules.md#rule-attr-value-double-quotes) - _WIP_

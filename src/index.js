@@ -11,6 +11,7 @@ const print = require('./utils/print');
 
 const ruleHandling = {
   'alt-require': require('./rules/alt-require'),
+  'attr-lowercase': require('./rules/attr-lowercase'),
   'attr-value-not-empty': require('./rules/attr-value-not-empty'),
   'no-void-tag-close': require('./rules/no-void-tag-close'),
   'no-flow-tag-close': require('./rules/no-flow-tag-close'),
@@ -123,6 +124,12 @@ const defaultRules = {
   'alt-require': {
     severity: 'error',
     options: [],
+  },
+  'attr-lowercase': {
+    severity: 'error',
+    options: {
+      ignore: ['viewBox'],
+    },
   },
   'attr-value-not-empty': {
     severity: 'error',

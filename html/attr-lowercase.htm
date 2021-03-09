@@ -1,0 +1,39 @@
+<strong HELLO=1 World="Ha-Ha" am-lowercase="Poo">UpperCase</strong>
+
+<svg
+  xmlns="http://www.w3.org/2000/svg"
+  xmlns:xlink="http://www.w3.org/1999/xlink"
+  id="Firefox_-_Large"
+  viewBox="0 0 1024 1024">
+  <defs>
+    <radialGradient
+      id="radial-gradient"
+      cx="-14480.522"
+      cy="-8329.079"
+      fx="-14509.281265145226"
+      r="450.875"
+      gradientTransform="matrix(0.762, 0.034, -0.05, 1.12, 11560.893, 10069.103)"
+      gradientUnits="userSpaceOnUse">
+      <stop offset="0.045" stop-color="#ffea00"/>
+      <stop offset="0.12" stop-color="#ffde00"/>
+      <stop offset="0.254" stop-color="#ffbf00"/>
+      <stop offset="0.429" stop-color="#ff8e00"/>
+      <stop offset="0.769" stop-color="#ff272d"/>
+      <stop offset="0.872" stop-color="#e0255a"/>
+      <stop offset="0.953" stop-color="#cc2477"/>
+      <stop offset="1" stop-color="#c42482"/>
+    </radialGradient>
+  </defs>
+</svg>
+
+<form #itemForm="ngForm" (ngSubmit)="onSubmit(itemForm)">
+  <label for="name">
+    Name
+    <input class="form-control" name="name" [ngModel] required />
+  </label>
+  <button type="submit">Submit</button>
+</form>
+
+<div [hidden]="!itemForm.form.valid">
+  <p>{{ submitMessage }}</p>
+</div>

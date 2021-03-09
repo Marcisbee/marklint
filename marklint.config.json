@@ -12,6 +12,12 @@
       "severity": "error",
       "options": []
     },
+    "attr-lowercase": {
+      "severity": "error",
+      "options": {
+        "ignore": ["viewBox"]
+      }
+    },
     "attr-value-not-empty": {
       "severity": "error",
       "options": {
