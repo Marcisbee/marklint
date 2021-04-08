@@ -51,7 +51,9 @@ const handler = (diagnostics, ast, path, { severity, options }) => {
 
     if (attributeName.name === '*ngSwitchDefault') return;
 
-    if ((options.ignore || []).concat(booleanAttributes).indexOf(attributeName.name) > -1) return;
+    const ignore = (options.ignore || []).concat(booleanAttributes);
+
+    if (ignore.indexOf(attributeName.name) > -1) return;
 
     /** @type {DiagnosticsReport} */
     const report = {
