@@ -10,6 +10,34 @@ const defaults = {
   },
 };
 
+const booleanAttributes = [
+  'allowfullscreen',
+  'allowpaymentrequest',
+  'async',
+  'autofocus',
+  'autoplay',
+  'checked',
+  'controls',
+  'default',
+  'disabled',
+  'formnovalidate',
+  'hidden',
+  'ismap',
+  'itemscope',
+  'loop',
+  'multiple',
+  'muted',
+  'nomodule',
+  'novalidate',
+  'open',
+  'playsinline',
+  'readonly',
+  'required',
+  'reversed',
+  'selected',
+  'truespeed',
+];
+
 /** @type {RuleHandler} */
 const handler = (diagnostics, ast, path, { severity, options }) => {
   if (severity === 'off') return;
@@ -23,7 +51,7 @@ const handler = (diagnostics, ast, path, { severity, options }) => {
 
     if (attributeName.name === '*ngSwitchDefault') return;
 
-    if ((options.ignore || []).indexOf(attributeName.name) > -1) return;
+    if ((options.ignore || []).concat(booleanAttributes).indexOf(attributeName.name) > -1) return;
 
     /** @type {DiagnosticsReport} */
     const report = {

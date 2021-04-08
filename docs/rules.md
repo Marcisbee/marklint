@@ -250,6 +250,8 @@ BAD:
 ## Rule: `attr-value-not-empty`
 All attributes must have values.
 
+By default ignores all boolean attributes like "disabled", "checked", "hidden" etc.
+
 Config defaults
 ```js
 "attr-value-not-empty": {
