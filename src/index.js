@@ -14,6 +14,7 @@ const ruleHandling = {
   'attr-lowercase': require('./rules/attr-lowercase'),
   'attr-no-duplication': require('./rules/attr-no-duplication'),
   'attr-value-not-empty': require('./rules/attr-value-not-empty'),
+  'inline-style-disabled': require('./rules/inline-style-disabled'),
   'no-void-tag-close': require('./rules/no-void-tag-close'),
   'no-flow-tag-close': require('./rules/no-flow-tag-close'),
   'no-unclosed-tag': require('./rules/no-unclosed-tag'),
@@ -143,6 +144,10 @@ const defaultRules = {
     options: {
       ignore: ['disabled'],
     },
+  },
+  'inline-style-disabled': {
+    severity: 'error',
+    options: {},
   },
   'no-unclosed-tag': {
     severity: 'error',

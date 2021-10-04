@@ -73,7 +73,7 @@ Options:
 - ✅ [attr-value-not-empty](/docs/rules.md#rule-attr-value-not-empty)
 - ⭕ [attr-value-double-quotes](/docs/rules.md#rule-attr-value-double-quotes) - _WIP_
 - ✅ [comment-format](/docs/rules.md#rule-comment-format)
-- ⭕ [inline-style-disabled](/docs/rules.md#rule-inline-style-disabled) - _WIP_
+- ✅ [inline-style-disabled](/docs/rules.md#rule-inline-style-disabled)
 - ✅ [no-flow-tag-close](/docs/rules.md#rule-no-flow-tag-close)
 - ✅ [no-unclosed-tag](/docs/rules.md#rule-no-unclosed-tag)
 - ✅ [no-void-tag-close](/docs/rules.md#rule-no-void-tag-close)
