@@ -18,6 +18,12 @@
         "ignore": ["viewBox"]
       }
     },
+    "attr-no-duplication": {
+      "severity": "error",
+      "options": {
+        "ignore": []
+      }
+    },
     "attr-value-not-empty": {
       "severity": "error",
       "options": {
