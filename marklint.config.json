@@ -30,6 +30,9 @@
         "ignore": ["disabled"]
       }
     },
+    "inline-style-disabled": {
+      "severity": "error"
+    },
     "no-unclosed-tag": {
       "severity": "error",
       "options": []
@@ -52,9 +55,7 @@
     },
     "tag-indent": {
       "severity": "warning",
-      "options": {
-
-      }
+      "options": {}
     },
     "comment-format": {
       "severity": "warning",
