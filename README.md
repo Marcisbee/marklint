@@ -1,7 +1,7 @@
 # marklint (Markup Lint)
 HTML lint tool that works well with Angular and Vue templates too
 
-![CI](https://img.shields.io/github/workflow/status/Marcisbee/marklint/CI?style=flat-square)
+![CI](https://img.shields.io/github/actions/workflow/status/Marcisbee/marklint/main.yml?style=flat-square)
 [![Snyk](https://img.shields.io/snyk/vulnerabilities/github/Marcisbee/marklint?style=flat-square)](https://snyk.io/test/github/Marcisbee/marklint)
 [![npm version](https://img.shields.io/npm/v/marklint.svg?style=flat-square)](https://www.npmjs.com/package/marklint)
 [![npm downloads](https://img.shields.io/npm/dm/marklint.svg?style=flat-square)](https://www.npmjs.com/package/marklint)
