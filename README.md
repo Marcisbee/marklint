@@ -4,8 +4,8 @@ HTML lint tool that works well with Angular and Vue templates too
 ![CI](https://img.shields.io/github/actions/workflow/status/Marcisbee/marklint/main.yml?style=flat-square)
 [![Snyk](https://img.shields.io/snyk/vulnerabilities/github/Marcisbee/marklint?style=flat-square)](https://snyk.io/test/github/Marcisbee/marklint)
 [![npm version](https://img.shields.io/npm/v/marklint.svg?style=flat-square)](https://www.npmjs.com/package/marklint)
-[![npm downloads](https://img.shields.io/npm/dm/marklint.svg?style=flat-square)](https://www.npmjs.com/package/marklint)
 [![gzip bundle size](https://img.shields.io/bundlephobia/minzip/marklint?style=flat-square)](https://bundlephobia.com/result?p=marklint)
+[![discord](https://dcbadge.vercel.app/api/server/a62gfaDW2e?style=flat-square)](https://discord.gg/a62gfaDW2e)
 
 # Features
 - ⚡️ Fast html parsing
