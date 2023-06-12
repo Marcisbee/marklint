@@ -414,6 +414,7 @@ function parser(html) {
 
       if (selfClosing && VOID_ELEMENTS.indexOf(tagName) === -1) {
         if (stack.length > 1) {
+          depth -= 1;
           stack.pop();
         }
       }

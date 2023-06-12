@@ -193,3 +193,23 @@ it('handles empty lines with spaces', () => {
 
   expect(generator(ast).code).toBe(expectation);
 });
+
+it('handles svg', () => {
+  const input = `<svg>
+  <path fill="orange"/>
+</svg>
+<p>
+  <span>Test</span>
+</p>`;
+  const expectation = `<svg>
+  <path fill="orange"/>
+</svg>
+<p>
+  <span>Test</span>
+</p>`;
+
+  const ast = parser(input);
+  getErrors(ast);
+
+  expect(generator(ast).code).toBe(expectation);
+});
