@@ -13,7 +13,7 @@ HTML lint tool that works well with Angular and Vue templates too
 - 🖍 Prints beautiful code frames
 - 🛠 Fixes auto fixable issues
 - 🎭 Works with Vue and Angular too
-- 🗂 Only 1 dependency ([arg](https://www.npmjs.com/package/arg))
+- 🗂 No dependencies
 <!-- - 📑 Lint and transform API -->
 
 # Example screenshots

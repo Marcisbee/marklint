@@ -1,5 +1,5 @@
-const arg = require('arg');
 const path = require('path');
+const { parseArgs } = require('util');
 
 const directory = require('./directory');
 const errorMessage = require('./utils/error-message');
@@ -282,22 +282,37 @@ function main(
  * Runs linter
  */
 module.exports = function validator() {
-  const args = arg({
-    // Types
-    '--version': Boolean,
-    '--fix': Boolean,
-    '--config': String,
-    '--include': [String],
-    '--exclude': [String],
-
-    // Aliases
-    '-v': '--version',
-    '-c': '--config',
-    '-i': '--include',
-    '-e': '--exclude',
+  const { values, positionals } = parseArgs({
+    strict: false,
+    allowPositionals: true,
+    options: {
+      'version': {
+        type: 'boolean',
+        short: 'v',
+        default: false,
+      },
+      'fix': {
+        type: 'boolean',
+        default: false,
+      },
+      'config': {
+        type: 'string',
+        short: 'c',
+      },
+      'include': {
+        type: 'string',
+        short: 'i',
+        multiple: true,
+      },
+      'exclude': {
+        type: 'string',
+        short: 'e',
+        multiple: true,
+      },
+    },
   });
 
-  if (args['--version']) {
+  if (values.version) {
     // @ts-ignore
     const packageJson = require('../package.json');
     console.log(`v${packageJson.version}`);
@@ -305,20 +320,20 @@ module.exports = function validator() {
   }
 
   const userConfig = {};
-  if (args['--include']) {
-    userConfig.include = args['--include'];
+  if (values.include) {
+    userConfig.include = values.include;
   }
 
-  if (args['--exclude']) {
-    userConfig.exclude = args['--exclude'];
+  if (values.exclude) {
+    userConfig.exclude = values.exclude;
   }
 
-  if (args['--config']) {
-    userConfig.config = args['--config'];
+  if (values.config) {
+    userConfig.config = values.config;
   }
 
-  if (args['--fix']) {
-    userConfig.fix = args['--fix'];
+  if (values.fix) {
+    userConfig.fix = values.fix;
   }
 
   try {
@@ -335,7 +350,7 @@ module.exports = function validator() {
   }
 
   const rootPath = resolve('.');
-  const paths = args._.length ? args._ : [rootPath];
+  const paths = positionals.length ? positionals : [rootPath];
   const config = { ...defaultConfig, ...userConfig };
 
   main(paths, config);

@@ -1,6 +1,6 @@
 {
   "name": "marklint",
-  "version": "0.5.1",
+  "version": "0.6.0",
   "description": "🗳 HTML/Markup (Vue and Angular template) linter",
   "main": "src/index.js",
   "tags": [
@@ -35,14 +35,11 @@
   "homepage": "https://github.com/Marcisbee/marklint#readme",
   "devDependencies": {
     "@types/jest": "^26.0.16",
-    "@types/node": "^14.14.10",
+    "@types/node": "^16.18.41",
     "eslint": "^7.14.0",
     "eslint-config-google": "^0.14.0",
     "jest": "^26.6.3",
     "typescript": "^4.1.2"
-  },
-  "dependencies": {
-    "arg": "^5.0.0"
   },
   "files": [
     "bin",
