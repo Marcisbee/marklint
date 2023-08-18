@@ -319,6 +319,7 @@ module.exports = function validator() {
     process.exit(0);
   }
 
+  /** @type {Record<string, any>} */
   const userConfig = {};
   if (values.include) {
     userConfig.include = values.include;
