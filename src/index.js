@@ -338,14 +338,14 @@ module.exports = function validator() {
   }
 
   try {
-    const configLocation = resolve(userConfig.config || join(resolve('.'), 'marklint.config.json'));
+    const configLocation = resolve(userConfig.config || join(resolve('.'), '.config', 'marklint.json'));
     Object.assign(defaultConfig, require(configLocation) || {});
   } catch (_) {
     print(
       report({
         type: 'log',
         severity: 'warning',
-        message: `No config "marklint.config.json" file found${userConfig.config ? ` at "${userConfig.config}"` : ''}.`,
+        message: `No config file found at "${userConfig.config || '.config/marklint.json'}".`,
       }),
     );
   }

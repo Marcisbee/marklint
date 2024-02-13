@@ -1,6 +1,6 @@
 {
   "name": "marklint",
-  "version": "0.6.0",
+  "version": "0.7.0",
   "description": "🗳 HTML/Markup (Vue and Angular template) linter",
   "main": "src/index.js",
   "tags": [
@@ -45,7 +45,7 @@
     "bin",
     "schemas",
     "src",
-    "marklint.config.json",
+    ".config/marklint.json",
     "theme.js"
   ]
 }
