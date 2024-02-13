@@ -1,5 +1,5 @@
 {
-  "$schema": "./schemas/config.json",
+  "$schema": "../schemas/config.json",
   "include": [
     "*.html",
     "*.htm"
