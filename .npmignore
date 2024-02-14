@@ -1,0 +1,7 @@
+html
+docs
+examples
+**/*.test.js
+.editorconfig
+.eslintrc
+.github
